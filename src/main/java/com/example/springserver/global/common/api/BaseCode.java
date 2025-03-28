@@ -1,4 +1,4 @@
-package com.example.securitywithredis.global.common.api;
+package com.example.springserver.global.common.api;
 
 public interface BaseCode {
 

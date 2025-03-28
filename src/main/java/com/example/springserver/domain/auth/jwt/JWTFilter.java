@@ -1,9 +1,9 @@
-package com.example.securitywithredis.domain.auth.jwt;
+package com.example.springserver.domain.auth.jwt;
 
-import com.example.securitywithredis.global.common.api.status.ErrorStatus;
-import com.example.securitywithredis.global.exception.GeneralException;
-import com.example.securitywithredis.domain.user.UserEntity;
-import com.example.securitywithredis.domain.auth.security.CustomUserDetails;
+import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.exception.GeneralException;
+import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.domain.auth.security.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

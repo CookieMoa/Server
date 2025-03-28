@@ -1,9 +1,9 @@
-package com.example.securitywithredis.domain.auth.security;
+package com.example.springserver.domain.auth.security;
 
-import com.example.securitywithredis.global.common.api.status.ErrorStatus;
-import com.example.securitywithredis.global.exception.GeneralException;
-import com.example.securitywithredis.domain.user.UserEntity;
-import com.example.securitywithredis.domain.user.repository.UserRepository;
+import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.exception.GeneralException;
+import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

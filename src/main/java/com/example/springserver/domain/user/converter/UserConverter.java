@@ -1,8 +1,8 @@
-package com.example.securitywithredis.domain.user.converter;
+package com.example.springserver.domain.user.converter;
 
-import com.example.securitywithredis.domain.auth.dto.AuthRequestDTO;
-import com.example.securitywithredis.domain.user.UserEntity;
-import com.example.securitywithredis.domain.user.enums.Gender;
+import com.example.springserver.domain.auth.dto.AuthRequestDTO;
+import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.domain.user.enums.Gender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserConverter {

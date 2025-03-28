@@ -1,8 +1,8 @@
-package com.example.securitywithredis.domain.user;
+package com.example.springserver.domain.user;
 
-import com.example.securitywithredis.global.common.entity.BaseEntity;
-import com.example.securitywithredis.domain.user.enums.AccountStatus;
-import com.example.securitywithredis.domain.user.enums.Gender;
+import com.example.springserver.global.common.entity.BaseEntity;
+import com.example.springserver.domain.user.enums.AccountStatus;
+import com.example.springserver.domain.user.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;

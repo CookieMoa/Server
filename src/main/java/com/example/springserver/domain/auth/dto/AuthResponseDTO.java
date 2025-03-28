@@ -1,4 +1,4 @@
-package com.example.securitywithredis.domain.auth.dto;
+package com.example.springserver.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

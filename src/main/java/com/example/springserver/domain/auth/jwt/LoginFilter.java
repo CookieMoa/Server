@@ -1,8 +1,8 @@
-package com.example.securitywithredis.domain.auth.jwt;
+package com.example.springserver.domain.auth.jwt;
 
-import com.example.securitywithredis.domain.auth.dto.AuthRequestDTO;
-import com.example.securitywithredis.global.common.util.CookieUtil;
-import com.example.securitywithredis.global.common.util.RefreshUtil;
+import com.example.springserver.domain.auth.dto.AuthRequestDTO;
+import com.example.springserver.global.common.util.CookieUtil;
+import com.example.springserver.global.common.util.RefreshUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

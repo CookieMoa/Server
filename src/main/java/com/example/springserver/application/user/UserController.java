@@ -1,4 +1,4 @@
-package com.example.securitywithredis.application.user;
+package com.example.springserver.application.user;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;

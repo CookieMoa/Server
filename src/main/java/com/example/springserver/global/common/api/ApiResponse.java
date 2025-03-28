@@ -1,6 +1,6 @@
-package com.example.securitywithredis.global.common.api;
+package com.example.springserver.global.common.api;
 
-import com.example.securitywithredis.global.common.api.status.SuccessStatus;
+import com.example.springserver.global.common.api.status.SuccessStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

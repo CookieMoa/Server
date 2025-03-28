@@ -1,4 +1,4 @@
-package com.example.securitywithredis.global.common.util;
+package com.example.springserver.global.common.util;
 
 import jakarta.servlet.http.Cookie;
 

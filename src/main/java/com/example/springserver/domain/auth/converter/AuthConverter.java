@@ -1,7 +1,7 @@
-package com.example.securitywithredis.domain.auth.converter;
+package com.example.springserver.domain.auth.converter;
 
-import com.example.securitywithredis.domain.auth.dto.AuthResponseDTO;
-import com.example.securitywithredis.domain.user.UserEntity;
+import com.example.springserver.domain.auth.dto.AuthResponseDTO;
+import com.example.springserver.domain.user.UserEntity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

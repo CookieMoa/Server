@@ -1,4 +1,4 @@
-package com.example.securitywithredis.global.common.paging;
+package com.example.springserver.global.common.paging;
 
 import jakarta.validation.constraints.Min;
 import lombok.Getter;

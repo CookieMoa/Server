@@ -1,7 +1,7 @@
-package com.example.securitywithredis.domain.user.service;
+package com.example.springserver.domain.user.service;
 
-import com.example.securitywithredis.domain.user.UserEntity;
-import com.example.securitywithredis.domain.user.repository.UserRepository;
+import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

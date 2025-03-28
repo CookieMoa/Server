@@ -1,11 +1,11 @@
-package com.example.securitywithredis.global.config;
+package com.example.springserver.global.config;
 
-import com.example.securitywithredis.global.common.util.RefreshUtil;
-import com.example.securitywithredis.domain.auth.jwt.CustomLogoutFilter;
-import com.example.securitywithredis.domain.auth.jwt.JWTFilter;
-import com.example.securitywithredis.domain.auth.jwt.JWTUtil;
-import com.example.securitywithredis.domain.auth.jwt.LoginFilter;
-import com.example.securitywithredis.domain.auth.service.RefreshTokenService;
+import com.example.springserver.global.common.util.RefreshUtil;
+import com.example.springserver.domain.auth.jwt.CustomLogoutFilter;
+import com.example.springserver.domain.auth.jwt.JWTFilter;
+import com.example.springserver.domain.auth.jwt.JWTUtil;
+import com.example.springserver.domain.auth.jwt.LoginFilter;
+import com.example.springserver.domain.auth.service.RefreshTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

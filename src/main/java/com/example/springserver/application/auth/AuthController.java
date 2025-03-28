@@ -1,12 +1,12 @@
-package com.example.securitywithredis.application.auth;
+package com.example.springserver.application.auth;
 
-import com.example.securitywithredis.domain.auth.converter.AuthConverter;
-import com.example.securitywithredis.domain.auth.dto.AuthRequestDTO;
-import com.example.securitywithredis.domain.auth.dto.AuthResponseDTO;
-import com.example.securitywithredis.domain.auth.service.SignUpService;
-import com.example.securitywithredis.domain.auth.service.ReissueService;
-import com.example.securitywithredis.domain.user.UserEntity;
-import com.example.securitywithredis.global.common.api.ApiResponse;
+import com.example.springserver.domain.auth.converter.AuthConverter;
+import com.example.springserver.domain.auth.dto.AuthRequestDTO;
+import com.example.springserver.domain.auth.dto.AuthResponseDTO;
+import com.example.springserver.domain.auth.service.SignUpService;
+import com.example.springserver.domain.auth.service.ReissueService;
+import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.global.common.api.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

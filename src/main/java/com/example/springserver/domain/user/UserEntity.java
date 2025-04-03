@@ -34,10 +34,4 @@ public class UserEntity extends BaseEntity {
     @Column(columnDefinition = "VARCHAR(15) DEFAULT 'ACTIVE'")
     private AccountStatus accountStatus;
 
-    @Column(nullable = false, length = 20)
-    private String nickname;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
 }

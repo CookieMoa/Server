@@ -25,4 +25,12 @@ public class AuthResponseDTO {
         private String access;
         private String refresh;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyEmailRes {
+        private long expiresIn;
+    }
 }

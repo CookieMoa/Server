@@ -36,4 +36,12 @@ public class AuthRequestDTO {
         @NotEmpty
         private String password;
     }
+
+    @Getter
+    public static class VerifyEmailReq{
+
+        @NotEmpty
+        @Email(message = "Invalid email format")
+        private String email;
+    }
 }

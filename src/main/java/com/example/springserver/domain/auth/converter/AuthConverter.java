@@ -29,4 +29,10 @@ public class AuthConverter {
                 .refresh(refreshToken)
                 .build();
     }
+
+    public static AuthResponseDTO.VerifyEmailRes toVerifyEmailRes(long expiresIn){
+        return AuthResponseDTO.VerifyEmailRes.builder()
+                .expiresIn(expiresIn)
+                .build();
+    }
 }

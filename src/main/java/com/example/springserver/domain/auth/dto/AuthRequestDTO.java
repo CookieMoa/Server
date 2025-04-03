@@ -27,7 +27,7 @@ public class AuthRequestDTO {
     }
 
     @Getter
-    public static class LoginDTO{
+    public static class LoginReq{
 
         @NotEmpty
         @Email(message = "Invalid email format")

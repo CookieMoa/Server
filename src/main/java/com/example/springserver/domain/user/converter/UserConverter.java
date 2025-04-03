@@ -15,8 +15,6 @@ public class UserConverter {
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
 //                .role("ROLE_USER")
 //                .accountStatus(AccountStatus.ACTIVE)
-                .nickname(request.getNickname())
-                .gender(Gender.valueOf(request.getGender()))
                 .build();
     }
 }

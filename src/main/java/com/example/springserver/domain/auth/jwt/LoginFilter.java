@@ -1,7 +1,10 @@
 package com.example.springserver.domain.auth.jwt;
 
+import com.example.springserver.domain.auth.converter.AuthConverter;
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
-import com.example.springserver.global.common.util.CookieUtil;
+import com.example.springserver.domain.auth.dto.AuthResponseDTO;
+import com.example.springserver.domain.auth.security.CustomUserDetails;
+import com.example.springserver.global.common.api.ApiResponse;
 import com.example.springserver.global.common.util.RefreshUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -37,8 +40,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             // JSON 바디에서 username과 password 추출
             ObjectMapper objectMapper = new ObjectMapper();
-            AuthRequestDTO.LoginDTO loginRequest = null;
-            loginRequest = objectMapper.readValue(req.getInputStream(), AuthRequestDTO.LoginDTO.class);
+            AuthRequestDTO.LoginReq loginRequest = null;
+            loginRequest = objectMapper.readValue(req.getInputStream(), AuthRequestDTO.LoginReq.class);
 
             String username = loginRequest.getUsername();
             String password = loginRequest.getPassword();
@@ -60,12 +63,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     // Authentication(getPrincipal(), getCredentials(), getAuthorities(), isAuthenticated(), getDetails(), getName())
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         // 유저 정보
-        String username = authentication.getName();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
 
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
 
@@ -78,10 +81,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // Refresh 토큰을 Redis에 저장
         refreshUtil.addRefreshToken(username, refresh, 86400000L);
 
-        //응답 설정
-        response.setHeader("access", access);
-        response.addCookie(CookieUtil.createCookie("refresh", refresh));
-        response.setStatus(HttpStatus.OK.value());
+        try {
+            // 응답 설정
+            ApiResponse<AuthResponseDTO.LoginRes> apiResponse =
+                    ApiResponse.onSuccess(AuthConverter.toLoginRes(userDetails, access, refresh));
+
+            // JSON 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
+
+            // 응답 보내기
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Authorization", "Bearer " + access);
+            response.setStatus(HttpStatus.OK.value());
+            response.getWriter().write(jsonResponse);
+
+        } catch (IOException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.getWriter().write("{\"isSuccess\": false, \"code\": \"501\", \"message\": \"로그인 성공 처리 중 서버 오류가 발생했습니다.\"}");
+        }
     }
 
     //로그인 실패시 실행하는 메소드

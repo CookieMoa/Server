@@ -14,4 +14,15 @@ public class AuthResponseDTO {
         private Long memberId;
         private String createAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginRes {
+        private Long userId;
+        private String role;
+        private String access;
+        private String refresh;
+    }
 }

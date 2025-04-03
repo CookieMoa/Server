@@ -1,6 +1,7 @@
 package com.example.springserver.domain.auth.converter;
 
 import com.example.springserver.domain.auth.dto.AuthResponseDTO;
+import com.example.springserver.domain.auth.security.CustomUserDetails;
 import com.example.springserver.domain.user.UserEntity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +18,15 @@ public class AuthConverter {
         return AuthResponseDTO.SignUpResultDTO.builder()
                 .memberId(user.getId())
                 .createAt(formatDateTime(user.getCreatedAt()))
+                .build();
+    }
+
+    public static AuthResponseDTO.LoginRes toLoginRes(CustomUserDetails userDetail, String accessToken, String refreshToken){
+        return AuthResponseDTO.LoginRes.builder()
+                .userId(userDetail.getUserId())
+                .role(userDetail.getRole())
+                .access(accessToken)
+                .refresh(refreshToken)
                 .build();
     }
 }

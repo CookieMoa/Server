@@ -10,9 +10,8 @@ public class AuthResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SignUpResultDTO {
-        private Long memberId;
-        private String createAt;
+    public static class SignUpRes {
+        private Long userId;
     }
 
     @Builder
@@ -24,5 +23,23 @@ public class AuthResponseDTO {
         private String role;
         private String access;
         private String refresh;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyEmailRes {
+        private long expiresIn;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyCodeRes {
+        private String verificationToken;
+        private String category;
+        private long expiresIn;
     }
 }

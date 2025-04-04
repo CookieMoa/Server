@@ -2,7 +2,7 @@ package com.example.springserver.domain.auth.jwt;
 
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import com.example.springserver.domain.auth.security.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -27,16 +27,17 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 헤더에서 access키에 담긴 토큰을 꺼냄
-        String accessToken = request.getHeader("access");
+        // 헤더에서 Authorization 키에 담긴 토큰을 꺼냄
+        String authorizationHeader = request.getHeader("Authorization");
 
-        // 토큰이 없다면 다음 필터로 넘김
-        if (accessToken == null){
-
+        // 헤더가 없거나 'Bearer '로 시작하지 않으면 필터 진행
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-
             return;
         }
+
+        // 'Bearer ' 이후의 토큰만 추출
+        String accessToken = authorizationHeader.substring(7);
 
         // 토큰 만료 여부 확인, 만료시 예외 발생
         try {

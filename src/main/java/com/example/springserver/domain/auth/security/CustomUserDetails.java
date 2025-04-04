@@ -1,6 +1,6 @@
 package com.example.springserver.domain.auth.security;
 
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

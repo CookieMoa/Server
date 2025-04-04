@@ -23,7 +23,7 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender javaMailSender;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final EmailVerificationService emailVerificationService;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -53,7 +53,7 @@ public class EmailService {
 
         message.setFrom(senderEmail);
         message.setRecipients(MimeMessage.RecipientType.TO, mail);
-        message.setSubject("[CUKIMOA 서비스] 이메일 인증 코드 안내");  // 제목을 더 자연스럽게 변경
+        message.setSubject("[CUKIMOA 서비스] 이메일 인증 코드 안내");
 
         String body = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;'>" +
                 "<h2 style='color: #333;'>CUKIMOA 서비스 이메일 인증</h2>" +
@@ -89,9 +89,9 @@ public class EmailService {
 
             javaMailSender.send(message); // 메일 발송
 
-            redisTemplate.opsForValue().set(email, number, Duration.ofMillis(authCodeExpirationMillis));
+            emailVerificationService.saveVerificationCode(email, number, authCodeExpirationMillis); // Redis 저장
 
-            return authCodeExpirationMillis; // 생성된 인증번호 반환
+            return authCodeExpirationMillis; // 만료기간 반환
         } catch (MessagingException e) {
             log.error("이메일 메시지 생성 실패: {}", email, e);
             throw new GeneralException(ErrorStatus.EMAIL_SEND_FAILED);

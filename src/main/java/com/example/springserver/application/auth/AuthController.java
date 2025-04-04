@@ -4,6 +4,7 @@ import com.example.springserver.domain.auth.converter.AuthConverter;
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
 import com.example.springserver.domain.auth.dto.AuthResponseDTO;
 import com.example.springserver.domain.auth.service.EmailService;
+import com.example.springserver.domain.auth.service.EmailVerificationService;
 import com.example.springserver.domain.auth.service.SignUpService;
 import com.example.springserver.domain.auth.service.ReissueService;
 import com.example.springserver.domain.user.UserEntity;
@@ -34,6 +35,7 @@ public class AuthController {
     private final SignUpService signUpService;
     private final ReissueService reissueService;
     private final EmailService emailService;
+    private final EmailVerificationService emailVerificationService;
 
 
     @Operation(summary = "회원가입")
@@ -55,5 +57,13 @@ public class AuthController {
             (@RequestBody @Valid AuthRequestDTO.VerifyEmailReq request) {
         long authCodeExpirationMillis = emailService.sendSimpleMessage(request.getEmail());
         return ApiResponse.onSuccess(AuthConverter.toVerifyEmailRes(authCodeExpirationMillis));
+    }
+
+    @Operation(summary = "이메일 인증 코드 검사")
+    @PostMapping("/verify-code")
+    public ApiResponse<AuthResponseDTO.VerifyCodeRes> verifyCode
+            (@RequestBody @Valid AuthRequestDTO.VerifyCodeReq request) {
+        AuthResponseDTO.VerifyCodeRes tokenDetail = emailVerificationService.verifyCode(request.getEmail(), request.getCode(), request.getPurpose());
+        return ApiResponse.onSuccess(tokenDetail);
     }
 }

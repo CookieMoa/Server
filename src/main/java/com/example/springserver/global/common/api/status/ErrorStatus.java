@@ -40,7 +40,12 @@ public enum ErrorStatus implements BaseCode {
     TEMP_EXCEPTION(HttpStatus.BAD_REQUEST, "TEMP4001", "이거는 테스트"),
 
     // 페이징 에러
-    PAGE_NOT_EXIST(HttpStatus.BAD_REQUEST, "PAGE001", "페이지가 0 이하입니다.");
+    PAGE_NOT_EXIST(HttpStatus.BAD_REQUEST, "PAGE001", "페이지가 0 이하입니다."),
+
+    // 이메일 인증 에러
+    EMAIL_CODE_NOT_EXIST(HttpStatus.BAD_REQUEST, "EMAIL4001", "인증 코드가 만료되었거나 존재하지 않습니다."),
+    INVALID_EMAIL_CODE(HttpStatus.BAD_REQUEST, "EMAIL4002", "이메일 인증 코드가 일치하지 않습니다."),
+    INVALID_PURPOSE(HttpStatus.BAD_REQUEST, "EMAIL4003", "용도가 올바르지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

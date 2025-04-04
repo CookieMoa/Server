@@ -33,4 +33,14 @@ public class AuthResponseDTO {
     public static class VerifyEmailRes {
         private long expiresIn;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VerifyCodeRes {
+        private String verificationToken;
+        private String category;
+        private long expiresIn;
+    }
 }

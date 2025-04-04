@@ -1,6 +1,7 @@
 package com.example.springserver.domain.auth.dto;
 
 import com.example.springserver.domain.user.validation.annotation.GenderValid;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -43,5 +44,18 @@ public class AuthRequestDTO {
         @NotEmpty
         @Email(message = "Invalid email format")
         private String email;
+    }
+
+    @Getter
+    public static class VerifyCodeReq{
+
+        @NotEmpty
+        @Email(message = "Invalid email format")
+        private String email;
+
+        @NotEmpty
+        private String code;
+
+        private String purpose = "signup";
     }
 }

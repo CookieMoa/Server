@@ -35,4 +35,12 @@ public class AuthConverter {
                 .expiresIn(expiresIn)
                 .build();
     }
+
+    public static AuthResponseDTO.VerifyCodeRes toVerifyCodeRes(String token, String purpose, long expiresIn){
+        return AuthResponseDTO.VerifyCodeRes.builder()
+                .verificationToken(token)
+                .category(purpose)
+                .expiresIn(expiresIn)
+                .build();
+    }
 }

@@ -2,7 +2,7 @@ package com.example.springserver.domain.auth.converter;
 
 import com.example.springserver.domain.auth.dto.AuthResponseDTO;
 import com.example.springserver.domain.auth.security.CustomUserDetails;
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

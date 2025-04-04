@@ -7,11 +7,10 @@ import com.example.springserver.domain.auth.service.EmailService;
 import com.example.springserver.domain.auth.service.EmailVerificationService;
 import com.example.springserver.domain.auth.service.SignUpService;
 import com.example.springserver.domain.auth.service.ReissueService;
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.UnsupportedEncodingException;
 
 @RestController
 @Validated

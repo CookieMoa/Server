@@ -2,7 +2,7 @@ package com.example.springserver.domain.auth.security;
 
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import com.example.springserver.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

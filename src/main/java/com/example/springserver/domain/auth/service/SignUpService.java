@@ -6,7 +6,7 @@ import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.domain.user.converter.UserConverter;
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,5 @@
-package com.example.springserver.domain.user;
+package com.example.springserver.entity;
 
-import com.example.springserver.global.common.entity.BaseEntity;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "users")
 public class UserEntity extends BaseEntity {
 
     @Id

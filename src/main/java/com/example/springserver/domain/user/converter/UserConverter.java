@@ -1,7 +1,7 @@
 package com.example.springserver.domain.user.converter;
 
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
-import com.example.springserver.domain.user.UserEntity;
+import com.example.springserver.entity.UserEntity;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

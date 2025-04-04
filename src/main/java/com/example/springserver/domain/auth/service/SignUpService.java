@@ -33,7 +33,7 @@ public class SignUpService {
 
         String emailFromToken = emailJwtUtil.getEmail(token);
         if (!emailFromToken.equals(request.getUsername())) {
-            throw new GeneralException(ErrorStatus.EMAIL_TOKEN_MISMATCH); // 에러코드 추가 필요
+            throw new GeneralException(ErrorStatus.EMAIL_TOKEN_MISMATCH);
         }
 
         boolean isExist = userService.existsByUsername(request.getUsername());

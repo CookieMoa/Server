@@ -40,9 +40,9 @@ public class AuthController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
-    public ApiResponse<AuthResponseDTO.SignUpResultDTO> signUpProcess(@RequestBody @Valid AuthRequestDTO.SignUpDTO request) {
+    public ApiResponse<AuthResponseDTO.SignUpRes> signUp(@RequestBody @Valid AuthRequestDTO.SignUpReq request) {
         UserEntity newUser = signUpService.signUpProcess(request);
-        return ApiResponse.onSuccess(AuthConverter.toSignUpResultDTO(newUser));
+        return ApiResponse.onSuccess(AuthConverter.toSignUpRes(newUser));
     }
 
     @Operation(summary = "토큰 재발행")

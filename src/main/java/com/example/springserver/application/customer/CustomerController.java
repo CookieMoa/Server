@@ -10,11 +10,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Validated
@@ -26,9 +25,11 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @Operation(summary = "소비자 등록")
-    @PostMapping("/")
-    public ApiResponse<CustomerResponseDTO.PostCustomerRes> signUp(@RequestBody @Valid CustomerRequestDTO.PostCustomerReq request) {
+    @PostMapping(consumes = "multipart/form-data")
+    public ApiResponse<CustomerResponseDTO.PostCustomerRes> postCustomer(
+            @RequestPart("data") @Valid CustomerRequestDTO.PostCustomerReq request,
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg) {
 
-        return ApiResponse.onSuccess(customerService.postCustomer(request));
+        return ApiResponse.onSuccess(customerService.postCustomer(request, profileImg));
     }
 }

@@ -35,6 +35,7 @@ public class Cafe extends BaseEntity {
     @Column(nullable = false)
     private Double longitude;
 
+    private String imgUrl;
     private String contact;
     private String intro;
 }

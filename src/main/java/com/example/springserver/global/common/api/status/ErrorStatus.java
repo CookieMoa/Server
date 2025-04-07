@@ -51,7 +51,10 @@ public enum ErrorStatus implements BaseCode {
     // 이메일 인증 토큰 에러
     EMAIL_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "EMAIL4004", "이메일 인증 토큰이 만료되었습니다."),
     INVALID_EMAIL_TOKEN_CATEGORY(HttpStatus.BAD_REQUEST, "EMAIL4005", "이메일 토큰의 카테고리가 유효하지 않습니다."),
-    EMAIL_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "EMAIL4006", "이메일 인증 토큰이 요청한 이메일과 일치하지 않습니다.");
+    EMAIL_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "EMAIL4006", "이메일 인증 토큰이 요청한 이메일과 일치하지 않습니다."),
+
+    // 키워드 관련 에러
+    KEYWORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "KEYWORD4004", "선택한 키워드가 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

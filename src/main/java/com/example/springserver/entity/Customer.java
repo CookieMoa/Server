@@ -25,4 +25,6 @@ public class Customer extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+    private String imgUrl;
 }

@@ -1,4 +1,4 @@
-package com.example.springserver.domain.auth.security;
+package com.example.springserver.global.security;
 
 import com.example.springserver.entity.UserEntity;
 import com.example.springserver.domain.user.enums.AccountStatus;

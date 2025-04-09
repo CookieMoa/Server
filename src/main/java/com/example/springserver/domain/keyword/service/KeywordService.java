@@ -45,4 +45,11 @@ public class KeywordService {
         List<KeywordMapping> mappings = KeywordConverter.toReviewKeywordMappings(review, keywords);
         keywordMappingRepository.saveAll(mappings);
     }
+
+    public List<Keyword> getKeywordsByCustomer(Customer customer) {
+        List<KeywordMapping> mappings = keywordMappingRepository.findAllByCustomer(customer);
+        return mappings.stream()
+                .map(KeywordMapping::getKeyword)
+                .collect(Collectors.toList());
+    }
 }

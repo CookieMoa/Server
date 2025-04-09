@@ -1,4 +1,4 @@
-package com.example.springserver.domain.auth.security;
+package com.example.springserver.global.security;
 
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;

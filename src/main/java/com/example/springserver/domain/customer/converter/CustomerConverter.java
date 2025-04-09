@@ -32,4 +32,16 @@ public class CustomerConverter {
                 .keywordList(keywordDtoList)
                 .build();
     }
+
+    public static CustomerResponseDTO.GetCustomerRes toGetCustomerRes(Customer customer, List<Keyword> keywords){
+        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
+                .map(KeywordConverter::toKeywordDto).toList();
+
+        return CustomerResponseDTO.GetCustomerRes.builder()
+                .customerId(customer.getId())
+                .name(customer.getName())
+                .imgUrl(customer.getImgUrl())
+                .keywordList(keywordDtoList)
+                .build();
+    }
 }

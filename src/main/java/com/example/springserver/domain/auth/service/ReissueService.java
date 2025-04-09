@@ -2,7 +2,7 @@ package com.example.springserver.domain.auth.service;
 
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
-import com.example.springserver.domain.auth.jwt.JWTUtil;
+import com.example.springserver.global.jwt.JWTUtil;
 import com.example.springserver.global.common.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

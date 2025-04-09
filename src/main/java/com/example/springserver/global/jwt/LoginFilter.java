@@ -1,9 +1,11 @@
-package com.example.springserver.domain.auth.jwt;
+package com.example.springserver.global.jwt;
 
 import com.example.springserver.domain.auth.converter.AuthConverter;
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
 import com.example.springserver.domain.auth.dto.AuthResponseDTO;
-import com.example.springserver.domain.auth.security.CustomUserDetails;
+import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.exception.GeneralException;
+import com.example.springserver.global.security.CustomUserDetails;
 import com.example.springserver.global.common.api.ApiResponse;
 import com.example.springserver.global.common.util.RefreshUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,6 +108,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+        throw new GeneralException(ErrorStatus.LOGIN_FAILED);
     }
 }

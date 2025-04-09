@@ -1,4 +1,4 @@
-package com.example.springserver.domain.auth.jwt;
+package com.example.springserver.global.jwt;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,9 +1,9 @@
-package com.example.springserver.domain.auth.jwt;
+package com.example.springserver.global.jwt;
 
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.entity.UserEntity;
-import com.example.springserver.domain.auth.security.CustomUserDetails;
+import com.example.springserver.global.security.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

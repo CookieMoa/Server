@@ -1,7 +1,7 @@
 package com.example.springserver.domain.auth.service;
 
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
-import com.example.springserver.domain.auth.jwt.EmailJwtUtil;
+import com.example.springserver.global.jwt.EmailJwtUtil;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;

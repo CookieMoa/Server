@@ -16,6 +16,8 @@ public enum ErrorStatus implements BaseCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // 로그인 관련
+    LOGIN_FAILED(HttpStatus.BAD_REQUEST,"LOGIN400","로그인 실패."),
 
     // 멤버 관려 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
@@ -30,6 +32,7 @@ public enum ErrorStatus implements BaseCode {
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "TOKEN4004", "토큰이 올바르지 않습니다."),
     REFRESH_TOKEN_NOT_EXIST(HttpStatus.BAD_REQUEST, "TOKEN4005", "리프레시 토큰이 존재하지 않습니다."),
     REFRESH_TOKEN_IS_NULL(HttpStatus.BAD_REQUEST, "TOKEN4006", "리프레시 토큰이 null입니다."),
+    FORBIDDEN_USER_ACCESS(HttpStatus.BAD_REQUEST, "TOKEN4008", "접근 권한이 없는 사용자입니다"),
 
     EMAIL_SEND_FAILED(HttpStatus.BAD_REQUEST, "EMAIL4001", "이메일 전송 실패"),
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "EMAIL4002", "이메일을 찾을 수 없습니다."),

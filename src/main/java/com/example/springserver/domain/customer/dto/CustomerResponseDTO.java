@@ -19,4 +19,15 @@ public class CustomerResponseDTO {
         private String imgUrl;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetCustomerRes {
+        private Long customerId;
+        private String name;
+        private String imgUrl;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+    }
 }

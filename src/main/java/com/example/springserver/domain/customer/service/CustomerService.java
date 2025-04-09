@@ -6,6 +6,7 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.Keyword;
@@ -28,6 +29,11 @@ public class CustomerService {
     private final KeywordService keywordService;
     private final UserService userService;
 
+    public Customer getCustomerByUserId(Long userId) {
+        return customerRepository.findByUserId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
     public CustomerResponseDTO.PostCustomerRes postCustomer(CustomerRequestDTO.PostCustomerReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
 
@@ -40,6 +46,10 @@ public class CustomerService {
         Customer newCustomer = CustomerConverter.toCustomer(request, user, imgUrl);
         customerRepository.save(newCustomer);
 
+        // 계정 상태 ACTIVE로 변경
+        user.setAccountStatus(AccountStatus.ACTIVE);
+        userService.saveUser(user);
+
         // 키워드 조회 및 매핑
         List<Keyword> keywords = keywordService.getKeywordsByIds(request.getKeywordList());
         if (keywords.isEmpty()) {
@@ -48,5 +58,14 @@ public class CustomerService {
         keywordService.createCustomerKeywordMappings(newCustomer, keywords);
 
         return CustomerConverter.toPostCustomerRes(newCustomer, keywords);
+    }
+
+    public CustomerResponseDTO.GetCustomerRes getCustomer(Long userId) {
+
+        Customer customer = getCustomerByUserId(userId);
+
+        List<Keyword> keywords = keywordService.getKeywordsByCustomer(customer);
+
+        return CustomerConverter.toGetCustomerRes(customer, keywords);
     }
 }

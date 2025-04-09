@@ -2,7 +2,7 @@ package com.example.springserver.domain.auth.service;
 
 import com.example.springserver.domain.auth.converter.AuthConverter;
 import com.example.springserver.domain.auth.dto.AuthResponseDTO;
-import com.example.springserver.domain.auth.jwt.EmailJwtUtil;
+import com.example.springserver.global.jwt.EmailJwtUtil;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;

@@ -12,8 +12,11 @@ import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.Keyword;
 import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,5 +70,18 @@ public class CustomerService {
         List<Keyword> keywords = keywordService.getKeywordsByCustomer(customer);
 
         return CustomerConverter.toGetCustomerRes(customer, keywords);
+    }
+
+    public Page<Customer> searchCustomer(CommonPageReq pageRequest, String query) {
+
+        Pageable pageable = pageRequest.toPageable();
+
+        Page<Customer> customers = customerRepository.findByNameStartingWith(query, pageable);
+
+        if (customers.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
+        return customers;
     }
 }

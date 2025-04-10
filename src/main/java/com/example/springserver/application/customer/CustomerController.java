@@ -1,9 +1,12 @@
 package com.example.springserver.application.customer;
 
 import com.example.springserver.domain.auth.service.AuthorizationService;
+import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.user.service.UserService;
+import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.security.CustomUserDetails;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
@@ -14,10 +17,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @Validated
@@ -47,5 +53,15 @@ public class CustomerController {
         authorizationService.validateCustomerAuthorization(userDetail.getUsername(), customerId);
 
         return ApiResponse.onSuccess(customerService.getCustomer(customerId));
+    }
+
+    @Operation(summary = "소비자 검색")
+    @GetMapping("/search")
+    public ApiResponse<CustomerResponseDTO.SearchCustomerRes> searchCustomer(@AuthenticationPrincipal CustomUserDetails userDetail,
+                                                                             @ModelAttribute @Valid CommonPageReq pageRequest,
+                                                                             @RequestParam String query) {
+
+        Page<Customer> customerList = customerService.searchCustomer(pageRequest, query);
+        return ApiResponse.onSuccess(CustomerConverter.toSearchCustomerRes(customerList));
     }
 }

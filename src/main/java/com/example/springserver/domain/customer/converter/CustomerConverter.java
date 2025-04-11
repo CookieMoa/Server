@@ -10,10 +10,18 @@ import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomerConverter {
+
+    // 날짜를 포맷하는 메서드
+    private static String formatDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return dateTime.format(formatter);
+    }
 
     public static Customer toCustomer(CustomerRequestDTO.PostCustomerReq request, UserEntity user, String imgUrl){
 
@@ -33,6 +41,25 @@ public class CustomerConverter {
                 .name(customer.getName())
                 .imgUrl(customer.getImgUrl())
                 .keywordList(keywordDtoList)
+                .build();
+    }
+
+    public static CustomerResponseDTO.EditCustomerRes toEditCustomerRes(
+            Customer customer,
+            boolean isNameUpdated,
+            boolean isImgUpdated,
+            boolean isKeywordUpdated,
+            List<Keyword> keywords
+    ) {
+        return CustomerResponseDTO.EditCustomerRes.builder()
+                .customerId(customer.getId())
+                .name(isNameUpdated ? customer.getName() : null)
+                .imgUrl(isImgUpdated ? customer.getImgUrl() : null)
+                .keywordList(isKeywordUpdated && keywords != null
+                        ? keywords.stream().map(KeywordConverter::toKeywordDto).toList()
+                        : null)
+                .createdAt(formatDateTime(customer.getCreatedAt()))
+                .updatedAt(formatDateTime(customer.getUpdatedAt()))
                 .build();
     }
 

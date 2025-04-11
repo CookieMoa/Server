@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface KeywordMappingRepository extends JpaRepository<KeywordMapping, Long> {
     List<KeywordMapping> findAllByCustomer(Customer customer);
+    void deleteByCustomer(Customer customer);
 }
 

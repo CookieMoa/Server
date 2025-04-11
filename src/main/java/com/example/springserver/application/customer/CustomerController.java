@@ -45,6 +45,20 @@ public class CustomerController {
         return ApiResponse.onSuccess(customerService.postCustomer(request, profileImg));
     }
 
+    @Operation(summary = "소비자 정보 수정")
+    @PutMapping(value = "/{customerId}", consumes = "multipart/form-data")
+    public ApiResponse<CustomerResponseDTO.EditCustomerRes> editCustomer(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestPart("data") @Valid CustomerRequestDTO.EditCustomerReq request,
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
+            @PathVariable Long customerId) {
+
+        // 본인인지 검사
+        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), customerId);
+
+        return ApiResponse.onSuccess(customerService.editCustomer(request, profileImg, customerId));
+    }
+
     @Operation(summary = "소비자 조회")
     @GetMapping("/{customerId}")
     public ApiResponse<CustomerResponseDTO.GetCustomerRes> getCustomer(@AuthenticationPrincipal CustomUserDetails userDetail,

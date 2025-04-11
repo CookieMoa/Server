@@ -63,6 +63,49 @@ public class CustomerService {
         return CustomerConverter.toPostCustomerRes(newCustomer, keywords);
     }
 
+    public CustomerResponseDTO.EditCustomerRes editCustomer(CustomerRequestDTO.EditCustomerReq request, MultipartFile profileImg, Long customerId) {
+
+        Customer customer = getCustomerByUserId(customerId);
+
+        boolean isNameUpdated = false;
+        boolean isImgUpdated = false;
+        boolean isKeywordUpdated = false;
+
+        String imgUrl = null;
+        List<Keyword> keywords = null;
+
+        // todo: 프로필 이미지 업로드
+//        if (profileImg != null && !profileImg.isEmpty()) {
+//            imgUrl = s3Service.uploadFile(profileImg);
+//            customer.setImgUrl(imgUrl);
+//            isImgUpdated = true;
+//        }
+
+        // 이름 수정
+        if (request.getName() != null) {
+            customer.setName(request.getName());
+            isNameUpdated = true;
+        }
+
+        // 키워드 수정
+        if (request.getKeywordList() != null && !request.getKeywordList().isEmpty()) {
+            keywords = keywordService.getKeywordsByIds(request.getKeywordList());
+            if (keywords.isEmpty()) {
+                throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
+            }
+            keywordService.updateCustomerKeywordMappings(customer, keywords);
+            isKeywordUpdated = true;
+        }
+
+        customerRepository.save(customer);
+
+        return CustomerConverter.toEditCustomerRes(customer,
+                isNameUpdated,
+                isImgUpdated,
+                isKeywordUpdated,
+                keywords);
+    }
+
     public CustomerResponseDTO.GetCustomerRes getCustomer(Long userId) {
 
         Customer customer = getCustomerByUserId(userId);

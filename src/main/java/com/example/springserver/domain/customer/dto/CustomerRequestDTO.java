@@ -22,4 +22,12 @@ public class CustomerRequestDTO {
 
         private List<Long> keywordList;
     }
+
+    @Getter
+    public static class EditCustomerReq {
+
+        private String name;
+
+        private List<Long> keywordList;
+    }
 }

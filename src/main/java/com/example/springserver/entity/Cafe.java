@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -38,4 +40,7 @@ public class Cafe extends BaseEntity {
     private String imgUrl;
     private String contact;
     private String intro;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<KeywordMapping> keywordMappings;
 }

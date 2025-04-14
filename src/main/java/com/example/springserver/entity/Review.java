@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -31,4 +33,7 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<KeywordMapping> keywordMappings;
 }

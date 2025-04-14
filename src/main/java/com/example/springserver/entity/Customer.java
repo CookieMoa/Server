@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -28,4 +30,7 @@ public class Customer extends BaseEntity {
     private String name;
 
     private String imgUrl;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<KeywordMapping> keywordMappings;
 }

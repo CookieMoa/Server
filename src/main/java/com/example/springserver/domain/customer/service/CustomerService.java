@@ -14,6 +14,7 @@ import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
+import com.example.springserver.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final KeywordService keywordService;
     private final UserService userService;
+    private final S3Service s3Service;
 
     public Customer getCustomerByUserId(Long userId) {
         return customerRepository.findByUserId(userId)
@@ -40,11 +42,13 @@ public class CustomerService {
     public CustomerResponseDTO.PostCustomerRes postCustomer(CustomerRequestDTO.PostCustomerReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
 
-        // todo: 프로필 이미지 업로드 (MultipartFile 사용) (S3)
-        String imgUrl = null;
-//        if (request.getProfileImg() != null && !request.getProfileImg().isEmpty()) {
-//
-//        }
+        // 이미지 적용
+        String imgUrl;
+        if(profileImg == null) {
+            imgUrl = s3Service.getBasicImgUrl();
+        } else {
+            imgUrl = s3Service.uploadFileImage(profileImg);
+        }
 
         Customer newCustomer = CustomerConverter.toCustomer(request, user, imgUrl);
         customerRepository.save(newCustomer);
@@ -71,15 +75,14 @@ public class CustomerService {
         boolean isImgUpdated = false;
         boolean isKeywordUpdated = false;
 
-        String imgUrl = null;
         List<Keyword> keywords = null;
 
-        // todo: 프로필 이미지 업로드
-//        if (profileImg != null && !profileImg.isEmpty()) {
-//            imgUrl = s3Service.uploadFile(profileImg);
-//            customer.setImgUrl(imgUrl);
-//            isImgUpdated = true;
-//        }
+        // 이미지 수정
+        if (profileImg != null && !profileImg.isEmpty()) {
+            String imgUrl = s3Service.uploadFileImage(profileImg);
+            customer.setImgUrl(imgUrl);
+            isImgUpdated = true;
+        }
 
         // 이름 수정
         if (request.getName() != null) {

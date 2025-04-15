@@ -53,4 +53,12 @@ public class CustomerResponseDTO {
     public static class SearchCustomerRes extends CommonPageRes {
         private List<GetCustomerRes> customerList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetQrcodeRes {
+        private String qrCodeBase64;
+    }
 }

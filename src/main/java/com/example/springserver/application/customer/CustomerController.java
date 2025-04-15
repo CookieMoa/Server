@@ -78,4 +78,14 @@ public class CustomerController {
         Page<Customer> customerList = customerService.searchCustomer(pageRequest, query);
         return ApiResponse.onSuccess(CustomerConverter.toSearchCustomerRes(customerList));
     }
+
+    @Operation(summary = "소비자 qr 요청")
+    @GetMapping("/{customerId}/qr-code")
+    public ApiResponse<CustomerResponseDTO.GetQrcodeRes> getQrcode(@AuthenticationPrincipal CustomUserDetails userDetail,
+                                                                        @PathVariable Long customerId) {
+        // 본인인지 검사
+        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), customerId);
+        String qrcode = customerService.getQrcode(customerId);
+        return ApiResponse.onSuccess(CustomerConverter.toGetQrcodeRes(qrcode));
+    }
 }

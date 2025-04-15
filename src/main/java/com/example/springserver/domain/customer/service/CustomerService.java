@@ -15,6 +15,10 @@ import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -129,5 +137,26 @@ public class CustomerService {
         }
 
         return customers;
+    }
+
+    public String getQrcode(Long userId) {
+
+        Customer customer = getCustomerByUserId(userId);
+        String qrData = String.format("{\"userId\": \"%s\", \"timestamp\": \"%d\"}", userId, System.currentTimeMillis());
+
+        String base64QR;
+        try {
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 250, 250);
+            BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(qrImage, "PNG", outputStream);
+            base64QR = Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.GENERATE_QR_FAILED);
+        }
+
+        return base64QR;
     }
 }

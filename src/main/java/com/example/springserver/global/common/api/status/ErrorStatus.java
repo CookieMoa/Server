@@ -19,6 +19,10 @@ public enum ErrorStatus implements BaseCode {
     // 로그인 관련
     LOGIN_FAILED(HttpStatus.BAD_REQUEST,"LOGIN400","로그인 실패."),
 
+    // 이미지 에러
+    INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4001", "유효하지 않은 이미지 형식입니다."),
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "이미지 업로드에 실패했습니다."),
+
     // 멤버 관려 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
     MEMBER_IS_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "사용자가 이미 존재합니다.."),

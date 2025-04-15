@@ -12,8 +12,12 @@ import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.Keyword;
 import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
+import com.example.springserver.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +32,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final KeywordService keywordService;
     private final UserService userService;
+    private final S3Service s3Service;
 
     public Customer getCustomerByUserId(Long userId) {
         return customerRepository.findByUserId(userId)
@@ -37,11 +42,13 @@ public class CustomerService {
     public CustomerResponseDTO.PostCustomerRes postCustomer(CustomerRequestDTO.PostCustomerReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
 
-        // todo: 프로필 이미지 업로드 (MultipartFile 사용) (S3)
-        String imgUrl = null;
-//        if (request.getProfileImg() != null && !request.getProfileImg().isEmpty()) {
-//
-//        }
+        // 이미지 적용
+        String imgUrl;
+        if(profileImg == null) {
+            imgUrl = s3Service.getBasicImgUrl();
+        } else {
+            imgUrl = s3Service.uploadFileImage(profileImg);
+        }
 
         Customer newCustomer = CustomerConverter.toCustomer(request, user, imgUrl);
         customerRepository.save(newCustomer);
@@ -60,6 +67,48 @@ public class CustomerService {
         return CustomerConverter.toPostCustomerRes(newCustomer, keywords);
     }
 
+    public CustomerResponseDTO.EditCustomerRes editCustomer(CustomerRequestDTO.EditCustomerReq request, MultipartFile profileImg, Long customerId) {
+
+        Customer customer = getCustomerByUserId(customerId);
+
+        boolean isNameUpdated = false;
+        boolean isImgUpdated = false;
+        boolean isKeywordUpdated = false;
+
+        List<Keyword> keywords = null;
+
+        // 이미지 수정
+        if (profileImg != null && !profileImg.isEmpty()) {
+            String imgUrl = s3Service.uploadFileImage(profileImg);
+            customer.setImgUrl(imgUrl);
+            isImgUpdated = true;
+        }
+
+        // 이름 수정
+        if (request.getName() != null) {
+            customer.setName(request.getName());
+            isNameUpdated = true;
+        }
+
+        // 키워드 수정
+        if (request.getKeywordList() != null && !request.getKeywordList().isEmpty()) {
+            keywords = keywordService.getKeywordsByIds(request.getKeywordList());
+            if (keywords.isEmpty()) {
+                throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
+            }
+            keywordService.updateCustomerKeywordMappings(customer, keywords);
+            isKeywordUpdated = true;
+        }
+
+        customerRepository.save(customer);
+
+        return CustomerConverter.toEditCustomerRes(customer,
+                isNameUpdated,
+                isImgUpdated,
+                isKeywordUpdated,
+                keywords);
+    }
+
     public CustomerResponseDTO.GetCustomerRes getCustomer(Long userId) {
 
         Customer customer = getCustomerByUserId(userId);
@@ -67,5 +116,18 @@ public class CustomerService {
         List<Keyword> keywords = keywordService.getKeywordsByCustomer(customer);
 
         return CustomerConverter.toGetCustomerRes(customer, keywords);
+    }
+
+    public Page<Customer> searchCustomer(CommonPageReq pageRequest, String query) {
+
+        Pageable pageable = pageRequest.toPageable();
+
+        Page<Customer> customers = customerRepository.findByNameStartingWith(query, pageable);
+
+        if (customers.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
+        return customers;
     }
 }

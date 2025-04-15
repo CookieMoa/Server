@@ -28,21 +28,27 @@ public class KeywordService {
         return keywordRepository.findAllById(keywordIds);
     }
 
-    @Transactional
     public void createCustomerKeywordMappings(Customer customer, List<Keyword> keywords) {
         List<KeywordMapping> mappings = KeywordConverter.toCustomerKeywordMappings(customer, keywords);
         keywordMappingRepository.saveAll(mappings);
     }
 
-    @Transactional
     public void createCafeKeywordMappings(Cafe cafe, List<Keyword> keywords) {
         List<KeywordMapping> mappings = KeywordConverter.toCafeKeywordMappings(cafe, keywords);
         keywordMappingRepository.saveAll(mappings);
     }
 
-    @Transactional
     public void createReviewKeywordMappings(Review review, List<Keyword> keywords) {
         List<KeywordMapping> mappings = KeywordConverter.toReviewKeywordMappings(review, keywords);
+        keywordMappingRepository.saveAll(mappings);
+    }
+
+    public void updateCustomerKeywordMappings(Customer customer, List<Keyword> keywords) {
+        // 기존 매핑 삭제
+        keywordMappingRepository.deleteByCustomer(customer);
+
+        // 새로운 매핑 생성
+        List<KeywordMapping> mappings = KeywordConverter.toCustomerKeywordMappings(customer, keywords);
         keywordMappingRepository.saveAll(mappings);
     }
 

@@ -101,4 +101,10 @@ public class CustomerConverter {
                 .page(commonPageRes.getPage())
                 .build();
     }
+
+    public static CustomerResponseDTO.GetQrcodeRes toGetQrcodeRes(String qrCodeBase64) {
+        return CustomerResponseDTO.GetQrcodeRes.builder()
+                .qrCodeBase64(qrCodeBase64)
+                .build();
+    }
 }

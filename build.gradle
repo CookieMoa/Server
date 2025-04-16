@@ -55,9 +55,12 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.1.1'
 
     implementation 'software.amazon.awssdk:s3:2.21.40'
-    implementation 'software.amazon.awssdk:sts:2.21.40' // AWS STS (권장)
+    implementation 'software.amazon.awssdk:sts:2.21.40'
     implementation 'software.amazon.awssdk:auth:2.21.40'
-//    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.767'
+
+    // QR Code - zxing
+    implementation group: 'com.google.zxing', name: 'javase', version: '3.5.0'
+    implementation group: 'com.google.zxing', name: 'core', version: '3.5.0'
 }
 
 tasks.named('test') {

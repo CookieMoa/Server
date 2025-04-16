@@ -16,6 +16,9 @@ public enum ErrorStatus implements BaseCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // QR code 생성
+    GENERATE_QR_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"QR5001","QR code 생성 실패."),
+
     // 로그인 관련
     LOGIN_FAILED(HttpStatus.BAD_REQUEST,"LOGIN400","로그인 실패."),
 

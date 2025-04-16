@@ -40,7 +40,8 @@ public class Cafe extends BaseEntity {
     private String imgUrl;
     private String contact;
     private String intro;
+    private String advImgUrl;
 
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<KeywordMapping> keywordMappings;
 }

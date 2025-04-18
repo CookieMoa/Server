@@ -1,5 +1,23 @@
 package com.example.springserver.domain.cafe.dto;
 
-public class CafeResponseDTO {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+public class CafeResponseDTO {
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PostCafeRes {
+        private Long cafeId;
+        private String name;
+        private String address;
+        private Double latitude;
+        private Double longitude;
+        private String contact;
+        private String intro;
+        private String imgUrl;
+    }
 }

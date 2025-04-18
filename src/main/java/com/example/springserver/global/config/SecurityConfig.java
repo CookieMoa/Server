@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(HttpMethod.POST, "/customers", "/cafes").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/customers", "/cafes", "/cafes/verify-business").permitAll()
                         .requestMatchers("/auth/**", "/", "/reissue").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()

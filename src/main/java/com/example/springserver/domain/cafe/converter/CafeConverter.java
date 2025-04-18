@@ -2,18 +2,10 @@ package com.example.springserver.domain.cafe.converter;
 
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
-import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
-import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
-import com.example.springserver.domain.keyword.converter.KeywordConverter;
-import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.entity.Cafe;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.Keyword;
 import com.example.springserver.entity.UserEntity;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class CafeConverter {
 

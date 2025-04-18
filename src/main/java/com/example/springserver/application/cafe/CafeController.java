@@ -1,23 +1,17 @@
 package com.example.springserver.application.cafe;
 
 import com.example.springserver.domain.auth.service.AuthorizationService;
+import com.example.springserver.domain.cafe.dto.BusinessVerificationResponse;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.service.CafeService;
-import com.example.springserver.domain.customer.converter.CustomerConverter;
-import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
-import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
+import com.example.springserver.domain.cafe.service.VerifyBusinessService;
 import com.example.springserver.domain.user.service.UserService;
-import com.example.springserver.entity.Customer;
 import com.example.springserver.global.common.api.ApiResponse;
-import com.example.springserver.global.common.paging.CommonPageReq;
-import com.example.springserver.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CafeController {
 
     private final AuthorizationService authorizationService;
+    private final VerifyBusinessService verificationService;
     private final CafeService cafeService;
     private final UserService userService;
 
@@ -40,5 +35,13 @@ public class CafeController {
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg) {
 
         return ApiResponse.onSuccess(cafeService.postCafe(request, profileImg));
+    }
+
+    @Operation(summary = "카페 사업자 등록 인증")
+    @PostMapping("/verify-business")
+    public ApiResponse<?> verifyBusiness(
+            @RequestBody @Valid CafeRequestDTO.VerifyBusinessReq request) {
+        BusinessVerificationResponse result = verificationService.verifyBusiness(request);
+        return ApiResponse.onSuccess(result);
     }
 }

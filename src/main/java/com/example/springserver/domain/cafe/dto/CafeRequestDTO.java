@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 public class CafeRequestDTO {
 
     @Getter
@@ -27,5 +25,15 @@ public class CafeRequestDTO {
 
         private String contact;
         private String intro;
+    }
+
+    @Getter
+    public static class VerifyBusinessReq {
+        @NotEmpty
+        private String businessNumber;
+        @NotEmpty
+        private String representativeName;
+        @NotEmpty
+        private String openingDate;
     }
 }

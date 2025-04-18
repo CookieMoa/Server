@@ -8,14 +8,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -39,12 +38,12 @@ public class VerifyBusinessService {
                         verifyBusinessRequest.getOpeningDate(),
                         verifyBusinessRequest.getRepresentativeName()
                 );
-        String decodedServicekey = null;
-        try {
-            decodedServicekey = URLDecoder.decode(serviceKey, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return new BusinessVerificationResponse(false, "서비스 키 디코딩 실패");
-        }
+//        String decodedServicekey = null;
+//        try {
+//            decodedServicekey = URLDecoder.decode(serviceKey, "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            return new BusinessVerificationResponse(false, "서비스 키 디코딩 실패");
+//        }
         BusinessVerificationRequest request =
                 new BusinessVerificationRequest(List.of(businessInfo));
 
@@ -53,16 +52,20 @@ public class VerifyBusinessService {
 
         HttpEntity<BusinessVerificationRequest> entity = new HttpEntity<>(request, headers);
 
-        String fullUrl = String.format("%s?serviceKey=%s&returnType=JSON", apiUrl, decodedServicekey);
-
-        ResponseEntity<String> response;
         try {
-            response = restTemplate.postForEntity(fullUrl, entity, String.class);
-        } catch (Exception e) {
-            return new BusinessVerificationResponse(false, "국세청 API 호출 실패");
-        }
+            // API URL 구성
+            String fullUrl = String.format("%s?serviceKey=%s&returnType=JSON", apiUrl, serviceKey);
+            URI uri = new URI(fullUrl);
 
-        try {
+            // 요청 전송
+            ResponseEntity<String> response = restTemplate.exchange(
+                    uri,
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            // 응답 파싱
             JsonNode root = objectMapper.readTree(response.getBody());
             JsonNode dataNode = root.path("data");
 
@@ -83,8 +86,13 @@ public class VerifyBusinessService {
             }
 
             return new BusinessVerificationResponse(false, "응답 데이터가 비어 있습니다.");
+
         } catch (JsonProcessingException e) {
-            return new BusinessVerificationResponse(false, "응답 파싱 실패");
+            return new BusinessVerificationResponse(false, "응답 파싱 실패: " + e.getMessage());
+        } catch (URISyntaxException e) {
+            return new BusinessVerificationResponse(false, "요청 URI 생성 실패: " + e.getMessage());
+        } catch (Exception e) {
+            return new BusinessVerificationResponse(false, "API 호출 실패: " + e.getMessage());
         }
     }
 }

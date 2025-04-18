@@ -18,9 +18,9 @@ public class CafeRequestDTO {
         private String name;
         @NotEmpty
         private String address;
-        @NotEmpty
+        @NotNull
         private Double latitude;
-        @NotEmpty
+        @NotNull
         private Double longitude;
 
         private String contact;

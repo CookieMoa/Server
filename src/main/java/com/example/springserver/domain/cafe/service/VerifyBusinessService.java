@@ -38,12 +38,7 @@ public class VerifyBusinessService {
                         verifyBusinessRequest.getOpeningDate(),
                         verifyBusinessRequest.getRepresentativeName()
                 );
-//        String decodedServicekey = null;
-//        try {
-//            decodedServicekey = URLDecoder.decode(serviceKey, "UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            return new BusinessVerificationResponse(false, "서비스 키 디코딩 실패");
-//        }
+
         BusinessVerificationRequest request =
                 new BusinessVerificationRequest(List.of(businessInfo));
 

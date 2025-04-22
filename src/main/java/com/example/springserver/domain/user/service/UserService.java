@@ -24,6 +24,10 @@ public class UserService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    public UserEntity findUserEntityByUsername(String username) {
+        return userRepository.findUserEntityByUsername(username);
+    }
+
     public UserEntity saveUser(UserEntity user) {
         return userRepository.save(user);
     }

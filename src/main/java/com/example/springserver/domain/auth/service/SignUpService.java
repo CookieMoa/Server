@@ -1,6 +1,7 @@
 package com.example.springserver.domain.auth.service;
 
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
+import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.global.jwt.EmailJwtUtil;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.global.common.api.status.ErrorStatus;
@@ -8,6 +9,7 @@ import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.domain.user.converter.UserConverter;
 import com.example.springserver.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +53,25 @@ public class SignUpService {
         UserEntity newUser = UserConverter.toUser(request, bCryptPasswordEncoder, role);
 
         return userService.saveUser(newUser);
+    }
+
+    public void checkEmailSignupStatus(String email) {
+        UserEntity user = userService.findUserEntityByUsername(email);
+
+        if (user == null) {
+            return;
+        }
+
+        if (user.getAccountStatus() == AccountStatus.ACTIVE) {
+            throw new GeneralException(ErrorStatus.MEMBER_IS_EXIST);
+        }
+
+        if (user.getAccountStatus() == AccountStatus.INACTIVE) {
+            if (user.getRole().equals("ROLE_CAFE")) {
+                throw new GeneralException(ErrorStatus.SIGNUP_IN_PROGRESS_CAFE);
+            } else {
+                throw new GeneralException(ErrorStatus.SIGNUP_IN_PROGRESS_CUSTOMER);
+            }
+        }
     }
 }

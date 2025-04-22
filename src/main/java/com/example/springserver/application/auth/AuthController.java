@@ -52,6 +52,9 @@ public class AuthController {
     @PostMapping("/verify-email")
     public ApiResponse<AuthResponseDTO.VerifyEmailRes> verifyEmail
             (@RequestBody @Valid AuthRequestDTO.VerifyEmailReq request) {
+        // 회원가입 유무 검사
+        signUpService.checkEmailSignupStatus(request.getEmail());
+
         long authCodeExpirationMillis = emailService.sendSimpleMessage(request.getEmail());
         return ApiResponse.onSuccess(AuthConverter.toVerifyEmailRes(authCodeExpirationMillis));
     }

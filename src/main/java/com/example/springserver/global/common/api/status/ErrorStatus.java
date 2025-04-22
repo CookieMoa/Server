@@ -28,9 +28,11 @@ public enum ErrorStatus implements BaseCode {
 
     // 멤버 관려 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
-    MEMBER_IS_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "사용자가 이미 존재합니다.."),
+    MEMBER_IS_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "사용자가 이미 존재합니다."),
     NICKNAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4003", "닉네임은 필수 입니다."),
     INVALID_ROLE(HttpStatus.BAD_REQUEST, "MEMBER4004", "역할이 올바르지 않습니다. 기대: (ROLE_CAFE || ROLE_CUSTOMER)"),
+    SIGNUP_IN_PROGRESS_CAFE(HttpStatus.BAD_REQUEST, "MEMBER4005", "CAFE로 회원가입 중입니다."),
+    SIGNUP_IN_PROGRESS_CUSTOMER(HttpStatus.BAD_REQUEST, "MEMBER4006", "CUSTOMER로 회원가입 중입니다."),
 
     // 토큰 관련 에러
     ACCESS_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "TOKEN4001", "액세스 토큰이 만료되었습니다."),

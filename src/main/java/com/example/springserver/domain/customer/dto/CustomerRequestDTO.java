@@ -20,7 +20,7 @@ public class CustomerRequestDTO {
         @NotEmpty
         private String name;
 
-        private List<Long> keywordList;
+        private List<String> keywordList;
     }
 
     @Getter
@@ -28,6 +28,6 @@ public class CustomerRequestDTO {
 
         private String name;
 
-        private List<Long> keywordList;
+        private List<String> keywordList;
     }
 }

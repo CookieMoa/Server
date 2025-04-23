@@ -66,7 +66,7 @@ public class CustomerService {
         userService.saveUser(user);
 
         // 키워드 조회 및 매핑
-        List<Keyword> keywords = keywordService.getKeywordsByIds(request.getKeywordList());
+        List<Keyword> keywords = keywordService.getKeywordsByNames(request.getKeywordList());
         if (keywords.isEmpty()) {
             throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
         }
@@ -100,7 +100,7 @@ public class CustomerService {
 
         // 키워드 수정
         if (request.getKeywordList() != null && !request.getKeywordList().isEmpty()) {
-            keywords = keywordService.getKeywordsByIds(request.getKeywordList());
+            keywords = keywordService.getKeywordsByNames(request.getKeywordList());
             if (keywords.isEmpty()) {
                 throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
             }

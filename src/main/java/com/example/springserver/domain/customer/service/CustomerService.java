@@ -87,8 +87,7 @@ public class CustomerService {
 
         // 이미지 수정
         if (profileImg != null && !profileImg.isEmpty()) {
-            String imgUrl = s3Service.uploadFileImage(profileImg);
-            customer.setImgUrl(imgUrl);
+            customer.setImgUrl(s3Service.uploadFileImage(profileImg));
             isImgUpdated = true;
         }
 

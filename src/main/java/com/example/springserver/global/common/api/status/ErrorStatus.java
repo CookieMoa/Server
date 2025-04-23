@@ -66,7 +66,10 @@ public enum ErrorStatus implements BaseCode {
     EMAIL_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "EMAIL4006", "이메일 인증 토큰이 요청한 이메일과 일치하지 않습니다."),
 
     // 키워드 관련 에러
-    KEYWORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "KEYWORD4004", "선택한 키워드가 존재하지 않습니다.");
+    KEYWORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "KEYWORD4004", "선택한 키워드가 존재하지 않습니다."),
+
+    // 카페 관련 에러
+    CAFE_LOCATION_MISSING(HttpStatus.BAD_REQUEST, "CAFE4004", "카페의 위치 정보(address, latitude, longitude)는 필수입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

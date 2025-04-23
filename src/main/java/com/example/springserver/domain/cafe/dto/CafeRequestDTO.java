@@ -28,6 +28,17 @@ public class CafeRequestDTO {
     }
 
     @Getter
+    @Setter
+    public static class EditCafeReq {
+        private String name;
+        private String address;
+        private Double latitude;
+        private Double longitude;
+        private String contact;
+        private String intro;
+    }
+
+    @Getter
     public static class VerifyBusinessReq {
         @NotEmpty
         private String businessNumber;

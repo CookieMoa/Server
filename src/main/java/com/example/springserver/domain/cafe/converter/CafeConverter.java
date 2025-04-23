@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
 
 public class CafeConverter {
 
+    private CafeConverter() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     // 날짜를 포맷하는 메서드
     private static String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -39,6 +43,28 @@ public class CafeConverter {
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
                 .imgUrl(cafe.getImgUrl())
+                .build();
+    }
+
+    public static CafeResponseDTO.EditCafeRes toEditCafeRes(
+            Cafe cafe,
+            boolean isNameUpdated,
+            boolean isAddressUpdated,
+            boolean isContactUpdated,
+            boolean isIntroUpdated,
+            boolean isImgUpdated
+    ) {
+        return CafeResponseDTO.EditCafeRes.builder()
+                .cafeId(cafe.getId())
+                .name(isNameUpdated ? cafe.getName() : null)
+                .address(isAddressUpdated ? cafe.getAddress() : null)
+                .latitude(isAddressUpdated ? cafe.getLatitude() : null)
+                .longitude(isAddressUpdated ? cafe.getLongitude() : null)
+                .contact(isContactUpdated ? cafe.getContact() : null)
+                .intro(isIntroUpdated ? cafe.getIntro() : null)
+                .imgUrl(isImgUpdated ? cafe.getImgUrl() : null)
+                .createdAt(formatDateTime(cafe.getCreatedAt()))
+                .updatedAt(formatDateTime(cafe.getUpdatedAt()))
                 .build();
     }
 }

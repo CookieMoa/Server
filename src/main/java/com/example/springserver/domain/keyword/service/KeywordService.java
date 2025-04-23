@@ -24,8 +24,8 @@ public class KeywordService {
     private final KeywordRepository keywordRepository;
     private final KeywordMappingRepository keywordMappingRepository;
 
-    public List<Keyword> getKeywordsByIds(List<Long> keywordIds) {
-        return keywordRepository.findAllById(keywordIds);
+    public List<Keyword> getKeywordsByNames(List<String> keywordNames) {
+        return keywordRepository.findAllByNameIn(keywordNames);
     }
 
     public void createCustomerKeywordMappings(Customer customer, List<Keyword> keywords) {

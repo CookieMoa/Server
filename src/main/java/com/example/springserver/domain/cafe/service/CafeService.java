@@ -4,11 +4,18 @@ import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
+import com.example.springserver.domain.customer.converter.CustomerConverter;
+import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
+import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Cafe;
+import com.example.springserver.entity.Customer;
+import com.example.springserver.entity.Keyword;
 import com.example.springserver.entity.UserEntity;
+import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +33,11 @@ public class CafeService {
     private final KeywordService keywordService;
     private final UserService userService;
     private final S3Service s3Service;
+
+    public Cafe getCafeByUserId(Long userId) {
+        return cafeRepository.findByUserId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
 
     public CafeResponseDTO.PostCafeRes postCafe(CafeRequestDTO.PostCafeReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
@@ -47,6 +59,63 @@ public class CafeService {
 
 
         return CafeConverter.toPostCafeRes(newCafe);
+    }
+
+    public CafeResponseDTO.EditCafeRes editCafe(CafeRequestDTO.EditCafeReq request, MultipartFile profileImg, Long cafeId) {
+
+        Cafe cafe = getCafeByUserId(cafeId);
+
+        boolean isNameUpdated = false;
+        boolean isAddressUpdated = false;
+        boolean isContactUpdated = false;
+        boolean isIntroUpdated = false;
+        boolean isImgUpdated = false;
+
+        // 이미지 수정
+        if (profileImg != null && !profileImg.isEmpty()) {
+            cafe.setImgUrl(s3Service.uploadFileImage(profileImg));
+            isImgUpdated = true;
+        }
+
+        // 이름 수정
+        if (request.getName() != null) {
+            cafe.setName(request.getName());
+            isNameUpdated = true;
+        }
+
+        // 주소 및 위치 수정
+        if (request.getAddress() != null) {
+            if (request.getLatitude() == null || request.getLongitude() == null) {
+                throw new GeneralException(ErrorStatus.CAFE_LOCATION_MISSING);
+            }
+            cafe.setAddress(request.getAddress());
+            cafe.setLatitude(request.getLatitude());
+            cafe.setLongitude(request.getLongitude());
+            isAddressUpdated = true;
+        }
+
+        // 연락처 수정
+        if (request.getContact() != null) {
+            cafe.setContact(request.getContact());
+            isContactUpdated = true;
+        }
+
+        // 인트로 수정
+        if (request.getIntro() != null) {
+            cafe.setIntro(request.getIntro());
+            isIntroUpdated = true;
+        }
+
+        cafeRepository.save(cafe);
+
+        return CafeConverter.toEditCafeRes(
+                cafe,
+                isNameUpdated,
+                isAddressUpdated,
+                isContactUpdated,
+                isIntroUpdated,
+                isImgUpdated
+        );
     }
 
 }

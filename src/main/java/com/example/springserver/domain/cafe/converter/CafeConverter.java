@@ -67,4 +67,11 @@ public class CafeConverter {
                 .updatedAt(formatDateTime(cafe.getUpdatedAt()))
                 .build();
     }
+
+    public static CafeResponseDTO.PostCafeAdvRes toPostCafeAdvRes(Cafe cafe){
+        return CafeResponseDTO.PostCafeAdvRes.builder()
+                .cafeId(cafe.getId())
+                .advImgUrl(cafe.getAdvImgUrl())
+                .build();
+    }
 }

@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -20,4 +22,7 @@ public class Keyword {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "keyword", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<KeywordMapping> keywordMappings;
 }

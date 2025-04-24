@@ -118,4 +118,15 @@ public class CafeService {
         );
     }
 
+    public CafeResponseDTO.PostCafeAdvRes postCafeAdv(MultipartFile advImg, Long cafeId) {
+        if (advImg == null || advImg.isEmpty()) {
+            throw new GeneralException(ErrorStatus.INVALID_IMAGE); // 예외처리 정의해두면 좋아
+        }
+
+        Cafe cafe = getCafeByUserId(cafeId);
+        cafe.setAdvImgUrl(s3Service.uploadFileImage(advImg));
+        cafeRepository.save(cafe);
+
+        return CafeConverter.toPostCafeAdvRes(cafe); //
+    }
 }

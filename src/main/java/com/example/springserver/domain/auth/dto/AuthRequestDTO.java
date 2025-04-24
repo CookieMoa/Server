@@ -54,4 +54,14 @@ public class AuthRequestDTO {
 
         private String purpose = "signup";
     }
+
+    @Getter
+    public static class EditPasswordReq{
+
+        @NotEmpty
+        private String password;
+
+        @NotEmpty
+        private String emailToken;
+    }
 }

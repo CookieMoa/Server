@@ -3,9 +3,9 @@ package com.example.springserver.application.auth;
 import com.example.springserver.domain.auth.converter.AuthConverter;
 import com.example.springserver.domain.auth.dto.AuthRequestDTO;
 import com.example.springserver.domain.auth.dto.AuthResponseDTO;
+import com.example.springserver.domain.auth.service.AuthService;
 import com.example.springserver.domain.auth.service.EmailService;
 import com.example.springserver.domain.auth.service.EmailVerificationService;
-import com.example.springserver.domain.auth.service.SignUpService;
 import com.example.springserver.domain.auth.service.ReissueService;
 import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.ApiResponse;
@@ -17,10 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
@@ -29,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final SignUpService signUpService;
+    private final AuthService authService;
     private final ReissueService reissueService;
     private final EmailService emailService;
     private final EmailVerificationService emailVerificationService;
@@ -38,7 +35,7 @@ public class AuthController {
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ApiResponse<AuthResponseDTO.SignUpRes> signUp(@RequestBody @Valid AuthRequestDTO.SignUpReq request) {
-        UserEntity newUser = signUpService.signUpProcess(request);
+        UserEntity newUser = authService.signUpProcess(request);
         return ApiResponse.onSuccess(AuthConverter.toSignUpRes(newUser));
     }
 
@@ -53,7 +50,7 @@ public class AuthController {
     public ApiResponse<AuthResponseDTO.VerifyEmailRes> verifyEmail
             (@RequestBody @Valid AuthRequestDTO.VerifyEmailReq request) {
         // 회원가입 유무 검사
-        signUpService.checkEmailSignupStatus(request.getEmail());
+        authService.checkEmailSignupStatus(request.getEmail());
 
         long authCodeExpirationMillis = emailService.sendSimpleMessage(request.getEmail());
         return ApiResponse.onSuccess(AuthConverter.toVerifyEmailRes(authCodeExpirationMillis));
@@ -65,5 +62,13 @@ public class AuthController {
             (@RequestBody @Valid AuthRequestDTO.VerifyCodeReq request) {
         AuthResponseDTO.VerifyCodeRes tokenDetail = emailVerificationService.verifyCode(request.getEmail(), request.getCode(), request.getPurpose());
         return ApiResponse.onSuccess(tokenDetail);
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @PutMapping("/password")
+    public ApiResponse<Void> editPassword
+            (@RequestBody @Valid AuthRequestDTO.EditPasswordReq request) {
+        authService.editPassword(request);
+        return ApiResponse.onSuccess(null);
     }
 }

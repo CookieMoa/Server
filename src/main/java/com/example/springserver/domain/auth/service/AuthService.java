@@ -9,13 +9,12 @@ import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.domain.user.converter.UserConverter;
 import com.example.springserver.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SignUpService {
+public class AuthService {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -73,5 +72,24 @@ public class SignUpService {
                 throw new GeneralException(ErrorStatus.SIGNUP_IN_PROGRESS_CUSTOMER);
             }
         }
+    }
+
+    public void editPassword(AuthRequestDTO.EditPasswordReq request) {
+        // 이메일 토큰 검증
+        String token = request.getEmailToken();
+
+        if (emailJwtUtil.isExpired(token)) {
+            throw new GeneralException(ErrorStatus.EMAIL_TOKEN_EXPIRED);
+        }
+
+        if (!emailJwtUtil.isValidCategory(token, "password_reset")) {
+            throw new GeneralException(ErrorStatus.INVALID_EMAIL_TOKEN_CATEGORY);
+        }
+
+        UserEntity user = userService.getUserByUsername(emailJwtUtil.getEmail(token));
+
+        // 비밀번호 변경
+        user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        userService.saveUser(user);
     }
 }

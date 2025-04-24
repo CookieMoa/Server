@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class CafeResponseDTO {
+
+    private CafeResponseDTO() {
+        throw new IllegalStateException("Utility class");
+    }
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -36,5 +41,14 @@ public class CafeResponseDTO {
         private String imgUrl;
         private String createdAt;
         private String updatedAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PostCafeAdvRes {
+        private Long cafeId;
+        private String advImgUrl;
     }
 }

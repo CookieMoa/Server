@@ -45,7 +45,7 @@ public class CafeController {
             @AuthenticationPrincipal CustomUserDetails userDetail,
             @RequestPart("data") @Valid CafeRequestDTO.EditCafeReq request,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
-            @PathVariable Long cafeId) {
+            @PathVariable("cafeId") Long cafeId) {
 
         // 본인인지 검사
         authorizationService.validateCustomerAuthorization(userDetail.getUsername(), cafeId);
@@ -59,5 +59,18 @@ public class CafeController {
             @RequestBody @Valid CafeRequestDTO.VerifyBusinessReq request) {
         BusinessVerificationResponse result = verificationService.verifyBusiness(request);
         return ApiResponse.onSuccess(result);
+    }
+
+    @Operation(summary = "카페 광고 등록")
+    @PostMapping(value = "/{cafeId}/adv", consumes = "multipart/form-data")
+    public ApiResponse<CafeResponseDTO.PostCafeAdvRes> postCafeAdv(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestPart(value = "advImg") MultipartFile advImg,
+            @PathVariable("cafeId") Long cafeId) {
+
+        // 본인인지 검사
+        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), cafeId);
+
+        return ApiResponse.onSuccess(cafeService.postCafeAdv(advImg, cafeId));
     }
 }

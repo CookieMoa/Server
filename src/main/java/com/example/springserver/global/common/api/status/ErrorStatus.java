@@ -25,6 +25,7 @@ public enum ErrorStatus implements BaseCode {
     // 이미지 에러
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4001", "유효하지 않은 이미지 형식입니다."),
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "이미지 업로드에 실패했습니다."),
+    INVALID_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE4002", "이미지가 존재하지 않습니다."),
 
     // 멤버 관려 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),

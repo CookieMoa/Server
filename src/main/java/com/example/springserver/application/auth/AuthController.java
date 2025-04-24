@@ -17,10 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
@@ -68,7 +65,7 @@ public class AuthController {
     }
 
     @Operation(summary = "비밀번호 변경")
-    @PostMapping("/password")
+    @PutMapping("/password")
     public ApiResponse<Void> editPassword
             (@RequestBody @Valid AuthRequestDTO.EditPasswordReq request) {
         authService.editPassword(request);

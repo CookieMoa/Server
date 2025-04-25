@@ -86,4 +86,18 @@ public class CafeController {
 
         return ApiResponse.onSuccess(cafeService.postStampReward(request, cafeId));
     }
+
+    @Operation(summary = "카페 스탬프 보상 수정")
+    @PutMapping("/{cafeId}/rewards/{rewardId}")
+    public ApiResponse<CafeResponseDTO.EditStampRewardRes> editStampReward(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestBody @Valid CafeRequestDTO.PostStampRewardReq request,
+            @PathVariable("cafeId") Long cafeId,
+            @PathVariable("rewardId") Long rewardId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
+
+        return ApiResponse.onSuccess(cafeService.editStampReward(request, cafeId, rewardId));
+    }
 }

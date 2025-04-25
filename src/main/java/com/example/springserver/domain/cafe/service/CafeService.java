@@ -37,6 +37,11 @@ public class CafeService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    public StampReward getStampRewardById(Long rewardId) {
+        return stampRewardRepository.findById(rewardId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.REWARD_NOT_FOUND));
+    }
+
     public CafeResponseDTO.PostCafeRes postCafe(CafeRequestDTO.PostCafeReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
 
@@ -134,4 +139,34 @@ public class CafeService {
 
         return CafeConverter.toPostStampRewardRes(stampRewardRepository.save(newStampReward)); //
     }
+
+    public CafeResponseDTO.EditStampRewardRes editStampReward(CafeRequestDTO.PostStampRewardReq request, Long cafeId, Long rewardId) {
+        StampReward stampReward = getStampRewardById(rewardId);
+        boolean isRewardNameUpdated = false;
+        boolean isStampCountUpdated = false;
+
+        if (!stampReward.getCafe().getId().equals(cafeId)) {
+            throw new GeneralException(ErrorStatus.INVALID_CAFE_REWARD);
+        }
+
+        // 이름 수정
+        if (request.getReward() != null) {
+            stampReward.setRewardName(request.getReward());
+            isRewardNameUpdated = true;
+        }
+
+        // 보상 스탬프 수 수정
+        if (request.getStampCount() != null) {
+            stampReward.setStampCount(request.getStampCount());
+            isStampCountUpdated = true;
+        }
+
+        stampRewardRepository.save(stampReward);
+
+        return CafeConverter.toEditStampRewardRes(
+                stampReward,
+                isRewardNameUpdated,
+                isStampCountUpdated);
+    }
+
 }

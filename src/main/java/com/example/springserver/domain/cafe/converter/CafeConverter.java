@@ -93,4 +93,14 @@ public class CafeConverter {
                 .stampCount(stampReward.getStampCount())
                 .build();
     }
+
+    public static CafeResponseDTO.EditStampRewardRes toEditStampRewardRes(StampReward stampReward, boolean isRewardNameUpdated, boolean isStampCountUpdated){
+        return CafeResponseDTO.EditStampRewardRes.builder()
+                .stampRewardId(stampReward.getId())
+                .reward(isRewardNameUpdated ? stampReward.getRewardName() : null)
+                .stampCount(isStampCountUpdated ? stampReward.getStampCount() : null)
+                .createdAt(formatDateTime(stampReward.getCreatedAt()))
+                .updatedAt(formatDateTime(stampReward.getUpdatedAt()))
+                .build();
+    }
 }

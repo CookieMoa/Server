@@ -51,4 +51,14 @@ public class CafeResponseDTO {
         private Long cafeId;
         private String advImgUrl;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PostStampRewardRes {
+        private Long stampRewardId;
+        private String reward;
+        private Integer stampCount;
+    }
 }

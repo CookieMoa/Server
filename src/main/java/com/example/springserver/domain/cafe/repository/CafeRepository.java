@@ -1,7 +1,6 @@
 package com.example.springserver.domain.cafe.repository;
 
 import com.example.springserver.entity.Cafe;
-import com.example.springserver.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

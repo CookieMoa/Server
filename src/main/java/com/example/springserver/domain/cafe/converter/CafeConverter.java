@@ -3,6 +3,8 @@ package com.example.springserver.domain.cafe.converter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.entity.Cafe;
+import com.example.springserver.entity.StampBoard;
+import com.example.springserver.entity.StampReward;
 import com.example.springserver.entity.UserEntity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +32,15 @@ public class CafeConverter {
                 .contact(request.getContact())
                 .intro(request.getIntro())
                 .imgUrl(imgUrl)
+                .build();
+    }
+
+    public static StampReward toStampReward(CafeRequestDTO.PostStampRewardReq request, Cafe cafe){
+
+        return StampReward.builder()
+                .rewardName(request.getReward())
+                .stampCount(request.getStampCount())
+                .cafe(cafe)
                 .build();
     }
 
@@ -72,6 +83,14 @@ public class CafeConverter {
         return CafeResponseDTO.PostCafeAdvRes.builder()
                 .cafeId(cafe.getId())
                 .advImgUrl(cafe.getAdvImgUrl())
+                .build();
+    }
+
+    public static CafeResponseDTO.PostStampRewardRes toPostStampRewardRes(StampReward stampReward){
+        return CafeResponseDTO.PostStampRewardRes.builder()
+                .stampRewardId(stampReward.getId())
+                .reward(stampReward.getRewardName())
+                .stampCount(stampReward.getStampCount())
                 .build();
     }
 }

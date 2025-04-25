@@ -15,7 +15,7 @@ public class AuthorizationService {
 
     private final UserService userService;
 
-    public void validateCustomerAuthorization(String username, Long customerId) {
+    public void validateUserAuthorization(String username, Long customerId) {
         UserEntity user = userService.getUserByUsername(username);
         if (!user.getId().equals(customerId)) {
             throw new GeneralException(ErrorStatus.FORBIDDEN_USER_ACCESS);

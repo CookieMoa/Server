@@ -4,16 +4,14 @@ import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
+import com.example.springserver.domain.cafe.repository.StampRewardRepository;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
-import com.example.springserver.entity.Cafe;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.Keyword;
-import com.example.springserver.entity.UserEntity;
+import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
@@ -30,7 +28,7 @@ import java.util.List;
 public class CafeService {
 
     private final CafeRepository cafeRepository;
-    private final KeywordService keywordService;
+    private final StampRewardRepository stampRewardRepository;
     private final UserService userService;
     private final S3Service s3Service;
 
@@ -128,5 +126,12 @@ public class CafeService {
         cafeRepository.save(cafe);
 
         return CafeConverter.toPostCafeAdvRes(cafe); //
+    }
+
+    public CafeResponseDTO.PostStampRewardRes postStampReward(CafeRequestDTO.PostStampRewardReq request, Long cafeId) {
+        Cafe cafe = getCafeByUserId(cafeId);
+        StampReward newStampReward = CafeConverter.toStampReward(request, cafe);
+
+        return CafeConverter.toPostStampRewardRes(stampRewardRepository.save(newStampReward)); //
     }
 }

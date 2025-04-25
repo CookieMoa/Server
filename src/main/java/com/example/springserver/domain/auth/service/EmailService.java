@@ -36,7 +36,7 @@ public class EmailService {
         Random random = new Random();
         StringBuilder key = new StringBuilder();
 
-        for (int i = 0; i < 8; i++) { // 인증 코드 8자리
+        for (int i = 0; i < 6; i++) { // 인증 코드 8자리
             int index = random.nextInt(3); // 0~2까지 랜덤, 랜덤값으로 switch문 실행
 
             switch (index) {

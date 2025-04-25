@@ -39,6 +39,15 @@ public class CafeController {
         return ApiResponse.onSuccess(cafeService.postCafe(request, profileImg));
     }
 
+    @Operation(summary = "카페 정보 조회")
+    @GetMapping("/{cafeId}")
+    public ApiResponse<CafeResponseDTO.GetCafeRes> getCafe(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @PathVariable("cafeId") Long cafeId) {
+
+        return ApiResponse.onSuccess(cafeService.getCafe(cafeId));
+    }
+
     @Operation(summary = "카페 정보 수정")
     @PutMapping(value = "/{cafeId}", consumes = "multipart/form-data")
     public ApiResponse<CafeResponseDTO.EditCafeRes> editCafe(

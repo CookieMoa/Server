@@ -58,4 +58,11 @@ public class KeywordService {
                 .map(KeywordMapping::getKeyword)
                 .collect(Collectors.toList());
     }
+
+    public List<Keyword> getKeywordsByCafe(Cafe cafe) {
+        List<KeywordMapping> mappings = keywordMappingRepository.findAllByCafe(cafe);
+        return mappings.stream()
+                .map(KeywordMapping::getKeyword)
+                .collect(Collectors.toList());
+    }
 }

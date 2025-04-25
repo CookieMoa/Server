@@ -83,6 +83,7 @@ public class CafeConverter {
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
                 .imgUrl(cafe.getImgUrl())
+                .advImgUrl(cafe.getAdvImgUrl())
                 .rewardList(rewardDtoList)
                 .keywordList(keywordDtoList)
                 .build();

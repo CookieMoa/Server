@@ -42,6 +42,7 @@ public class CafeResponseDTO {
         private String contact;
         private String intro;
         private String imgUrl;
+        private String advImgUrl;
         private List<StampRewardDto> rewardList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }

@@ -2,12 +2,14 @@ package com.example.springserver.domain.cafe.converter;
 
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
-import com.example.springserver.entity.Cafe;
-import com.example.springserver.entity.StampBoard;
-import com.example.springserver.entity.StampReward;
-import com.example.springserver.entity.UserEntity;
+import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
+import com.example.springserver.domain.keyword.converter.KeywordConverter;
+import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
+import com.example.springserver.entity.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class CafeConverter {
 
@@ -44,6 +46,14 @@ public class CafeConverter {
                 .build();
     }
 
+    public static CafeResponseDTO.StampRewardDto toStampRewardDto(StampReward stampReward) {
+        return CafeResponseDTO.StampRewardDto.builder()
+                .stampRewardId(stampReward.getId())
+                .reward(stampReward.getRewardName())
+                .stampCount(stampReward.getStampCount())
+                .build();
+    }
+
     public static CafeResponseDTO.PostCafeRes toPostCafeRes(Cafe cafe){
         return CafeResponseDTO.PostCafeRes.builder()
                 .cafeId(cafe.getId())
@@ -54,6 +64,28 @@ public class CafeConverter {
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
                 .imgUrl(cafe.getImgUrl())
+                .build();
+    }
+
+    public static CafeResponseDTO.GetCafeRes toGetCafeRes(Cafe cafe, List<Keyword> keywords, List<StampReward> rewards){
+        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
+                .map(KeywordConverter::toKeywordDto).toList();
+
+        List<CafeResponseDTO.StampRewardDto> rewardDtoList = rewards.stream()
+                .map(CafeConverter::toStampRewardDto).toList();
+
+        return CafeResponseDTO.GetCafeRes.builder()
+                .cafeId(cafe.getId())
+                .name(cafe.getName())
+                .address(cafe.getAddress())
+                .latitude(cafe.getLatitude())
+                .longitude(cafe.getLongitude())
+                .contact(cafe.getContact())
+                .intro(cafe.getIntro())
+                .imgUrl(cafe.getImgUrl())
+                .advImgUrl(cafe.getAdvImgUrl())
+                .rewardList(rewardDtoList)
+                .keywordList(keywordDtoList)
                 .build();
     }
 

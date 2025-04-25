@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -30,6 +31,7 @@ public class CafeService {
     private final CafeRepository cafeRepository;
     private final StampRewardRepository stampRewardRepository;
     private final UserService userService;
+    private final KeywordService keywordService;
     private final S3Service s3Service;
 
     public Cafe getCafeByUserId(Long userId) {
@@ -40,6 +42,10 @@ public class CafeService {
     public StampReward getStampRewardById(Long rewardId) {
         return stampRewardRepository.findById(rewardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.REWARD_NOT_FOUND));
+    }
+
+    public List<StampReward> getStampRewardsByCafe(Cafe cafe) {
+        return stampRewardRepository.findAllByCafe(cafe);
     }
 
     public CafeResponseDTO.PostCafeRes postCafe(CafeRequestDTO.PostCafeReq request, MultipartFile profileImg) {
@@ -61,6 +67,15 @@ public class CafeService {
         userService.saveUser(user);
 
         return CafeConverter.toPostCafeRes(newCafe);
+    }
+
+    public CafeResponseDTO.GetCafeRes getCafe(Long cafeId) {
+        Cafe cafe = getCafeByUserId(cafeId);
+
+        List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
+        List<StampReward> rewards = getStampRewardsByCafe(cafe);
+        
+        return CafeConverter.toGetCafeRes(cafe, keywords, rewards);
     }
 
     public CafeResponseDTO.EditCafeRes editCafe(CafeRequestDTO.EditCafeReq request, MultipartFile profileImg, Long cafeId) {

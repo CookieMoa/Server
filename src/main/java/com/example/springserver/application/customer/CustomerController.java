@@ -60,8 +60,6 @@ public class CustomerController {
     @GetMapping("/{customerId}")
     public ApiResponse<CustomerResponseDTO.GetCustomerRes> getCustomer(@AuthenticationPrincipal CustomUserDetails userDetail,
                                                                         @PathVariable Long customerId) {
-        // 본인인지 검사
-        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
 
         return ApiResponse.onSuccess(customerService.getCustomer(customerId));
     }

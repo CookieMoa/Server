@@ -51,7 +51,7 @@ public class CustomerController {
             @PathVariable Long customerId) {
 
         // 본인인지 검사
-        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), customerId);
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
 
         return ApiResponse.onSuccess(customerService.editCustomer(request, profileImg, customerId));
     }
@@ -61,7 +61,7 @@ public class CustomerController {
     public ApiResponse<CustomerResponseDTO.GetCustomerRes> getCustomer(@AuthenticationPrincipal CustomUserDetails userDetail,
                                                                         @PathVariable Long customerId) {
         // 본인인지 검사
-        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), customerId);
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
 
         return ApiResponse.onSuccess(customerService.getCustomer(customerId));
     }
@@ -81,7 +81,7 @@ public class CustomerController {
     public ApiResponse<CustomerResponseDTO.GetQrcodeRes> getQrcode(@AuthenticationPrincipal CustomUserDetails userDetail,
                                                                         @PathVariable Long customerId) {
         // 본인인지 검사
-        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), customerId);
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
         String qrcode = customerService.getQrcode(customerId);
         return ApiResponse.onSuccess(CustomerConverter.toGetQrcodeRes(qrcode));
     }

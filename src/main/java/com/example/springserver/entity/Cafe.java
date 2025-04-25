@@ -43,6 +43,9 @@ public class Cafe extends BaseEntity {
     private String intro;
     private String advImgUrl;
 
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<KeywordMapping> keywordMappings;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StampReward> stampRewards;
 }

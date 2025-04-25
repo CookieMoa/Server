@@ -4,16 +4,14 @@ import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
+import com.example.springserver.domain.cafe.repository.StampRewardRepository;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
-import com.example.springserver.entity.Cafe;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.Keyword;
-import com.example.springserver.entity.UserEntity;
+import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
@@ -30,13 +28,18 @@ import java.util.List;
 public class CafeService {
 
     private final CafeRepository cafeRepository;
-    private final KeywordService keywordService;
+    private final StampRewardRepository stampRewardRepository;
     private final UserService userService;
     private final S3Service s3Service;
 
     public Cafe getCafeByUserId(Long userId) {
         return cafeRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    public StampReward getStampRewardById(Long rewardId) {
+        return stampRewardRepository.findById(rewardId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.REWARD_NOT_FOUND));
     }
 
     public CafeResponseDTO.PostCafeRes postCafe(CafeRequestDTO.PostCafeReq request, MultipartFile profileImg) {
@@ -56,7 +59,6 @@ public class CafeService {
         // 계정 상태 ACTIVE로 변경
         user.setAccountStatus(AccountStatus.ACTIVE);
         userService.saveUser(user);
-
 
         return CafeConverter.toPostCafeRes(newCafe);
     }
@@ -128,5 +130,50 @@ public class CafeService {
         cafeRepository.save(cafe);
 
         return CafeConverter.toPostCafeAdvRes(cafe); //
+    }
+
+    public CafeResponseDTO.PostStampRewardRes postStampReward(CafeRequestDTO.PostStampRewardReq request, Long cafeId) {
+        Cafe cafe = getCafeByUserId(cafeId);
+        StampReward newStampReward = CafeConverter.toStampReward(request, cafe);
+
+        return CafeConverter.toPostStampRewardRes(stampRewardRepository.save(newStampReward)); //
+    }
+
+    public CafeResponseDTO.EditStampRewardRes editStampReward(CafeRequestDTO.PostStampRewardReq request, Long cafeId, Long rewardId) {
+        StampReward stampReward = getStampRewardById(rewardId);
+        boolean isRewardNameUpdated = false;
+        boolean isStampCountUpdated = false;
+
+        if (!stampReward.getCafe().getId().equals(cafeId)) {
+            throw new GeneralException(ErrorStatus.INVALID_CAFE_REWARD);
+        }
+
+        // 이름 수정
+        if (request.getReward() != null) {
+            stampReward.setRewardName(request.getReward());
+            isRewardNameUpdated = true;
+        }
+
+        // 보상 스탬프 수 수정
+        if (request.getStampCount() != null) {
+            stampReward.setStampCount(request.getStampCount());
+            isStampCountUpdated = true;
+        }
+
+        stampRewardRepository.save(stampReward);
+
+        return CafeConverter.toEditStampRewardRes(
+                stampReward,
+                isRewardNameUpdated,
+                isStampCountUpdated);
+    }
+
+    public void deleteStampReward(Long cafeId, Long rewardId) {
+        StampReward stampReward = getStampRewardById(rewardId);
+
+        if (!stampReward.getCafe().getId().equals(cafeId)) {
+            throw new GeneralException(ErrorStatus.INVALID_CAFE_REWARD);
+        }
+        stampRewardRepository.delete(stampReward);
     }
 }

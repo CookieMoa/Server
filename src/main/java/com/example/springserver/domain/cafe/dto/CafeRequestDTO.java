@@ -47,4 +47,10 @@ public class CafeRequestDTO {
         @NotEmpty
         private String openingDate;
     }
+
+    @Getter
+    public static class PostStampRewardReq {
+        private String reward;
+        private Integer stampCount;
+    }
 }

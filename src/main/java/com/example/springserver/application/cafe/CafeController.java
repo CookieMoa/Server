@@ -48,7 +48,7 @@ public class CafeController {
             @PathVariable("cafeId") Long cafeId) {
 
         // 본인인지 검사
-        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), cafeId);
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
 
         return ApiResponse.onSuccess(cafeService.editCafe(request, profileImg, cafeId));
     }
@@ -69,8 +69,50 @@ public class CafeController {
             @PathVariable("cafeId") Long cafeId) {
 
         // 본인인지 검사
-        authorizationService.validateCustomerAuthorization(userDetail.getUsername(), cafeId);
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
 
         return ApiResponse.onSuccess(cafeService.postCafeAdv(advImg, cafeId));
+    }
+
+    @Operation(summary = "카페 스탬프 보상 등록")
+    @PostMapping("/{cafeId}/rewards")
+    public ApiResponse<CafeResponseDTO.PostStampRewardRes> postStampReward(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestBody @Valid CafeRequestDTO.PostStampRewardReq request,
+            @PathVariable("cafeId") Long cafeId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
+
+        return ApiResponse.onSuccess(cafeService.postStampReward(request, cafeId));
+    }
+
+    @Operation(summary = "카페 스탬프 보상 수정")
+    @PutMapping("/{cafeId}/rewards/{rewardId}")
+    public ApiResponse<CafeResponseDTO.EditStampRewardRes> editStampReward(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestBody @Valid CafeRequestDTO.PostStampRewardReq request,
+            @PathVariable("cafeId") Long cafeId,
+            @PathVariable("rewardId") Long rewardId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
+
+        return ApiResponse.onSuccess(cafeService.editStampReward(request, cafeId, rewardId));
+    }
+
+    @Operation(summary = "카페 스탬프 보상 삭제")
+    @DeleteMapping("/{cafeId}/rewards/{rewardId}")
+    public ApiResponse<Void> deleteStampReward(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @PathVariable("cafeId") Long cafeId,
+            @PathVariable("rewardId") Long rewardId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
+
+        cafeService.deleteStampReward(cafeId, rewardId);
+
+        return ApiResponse.onSuccess(null);
     }
 }

@@ -70,6 +70,8 @@ public enum ErrorStatus implements BaseCode {
     KEYWORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "KEYWORD4004", "선택한 키워드가 존재하지 않습니다."),
 
     // 카페 관련 에러
+    INVALID_CAFE_REWARD(HttpStatus.BAD_REQUEST, "REWARD4001", "해당 보상은 입력된 카페의 보상이 아닙니다."),
+    REWARD_NOT_FOUND(HttpStatus.BAD_REQUEST, "REWARD4004", "해당 보상이 없습니다."),
     CAFE_LOCATION_MISSING(HttpStatus.BAD_REQUEST, "CAFE4004", "카페의 위치 정보(address, latitude, longitude)는 필수입니다.");
 
     private final HttpStatus httpStatus;

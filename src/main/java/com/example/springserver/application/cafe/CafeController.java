@@ -100,4 +100,19 @@ public class CafeController {
 
         return ApiResponse.onSuccess(cafeService.editStampReward(request, cafeId, rewardId));
     }
+
+    @Operation(summary = "카페 스탬프 보상 삭제")
+    @DeleteMapping("/{cafeId}/rewards/{rewardId}")
+    public ApiResponse<Void> deleteStampReward(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @PathVariable("cafeId") Long cafeId,
+            @PathVariable("rewardId") Long rewardId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
+
+        cafeService.deleteStampReward(cafeId, rewardId);
+
+        return ApiResponse.onSuccess(null);
+    }
 }

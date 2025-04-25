@@ -60,7 +60,6 @@ public class CafeService {
         user.setAccountStatus(AccountStatus.ACTIVE);
         userService.saveUser(user);
 
-
         return CafeConverter.toPostCafeRes(newCafe);
     }
 
@@ -169,4 +168,12 @@ public class CafeService {
                 isStampCountUpdated);
     }
 
+    public void deleteStampReward(Long cafeId, Long rewardId) {
+        StampReward stampReward = getStampRewardById(rewardId);
+
+        if (!stampReward.getCafe().getId().equals(cafeId)) {
+            throw new GeneralException(ErrorStatus.INVALID_CAFE_REWARD);
+        }
+        stampRewardRepository.delete(stampReward);
+    }
 }

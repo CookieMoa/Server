@@ -21,7 +21,7 @@ public class StampBoardService {
     public StampBoard getStampBoard(Cafe cafe, Customer customer) {
         // 1. StampBoard 조회
         return stampBoardRepository.findStampBoardByCafeIdAndCustomerId(cafe.getId(), customer.getId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.STAMPBOARD_NOT_FOUND));
     }
 
     public StampBoard getStampBoardOrPost(Cafe cafe, Customer customer) {

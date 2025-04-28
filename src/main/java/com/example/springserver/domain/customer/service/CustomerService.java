@@ -47,6 +47,12 @@ public class CustomerService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    public void validateCustomerExists(Long userId) {
+        if (!customerRepository.existsByUserId(userId)) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+    }
+
     public CustomerResponseDTO.PostCustomerRes postCustomer(CustomerRequestDTO.PostCustomerReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
 

@@ -37,4 +37,16 @@ public class StampController {
 
         return ApiResponse.onSuccess(stampService.postStamp(request));
     }
+
+    @Operation(summary = "스탬프 사용")
+    @PostMapping("/using")
+    public ApiResponse<StampResponseDTO.PostStampRes> useStamp(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @Valid StampRequestDTO.PostStampReq request) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), request.getCafeId());
+
+        return ApiResponse.onSuccess(stampService.useStamp(request));
+    }
 }

@@ -26,4 +26,7 @@ public class Stamp extends BaseEntity {
     @JoinColumn(name = "stamp_board_id", nullable = false)
     private StampBoard stampBoard;
 
+    public void useStamp() {
+        this.isUsed = true;
+    }
 }

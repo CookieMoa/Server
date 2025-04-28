@@ -5,6 +5,8 @@ import com.example.springserver.domain.stamp.repository.StampBoardRepository;
 import com.example.springserver.entity.Cafe;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.StampBoard;
+import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,12 @@ public class StampBoardService {
     private final StampBoardRepository stampBoardRepository;
 
     public StampBoard getStampBoard(Cafe cafe, Customer customer) {
+        // 1. StampBoard 조회
+        return stampBoardRepository.findStampBoardByCafeIdAndCustomerId(cafe.getId(), customer.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    public StampBoard getStampBoardOrPost(Cafe cafe, Customer customer) {
         // 1. StampBoard 조회
         return stampBoardRepository.findStampBoardByCafeIdAndCustomerId(cafe.getId(), customer.getId())
                 .orElseGet(() -> {

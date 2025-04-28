@@ -10,7 +10,11 @@ import com.example.springserver.entity.Cafe;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.Stamp;
 import com.example.springserver.entity.StampBoard;
+import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +37,7 @@ public class StampService {
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
         // 1. 스탬프 보드 조회 또는 생성
-        StampBoard stampBoard = stampBoardService.getStampBoard(cafe, customer);
+        StampBoard stampBoard = stampBoardService.getStampBoardOrPost(cafe, customer);
 
         // 2. 스탬프 생성
         List<Stamp> stamps = new ArrayList<>();
@@ -45,6 +49,34 @@ public class StampService {
 
         // 3. 스탬프보드 통계 업데이트
         stampBoard.increaseStampCount(request.getStampCount());
+
+        return StampConverter.toPostStampRes(stampBoard);
+    }
+
+    public StampResponseDTO.PostStampRes useStamp(StampRequestDTO.PostStampReq request) {
+
+        Cafe cafe = cafeService.getCafeByUserId(request.getCafeId());
+        Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
+
+        // 1. 스탬프 보드 조회
+        StampBoard stampBoard = stampBoardService.getStampBoard(cafe, customer);
+
+        // 2. 사용하지 않은 스탬프 가져오기 (createdAt 오름차순)
+        Pageable pageable = PageRequest.of(0, request.getStampCount());
+        List<Stamp> availableStamps = stampRepository.findByStampBoardAndIsUsedOrderByCreatedAtAsc(stampBoard, pageable);
+
+        // 도장 부족
+        if (availableStamps.size() < request.getStampCount()) {
+            throw new GeneralException(ErrorStatus.NOT_ENOUGH_STAMPS);
+        }
+
+        // 3. 스탬프 사용 처리
+        for (Stamp stamp : availableStamps) {
+            stamp.useStamp();
+        }
+
+        // 4. 스탬프보드 통계 업데이트
+        stampBoard.increaseUsedStampCount(request.getStampCount());
 
         return StampConverter.toPostStampRes(stampBoard);
     }

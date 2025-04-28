@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -12,7 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "stamp_boards")
-public class StampBoard {
+public class StampBoard extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,4 +29,15 @@ public class StampBoard {
     @ManyToOne
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
+
+    @OneToMany(mappedBy = "stampBoard", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Stamp> stamps;
+
+    public void increaseStampCount(int count) {
+        this.stampsCount += count;
+    }
+
+    public void increaseUsedStampCount(int count) {
+        this.usedStamps += count;
+    }
 }

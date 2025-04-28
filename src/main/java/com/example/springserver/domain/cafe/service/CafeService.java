@@ -39,6 +39,12 @@ public class CafeService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    public void validateCafeExists(Long userId) {
+        if (!cafeRepository.existsByUserId(userId)) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+    }
+
     public StampReward getStampRewardById(Long rewardId) {
         return stampRewardRepository.findById(rewardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.REWARD_NOT_FOUND));

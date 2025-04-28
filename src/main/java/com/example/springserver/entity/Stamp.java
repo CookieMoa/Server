@@ -18,8 +18,9 @@ public class Stamp extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Builder.Default
     @Column(nullable = false)
-    private boolean isUsed;
+    private boolean isUsed = false;
 
     @ManyToOne
     @JoinColumn(name = "stamp_board_id", nullable = false)

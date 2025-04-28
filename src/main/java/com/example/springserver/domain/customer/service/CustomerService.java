@@ -6,10 +6,12 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.Keyword;
+import com.example.springserver.entity.StampBoard;
 import com.example.springserver.entity.UserEntity;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.common.paging.CommonPageReq;
@@ -39,6 +41,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final KeywordService keywordService;
+    private final StampBoardService stampBoardService;
     private final UserService userService;
     private final S3Service s3Service;
 
@@ -163,5 +166,12 @@ public class CustomerService {
         }
 
         return base64QR;
+    }
+
+    public Page<StampBoard> searchStampBoards(Long customerId, CommonPageReq pageRequest) {
+
+        Pageable pageable = pageRequest.toPageable();
+
+        return stampBoardService.searchStampBoard(customerId, pageable);
     }
 }

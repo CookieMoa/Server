@@ -4,6 +4,7 @@ import com.example.springserver.domain.auth.service.AuthorizationService;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
+import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.security.CustomUserDetails;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
@@ -31,7 +32,6 @@ public class CustomerController {
 
     private final AuthorizationService authorizationService;
     private final CustomerService customerService;
-    private final UserService userService;
 
     @Operation(summary = "소비자 등록")
     @PostMapping(consumes = "multipart/form-data")
@@ -82,5 +82,18 @@ public class CustomerController {
         authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
         String qrcode = customerService.getQrcode(customerId);
         return ApiResponse.onSuccess(CustomerConverter.toGetQrcodeRes(qrcode));
+    }
+
+    @Operation(summary = "소비자 스탬프 보드 조회")
+    @GetMapping("/{customerId}/stamp-boards")
+    public ApiResponse<CustomerResponseDTO.SearchStampBoardsRes> searchStampBoards(@AuthenticationPrincipal CustomUserDetails userDetail,
+                                                                                   @PathVariable Long customerId,
+                                                                             @ModelAttribute @Valid CommonPageReq pageRequest) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
+
+        Page<StampBoard> stampBoardList = customerService.searchStampBoards(customerId, pageRequest);
+        return ApiResponse.onSuccess(CustomerConverter.toSearchStampBoardsRes(stampBoardList));
     }
 }

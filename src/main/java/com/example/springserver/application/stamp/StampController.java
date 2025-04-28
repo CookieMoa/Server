@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +31,7 @@ public class StampController {
     @PostMapping
     public ApiResponse<StampResponseDTO.PostStampRes> postStamp(
             @AuthenticationPrincipal CustomUserDetails userDetail,
-            @Valid StampRequestDTO.PostStampReq request) {
+            @RequestBody @Valid StampRequestDTO.PostStampReq request) {
 
         // 본인인지 검사
         authorizationService.validateUserAuthorization(userDetail.getUsername(), request.getCafeId());
@@ -42,7 +43,7 @@ public class StampController {
     @PostMapping("/using")
     public ApiResponse<StampResponseDTO.PostStampRes> useStamp(
             @AuthenticationPrincipal CustomUserDetails userDetail,
-            @Valid StampRequestDTO.PostStampReq request) {
+            @RequestBody @Valid StampRequestDTO.PostStampReq request) {
 
         // 본인인지 검사
         authorizationService.validateUserAuthorization(userDetail.getUsername(), request.getCafeId());

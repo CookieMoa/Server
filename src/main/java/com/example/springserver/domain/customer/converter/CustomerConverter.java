@@ -4,9 +4,9 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.converter.KeywordConverter;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.Keyword;
-import com.example.springserver.entity.UserEntity;
+import com.example.springserver.domain.stamp.converter.StampConverter;
+import com.example.springserver.domain.stamp.dto.StampResponseDTO;
+import com.example.springserver.entity.*;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import org.springframework.data.domain.Page;
 
@@ -105,6 +105,32 @@ public class CustomerConverter {
     public static CustomerResponseDTO.GetQrcodeRes toGetQrcodeRes(String qrCodeBase64) {
         return CustomerResponseDTO.GetQrcodeRes.builder()
                 .qrCodeBase64(qrCodeBase64)
+                .build();
+    }
+
+    public static CustomerResponseDTO.SearchStampBoardsRes toSearchStampBoardsRes(Page<StampBoard> stampBoardList) {
+
+        List<StampResponseDTO.GetStampBoardRes> getStampBoardResList = stampBoardList.stream()
+                .map(stampBoard -> {
+                    int availableStamps = stampBoard.getStampsCount() - stampBoard.getUsedStamps();
+
+                    // 카페의 StampReward 중에서 availableStamps보다 크거나 같은 것 중 가장 가까운 목표
+                    Integer stampGoal = stampBoard.getCafe().getStampRewards().stream()
+                            .map(StampReward::getStampCount)
+                            .filter(goal -> goal >= availableStamps)
+                            .min(Integer::compareTo)
+                            .orElse(null);
+
+                    return StampConverter.toGetStampBoardRes(stampBoard, stampGoal);
+                })
+                .toList();
+
+        return CustomerResponseDTO.SearchStampBoardsRes.builder()
+
+                .stampBoardList(getStampBoardResList)
+                .count(stampBoardList.getTotalElements())
+                .limit(stampBoardList.getSize())
+                .page(stampBoardList.getNumber())
                 .build();
     }
 }

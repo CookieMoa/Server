@@ -1,7 +1,10 @@
 package com.example.springserver.domain.customer.dto;
 
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
+import com.example.springserver.domain.stamp.dto.StampResponseDTO;
+import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageRes;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +38,7 @@ public class CustomerResponseDTO {
         private String updatedAt;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Builder
     @Getter
     @NoArgsConstructor
@@ -60,5 +64,13 @@ public class CustomerResponseDTO {
     @AllArgsConstructor
     public static class GetQrcodeRes {
         private String qrCodeBase64;
+    }
+
+    @SuperBuilder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchStampBoardsRes extends CommonPageRes {
+        private List<StampResponseDTO.GetStampBoardRes> stampBoardList;
     }
 }

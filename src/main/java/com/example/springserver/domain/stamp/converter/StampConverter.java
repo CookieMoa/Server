@@ -48,4 +48,14 @@ public class StampConverter {
                 .updatedAt(formatDateTime(stampBoard.getUpdatedAt()))
                 .build();
     }
+
+    public static StampResponseDTO.GetStampBoardRes toGetStampBoardRes(StampBoard stampBoard, Integer stampGoal){
+        return StampResponseDTO.GetStampBoardRes.builder()
+                .stampBoardId(stampBoard.getId())
+                .cafeId(stampBoard.getCafe().getId())
+                .cafeName(stampBoard.getCafe().getName())
+                .stampCount(stampBoard.getStampsCount()- stampBoard.getUsedStamps())
+                .stampGoal(stampGoal)
+                .build();
+    }
 }

@@ -29,6 +29,7 @@ public class Customer extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "img_url")
     private String imgUrl;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE, orphanRemoval = true)

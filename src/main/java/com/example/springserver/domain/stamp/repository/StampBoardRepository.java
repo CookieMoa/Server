@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface StampBoardRepository extends JpaRepository<StampBoard, Long> {
@@ -14,6 +16,6 @@ public interface StampBoardRepository extends JpaRepository<StampBoard, Long> {
     Page<StampBoard> findByCustomerId(Long customerId, Pageable pageable);
 
     @Query("SELECT SUM(s.stampsCount), SUM(s.usedStamps) FROM StampBoard s WHERE s.cafe.id = :cafeId")
-    Object[] findTotalStampsByCafeId(@Param("cafeId") Long cafeId);
+    List<Object[]> findTotalStampsByCafeId(@Param("cafeId") Long cafeId);
 
 }

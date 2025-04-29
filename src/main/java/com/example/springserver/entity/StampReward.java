@@ -19,10 +19,10 @@ public class StampReward extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "stamp_count")
     private int stampCount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "reward_name")
     private String rewardName;
 
     @ManyToOne

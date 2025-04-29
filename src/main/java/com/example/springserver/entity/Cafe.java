@@ -39,12 +39,16 @@ public class Cafe extends BaseEntity {
     @Column(nullable = false)
     private Double longitude;
 
+    @Column(name = "img_url")
     private String imgUrl;
     private String contact;
     private String intro;
+    @Column(name = "adv_img_url")
     private String advImgUrl;
 
+    @Column(name = "open_time")
     private LocalTime openTime;
+    @Column(name = "close_time")
     private LocalTime closeTime;
 
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)

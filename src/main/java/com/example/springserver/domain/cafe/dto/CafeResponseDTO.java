@@ -44,7 +44,6 @@ public class CafeResponseDTO {
         private String contact;
         private String intro;
         private String imgUrl;
-        private String advImgUrl;
         private String openTime;
         private String closeTime;
         private List<StampRewardDto> rewardList;
@@ -63,6 +62,8 @@ public class CafeResponseDTO {
         private Double longitude;
         private String contact;
         private String intro;
+        private Long totalStampCount;
+        private Long totalUsedStampCount;
         private String imgUrl;
         private String advImgUrl;
         private String openTime;
@@ -83,6 +84,8 @@ public class CafeResponseDTO {
         private Double longitude;
         private String contact;
         private String intro;
+        private String openTime;
+        private String closeTime;
         private String imgUrl;
         private String createdAt;
         private String updatedAt;

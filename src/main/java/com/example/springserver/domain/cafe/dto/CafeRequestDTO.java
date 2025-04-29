@@ -47,6 +47,10 @@ public class CafeRequestDTO {
         private Double longitude;
         private String contact;
         private String intro;
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime openTime;
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime closeTime;
     }
 
     @Getter

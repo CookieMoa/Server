@@ -94,7 +94,6 @@ public class CafeConverter {
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
                 .imgUrl(cafe.getImgUrl())
-                .advImgUrl(cafe.getAdvImgUrl())
                 .openTime(formatTime(cafe.getOpenTime()))
                 .closeTime(formatTime(cafe.getCloseTime()))
                 .rewardList(rewardDtoList)
@@ -108,6 +107,8 @@ public class CafeConverter {
             boolean isAddressUpdated,
             boolean isContactUpdated,
             boolean isIntroUpdated,
+            boolean isOpenTimeUpdated,
+            boolean isCloseTimeUpdated,
             boolean isImgUpdated
     ) {
         return CafeResponseDTO.EditCafeRes.builder()
@@ -118,6 +119,8 @@ public class CafeConverter {
                 .longitude(isAddressUpdated ? cafe.getLongitude() : null)
                 .contact(isContactUpdated ? cafe.getContact() : null)
                 .intro(isIntroUpdated ? cafe.getIntro() : null)
+                .openTime(isOpenTimeUpdated ? formatTime(cafe.getOpenTime()) : null)
+                .closeTime(isCloseTimeUpdated ? formatTime(cafe.getCloseTime()) : null)
                 .imgUrl(isImgUpdated ? cafe.getImgUrl() : null)
                 .createdAt(formatDateTime(cafe.getCreatedAt()))
                 .updatedAt(formatDateTime(cafe.getUpdatedAt()))

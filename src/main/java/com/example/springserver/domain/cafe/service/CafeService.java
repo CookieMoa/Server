@@ -88,7 +88,8 @@ public class CafeService {
     }
 
     public CafeResponseDTO.GetMyCafeRes getMyCafe(CustomUserDetails userDetail) {
-        Cafe cafe = getCafeByUserId(userDetail.getUserId());
+        UserEntity user = userService.getUserByUsername(userDetail.getUsername());
+        Cafe cafe = getCafeByUserId(user.getId());
 
         List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
         List<StampReward> rewards = getStampRewardsByCafe(cafe);

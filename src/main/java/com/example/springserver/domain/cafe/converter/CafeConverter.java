@@ -101,6 +101,36 @@ public class CafeConverter {
                 .build();
     }
 
+    public static CafeResponseDTO.GetMyCafeRes toGetMyCafeRes(Cafe cafe,
+                                                              List<Keyword> keywords,
+                                                              List<StampReward> rewards,
+                                                              Long totalStampCount,
+                                                              Long totalUsedStampCount){
+        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
+                .map(KeywordConverter::toKeywordDto).toList();
+
+        List<CafeResponseDTO.StampRewardDto> rewardDtoList = rewards.stream()
+                .map(CafeConverter::toStampRewardDto).toList();
+
+        return CafeResponseDTO.GetMyCafeRes.builder()
+                .cafeId(cafe.getId())
+                .name(cafe.getName())
+                .address(cafe.getAddress())
+                .latitude(cafe.getLatitude())
+                .longitude(cafe.getLongitude())
+                .contact(cafe.getContact())
+                .intro(cafe.getIntro())
+                .totalStampCount(totalStampCount)
+                .totalUsedStampCount(totalUsedStampCount)
+                .imgUrl(cafe.getImgUrl())
+                .advImgUrl(cafe.getAdvImgUrl())
+                .openTime(formatTime(cafe.getOpenTime()))
+                .closeTime(formatTime(cafe.getCloseTime()))
+                .rewardList(rewardDtoList)
+                .keywordList(keywordDtoList)
+                .build();
+    }
+
     public static CafeResponseDTO.EditCafeRes toEditCafeRes(
             Cafe cafe,
             boolean isNameUpdated,

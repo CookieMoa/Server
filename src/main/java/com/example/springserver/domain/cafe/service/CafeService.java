@@ -95,8 +95,9 @@ public class CafeService {
         List<StampReward> rewards = getStampRewardsByCafe(cafe);
 
         Object[] result = stampBoardService.findTotalStampsByCafeId(cafe.getId());
-        Long totalStampCount = (Long) result[0];
-        Long totalUsedStampCount = (Long) result[1];
+
+        Long totalStampCount = result[0] != null ? ((Number) result[0]).longValue() : 0L;
+        Long totalUsedStampCount = result[1] != null ? ((Number) result[1]).longValue() : 0L;
 
         return CafeConverter.toGetMyCafeRes(cafe, keywords, rewards, totalStampCount, totalUsedStampCount);
     }

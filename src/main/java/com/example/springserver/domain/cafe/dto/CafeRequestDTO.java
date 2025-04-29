@@ -1,9 +1,12 @@
 package com.example.springserver.domain.cafe.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalTime;
 
 public class CafeRequestDTO {
 
@@ -25,6 +28,14 @@ public class CafeRequestDTO {
 
         private String contact;
         private String intro;
+
+        @NotNull(message = "오픈 시간은 필수입니다.")
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime openTime;
+
+        @NotNull(message = "마감 시간은 필수입니다.")
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime closeTime;
     }
 
     @Getter

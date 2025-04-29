@@ -26,6 +26,8 @@ public class CafeResponseDTO {
         private Double longitude;
         private String contact;
         private String intro;
+        private String openTime;
+        private String closeTime;
         private String imgUrl;
     }
 
@@ -43,6 +45,28 @@ public class CafeResponseDTO {
         private String intro;
         private String imgUrl;
         private String advImgUrl;
+        private String openTime;
+        private String closeTime;
+        private List<StampRewardDto> rewardList;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetMyCafeRes {
+        private Long cafeId;
+        private String name;
+        private String address;
+        private Double latitude;
+        private Double longitude;
+        private String contact;
+        private String intro;
+        private String imgUrl;
+        private String advImgUrl;
+        private String openTime;
+        private String closeTime;
         private List<StampRewardDto> rewardList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }

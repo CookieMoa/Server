@@ -19,7 +19,9 @@ public class StampBoard extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "stamps_count")
     private int stampsCount;
+    @Column(name = "used_stamps")
     private int usedStamps;
 
     @ManyToOne

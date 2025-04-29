@@ -19,7 +19,7 @@ public class Stamp extends BaseEntity {
     private Long id;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, name = "is_used")
     private boolean isUsed = false;
 
     @ManyToOne

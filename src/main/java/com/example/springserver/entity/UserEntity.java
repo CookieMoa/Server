@@ -31,7 +31,7 @@ public class UserEntity extends BaseEntity {
     private String role;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(15) DEFAULT 'ACTIVE'")
+    @Column(columnDefinition = "VARCHAR(15) DEFAULT 'ACTIVE'", name = "account_status")
     private AccountStatus accountStatus;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)

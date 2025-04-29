@@ -92,6 +92,8 @@ public class CafeService {
         boolean isAddressUpdated = false;
         boolean isContactUpdated = false;
         boolean isIntroUpdated = false;
+        boolean isOpenTimeUpdated = false;
+        boolean isCloseTimeUpdated = false;
         boolean isImgUpdated = false;
 
         // 이미지 수정
@@ -129,6 +131,18 @@ public class CafeService {
             isIntroUpdated = true;
         }
 
+        // 오픈 시간 수정
+        if (request.getOpenTime() != null) {
+            cafe.setOpenTime(request.getOpenTime());
+            isOpenTimeUpdated = true;
+        }
+
+        // 마감 시간 수정
+        if (request.getCloseTime() != null) {
+            cafe.setCloseTime(request.getCloseTime());
+            isCloseTimeUpdated = true;
+        }
+
         cafeRepository.save(cafe);
 
         return CafeConverter.toEditCafeRes(
@@ -137,6 +151,8 @@ public class CafeService {
                 isAddressUpdated,
                 isContactUpdated,
                 isIntroUpdated,
+                isOpenTimeUpdated,
+                isCloseTimeUpdated,
                 isImgUpdated
         );
     }

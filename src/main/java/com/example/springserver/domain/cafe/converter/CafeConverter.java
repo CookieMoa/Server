@@ -8,6 +8,7 @@ import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.entity.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class CafeConverter {
         return dateTime.format(formatter);
     }
 
+    // 시간을 포맷하는 메서드
+    private static String formatTime(LocalTime time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return time.format(formatter);
+    }
+
     public static Cafe toCafe(CafeRequestDTO.PostCafeReq request, UserEntity user, String imgUrl){
 
         return Cafe.builder()
@@ -33,6 +40,8 @@ public class CafeConverter {
                 .longitude(request.getLongitude())
                 .contact(request.getContact())
                 .intro(request.getIntro())
+                .openTime(request.getOpenTime())
+                .closeTime(request.getCloseTime())
                 .imgUrl(imgUrl)
                 .build();
     }
@@ -63,6 +72,8 @@ public class CafeConverter {
                 .longitude(cafe.getLongitude())
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
+                .openTime(formatTime(cafe.getOpenTime()))
+                .closeTime(formatTime(cafe.getCloseTime()))
                 .imgUrl(cafe.getImgUrl())
                 .build();
     }
@@ -83,7 +94,8 @@ public class CafeConverter {
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
                 .imgUrl(cafe.getImgUrl())
-                .advImgUrl(cafe.getAdvImgUrl())
+                .openTime(formatTime(cafe.getOpenTime()))
+                .closeTime(formatTime(cafe.getCloseTime()))
                 .rewardList(rewardDtoList)
                 .keywordList(keywordDtoList)
                 .build();
@@ -95,6 +107,8 @@ public class CafeConverter {
             boolean isAddressUpdated,
             boolean isContactUpdated,
             boolean isIntroUpdated,
+            boolean isOpenTimeUpdated,
+            boolean isCloseTimeUpdated,
             boolean isImgUpdated
     ) {
         return CafeResponseDTO.EditCafeRes.builder()
@@ -105,6 +119,8 @@ public class CafeConverter {
                 .longitude(isAddressUpdated ? cafe.getLongitude() : null)
                 .contact(isContactUpdated ? cafe.getContact() : null)
                 .intro(isIntroUpdated ? cafe.getIntro() : null)
+                .openTime(isOpenTimeUpdated ? formatTime(cafe.getOpenTime()) : null)
+                .closeTime(isCloseTimeUpdated ? formatTime(cafe.getCloseTime()) : null)
                 .imgUrl(isImgUpdated ? cafe.getImgUrl() : null)
                 .createdAt(formatDateTime(cafe.getCreatedAt()))
                 .updatedAt(formatDateTime(cafe.getUpdatedAt()))

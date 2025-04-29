@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -42,6 +43,9 @@ public class Cafe extends BaseEntity {
     private String contact;
     private String intro;
     private String advImgUrl;
+
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<KeywordMapping> keywordMappings;

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CustomerConverter {
 
@@ -115,11 +114,16 @@ public class CustomerConverter {
                     int availableStamps = stampBoard.getStampsCount() - stampBoard.getUsedStamps();
 
                     // 카페의 StampReward 중에서 availableStamps보다 크거나 같은 것 중 가장 가까운 목표
-                    Integer stampGoal = stampBoard.getCafe().getStampRewards().stream()
+                    // 만약 모든 목표보다 availableStamps이 크다면 가장 큰 목표 반환
+                    List<Integer> stampGoals = stampBoard.getCafe().getStampRewards().stream()
                             .map(StampReward::getStampCount)
+                            .sorted()
+                            .toList();
+
+                    Integer stampGoal = stampGoals.stream()
                             .filter(goal -> goal >= availableStamps)
-                            .min(Integer::compareTo)
-                            .orElse(null);
+                            .findFirst()
+                            .orElseGet(() -> stampGoals.isEmpty() ? null : stampGoals.get(stampGoals.size() - 1));
 
                     return StampConverter.toGetStampBoardRes(stampBoard, stampGoal);
                 })

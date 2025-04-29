@@ -172,6 +172,6 @@ public class CustomerService {
 
         Pageable pageable = pageRequest.toPageable();
 
-        return stampBoardService.searchStampBoard(customerId, pageable);
+        return stampBoardService.searchStampBoardByCustomerId(customerId, pageable);
     }
 }

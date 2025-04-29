@@ -48,6 +48,14 @@ public class CafeController {
         return ApiResponse.onSuccess(cafeService.getCafe(cafeId));
     }
 
+    @Operation(summary = "본인 카페 정보 조회")
+    @GetMapping("/my")
+    public ApiResponse<CafeResponseDTO.GetMyCafeRes> getMyCafe(
+            @AuthenticationPrincipal CustomUserDetails userDetail) {
+
+        return ApiResponse.onSuccess(cafeService.getMyCafe(userDetail));
+    }
+
     @Operation(summary = "카페 정보 수정")
     @PutMapping(value = "/{cafeId}", consumes = "multipart/form-data")
     public ApiResponse<CafeResponseDTO.EditCafeRes> editCafe(

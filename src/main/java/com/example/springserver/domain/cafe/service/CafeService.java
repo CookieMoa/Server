@@ -9,12 +9,14 @@ import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
+import com.example.springserver.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class CafeService {
 
     private final CafeRepository cafeRepository;
     private final StampRewardRepository stampRewardRepository;
+    private final StampBoardService stampBoardService;
     private final UserService userService;
     private final KeywordService keywordService;
     private final S3Service s3Service;
@@ -82,6 +85,19 @@ public class CafeService {
         List<StampReward> rewards = getStampRewardsByCafe(cafe);
         
         return CafeConverter.toGetCafeRes(cafe, keywords, rewards);
+    }
+
+    public CafeResponseDTO.GetMyCafeRes getMyCafe(CustomUserDetails userDetail) {
+        Cafe cafe = getCafeByUserId(userDetail.getUserId());
+
+        List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
+        List<StampReward> rewards = getStampRewardsByCafe(cafe);
+
+        Object[] result = stampBoardService.findTotalStampsByCafeId(cafe.getId());
+        Long totalStampCount = (Long) result[0];
+        Long totalUsedStampCount = (Long) result[1];
+
+        return CafeConverter.toGetMyCafeRes(cafe, keywords, rewards, totalStampCount, totalUsedStampCount);
     }
 
     public CafeResponseDTO.EditCafeRes editCafe(CafeRequestDTO.EditCafeReq request, MultipartFile profileImg, Long cafeId) {

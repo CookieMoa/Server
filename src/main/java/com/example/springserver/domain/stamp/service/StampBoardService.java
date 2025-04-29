@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,8 +38,13 @@ public class StampBoardService {
                 });
     }
 
-    public Page<StampBoard> searchStampBoard(Long customerId, Pageable pageable) {
+    public Page<StampBoard> searchStampBoardByCustomerId(Long customerId, Pageable pageable) {
         // 1. StampBoard 검색
         return stampBoardRepository.findByCustomerId(customerId, pageable);
+    }
+
+    public Object[] findTotalStampsByCafeId(Long cafeId) {
+        // 모든 StampBoard 의 stampCount, usedStampCount 합 계산
+        return stampBoardRepository.findTotalStampsByCafeId(cafeId);
     }
 }

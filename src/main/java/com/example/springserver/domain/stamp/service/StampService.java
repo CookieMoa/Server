@@ -2,6 +2,8 @@ package com.example.springserver.domain.stamp.service;
 
 import com.example.springserver.domain.cafe.service.CafeService;
 import com.example.springserver.domain.customer.service.CustomerService;
+import com.example.springserver.domain.log.enums.StampLogStatus;
+import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.stamp.converter.StampConverter;
 import com.example.springserver.domain.stamp.dto.StampRequestDTO;
 import com.example.springserver.domain.stamp.dto.StampResponseDTO;
@@ -30,6 +32,7 @@ public class StampService {
     private final StampBoardService stampBoardService;
     private final CustomerService customerService;
     private final StampRepository stampRepository;
+    private final StampLogService stampLogService;
 
     public StampResponseDTO.PostStampRes postStamp(StampRequestDTO.PostStampReq request) {
 
@@ -49,6 +52,7 @@ public class StampService {
 
         // 3. 스탬프보드 통계 업데이트
         stampBoard.increaseStampCount(request.getStampCount());
+        stampLogService.addLog(stampBoard, StampLogStatus.ISSUED, request.getStampCount());
 
         return StampConverter.toPostStampRes(stampBoard);
     }
@@ -77,6 +81,7 @@ public class StampService {
 
         // 4. 스탬프보드 통계 업데이트
         stampBoard.increaseUsedStampCount(request.getStampCount());
+        stampLogService.addLog(stampBoard, StampLogStatus.USED, request.getStampCount());
 
         return StampConverter.toPostStampRes(stampBoard);
     }

@@ -9,6 +9,8 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.log.enums.StampLogStatus;
+import com.example.springserver.domain.log.repository.StampLogRepository;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
@@ -42,14 +44,18 @@ public class AdminService {
 
     private final CustomerRepository customerRepository;
     private final CafeRepository cafeRepository;
+    private final StampLogRepository stampLogRepository;
 
     public AdminResponseDTO.GetDashboardRes getDashboard() {
         Long customerCount = customerRepository.count();
         Long cafeCount = cafeRepository.count();
-        Long issuedCouponCount = 0L;
-        Long usedCouponCount = 0L;
+        Long issuedCouponCount = stampLogRepository.sum(StampLogStatus.ISSUED);
+        Long usedCouponCount = stampLogRepository.sum(StampLogStatus.USED);
         Long couponUsageRate = 0L;
-        return AdminConverter.toDashboardRes(customerCount,
+        if (issuedCouponCount != 0L)
+            couponUsageRate = usedCouponCount/issuedCouponCount;
+        return AdminConverter.toDashboardRes(
+                customerCount,
                 cafeCount,
                 issuedCouponCount,
                 usedCouponCount,

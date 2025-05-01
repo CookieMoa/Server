@@ -26,4 +26,16 @@ public class AdminController {
     public ApiResponse<AdminResponseDTO.GetDashboardRes> getDashboard() {
         return ApiResponse.onSuccess(adminService.getDashboard());
     }
+
+    @Operation(summary = "최근 가입 유저 조회")
+    @GetMapping("/recent-user")
+    public ApiResponse<AdminResponseDTO.GetRecentUserRes> getRecentUser() {
+        return ApiResponse.onSuccess(adminService.getRecentUser());
+    }
+
+    @Operation(summary = "최근 가입 카페 조회")
+    @GetMapping("/recent-cafe")
+    public ApiResponse<AdminResponseDTO.GetRecentCafeRes> getRecentCafe() {
+        return ApiResponse.onSuccess(adminService.getRecentCafe());
+    }
 }

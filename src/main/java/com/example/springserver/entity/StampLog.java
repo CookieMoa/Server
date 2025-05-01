@@ -19,6 +19,7 @@ public class StampLog extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "stamp_log_status", nullable = false)
     private StampLogStatus stampLogStatus;
 

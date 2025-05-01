@@ -8,6 +8,7 @@ import com.example.springserver.domain.cafe.repository.StampRewardRepository;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
+import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.enums.AccountStatus;
@@ -37,6 +38,7 @@ public class CafeService {
     private final UserService userService;
     private final KeywordService keywordService;
     private final S3Service s3Service;
+    private final CustomerService customerService;
 
     public Cafe getCafeByUserId(Long userId) {
         return cafeRepository.findByUserId(userId)
@@ -247,5 +249,21 @@ public class CafeService {
             throw new GeneralException(ErrorStatus.INVALID_CAFE_REWARD);
         }
         stampRewardRepository.delete(stampReward);
+    }
+
+    public CafeResponseDTO.PostReviewRes postReview(CafeRequestDTO.PostReviewReq request, Long cafeId) {
+        Cafe cafe = getCafeByUserId(cafeId);
+        Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
+
+        Review newReview = CafeConverter.toReview(request, cafe, customer);
+
+        // 키워드 조회 및 매핑
+        List<Keyword> keywords = keywordService.getKeywordsByNames(request.getKeywordList());
+        if (keywords.isEmpty()) {
+            throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
+        }
+        keywordService.createReviewKeywordMappings(newReview, keywords);
+
+        return CafeConverter.toPostReviewRes(newReview, keywords);
     }
 }

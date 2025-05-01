@@ -131,4 +131,19 @@ public class CafeResponseDTO {
         private String reward;
         private Integer stampCount;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PostReviewRes {
+        private Long reviewId;
+        private Long cafeId;
+        private Long customerId;
+        private String name;
+        private String content;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+        private String createdAt;
+        private String updatedAt;
+    }
 }

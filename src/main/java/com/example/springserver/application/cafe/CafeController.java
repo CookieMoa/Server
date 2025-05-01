@@ -132,4 +132,17 @@ public class CafeController {
 
         return ApiResponse.onSuccess(null);
     }
+
+    @Operation(summary = "리뷰 작성")
+    @PostMapping(value = "/{cafeId}/reviews")
+    public ApiResponse<CafeResponseDTO.PostReviewRes> editCafe(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestBody @Valid CafeRequestDTO.PostReviewReq request,
+            @PathVariable("cafeId") Long cafeId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), request.getCustomerId());
+
+        return ApiResponse.onSuccess(cafeService.postReview(request, cafeId));
+    }
 }

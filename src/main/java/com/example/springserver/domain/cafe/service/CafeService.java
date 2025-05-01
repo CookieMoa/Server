@@ -113,12 +113,7 @@ public class CafeService {
         List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
         List<StampReward> rewards = getStampRewardsByCafe(cafe);
 
-        List<Object[]> resultList = stampBoardService.findTotalStampsByCafeId(cafe.getId());
-        Object[] result = resultList.get(0);
-        Long totalStampCount = result[0] != null ? ((Number) result[0]).longValue() : 0L;
-        Long totalUsedStampCount = result[1] != null ? ((Number) result[1]).longValue() : 0L;
-
-        return CafeConverter.toGetMyCafeRes(cafe, keywords, rewards, totalStampCount, totalUsedStampCount);
+        return CafeConverter.toGetMyCafeRes(cafe, keywords, rewards);
     }
 
     public CafeResponseDTO.EditCafeRes editCafe(CafeRequestDTO.EditCafeReq request, MultipartFile profileImg, Long cafeId) {

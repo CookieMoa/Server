@@ -54,6 +54,9 @@ public class StampService {
         stampBoard.increaseStampCount(request.getStampCount());
         stampLogService.addLog(stampBoard, StampLogStatus.ISSUED, request.getStampCount());
 
+        // 4. 카페 총 발급 스탬프 수 증가
+        cafe.increaseTotalStampCount(request.getStampCount());
+
         return StampConverter.toPostStampRes(stampBoard);
     }
 
@@ -82,6 +85,9 @@ public class StampService {
         // 4. 스탬프보드 통계 업데이트
         stampBoard.increaseUsedStampCount(request.getStampCount());
         stampLogService.addLog(stampBoard, StampLogStatus.USED, request.getStampCount());
+
+        // 5. 카페 총 사용 스탬프 수 증가
+        cafe.increaseTotalUsedStampCount(request.getStampCount());
 
         return StampConverter.toPostStampRes(stampBoard);
     }

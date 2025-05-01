@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class CafeRequestDTO {
 
@@ -67,5 +68,17 @@ public class CafeRequestDTO {
     public static class PostStampRewardReq {
         private String reward;
         private Integer stampCount;
+    }
+
+    @Getter
+    public static class PostReviewReq {
+
+        @NotNull(message = "id는 필수입니다.")
+        private Long customerId;
+
+        @NotEmpty
+        private String content;
+
+        private List<String> keywordList;
     }
 }

@@ -3,19 +3,21 @@ package com.example.springserver.domain.admin.service;
 
 import com.example.springserver.domain.admin.converter.AdminConverter;
 import com.example.springserver.domain.admin.dto.AdminResponseDTO;
+import com.example.springserver.domain.cafe.converter.CafeConverter;
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
+import com.example.springserver.domain.cafe.service.CafeService;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
+import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.log.enums.StampLogStatus;
 import com.example.springserver.domain.log.repository.StampLogRepository;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.Keyword;
-import com.example.springserver.entity.UserEntity;
+import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
@@ -34,8 +36,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,6 +49,8 @@ public class AdminService {
     private final CustomerRepository customerRepository;
     private final CafeRepository cafeRepository;
     private final StampLogRepository stampLogRepository;
+    private final CafeService cafeService;
+    private final CustomerService customerService;
 
     public AdminResponseDTO.GetDashboardRes getDashboard() {
         Long customerCount = customerRepository.count();
@@ -54,11 +60,20 @@ public class AdminService {
         Long couponUsageRate = 0L;
         if (issuedCouponCount != 0L)
             couponUsageRate = usedCouponCount/issuedCouponCount;
+
         return AdminConverter.toDashboardRes(
                 customerCount,
                 cafeCount,
                 issuedCouponCount,
                 usedCouponCount,
                 couponUsageRate);
+    }
+
+    public AdminResponseDTO.GetRecentUserRes getRecentUser() {
+        return AdminConverter.toRecentUserRes(customerService.getRecentUser());
+    }
+
+    public AdminResponseDTO.GetRecentCafeRes getRecentCafe() {
+        return AdminConverter.toRecentCafeRes(cafeService.getRecentCafe());
     }
 }

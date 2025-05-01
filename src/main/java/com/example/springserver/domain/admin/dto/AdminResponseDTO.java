@@ -1,9 +1,14 @@
 package com.example.springserver.domain.admin.dto;
 
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
+import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
+import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 public class AdminResponseDTO {
 
@@ -17,5 +22,21 @@ public class AdminResponseDTO {
         private Long issuedCouponCount;
         private Long usedCouponCount;
         private Long couponUsageRate;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetRecentUserRes {
+        private List<CustomerResponseDTO.GetCustomerRes> userList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetRecentCafeRes {
+        private List<CafeResponseDTO.GetCafeRes> cafeList;
     }
 }

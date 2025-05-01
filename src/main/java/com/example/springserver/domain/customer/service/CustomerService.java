@@ -1,18 +1,18 @@
 package com.example.springserver.domain.customer.service;
 
 
+import com.example.springserver.domain.cafe.converter.CafeConverter;
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.stamp.service.StampBoardService;
+import com.example.springserver.domain.user.dto.UserResponseDTO;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.Keyword;
-import com.example.springserver.entity.StampBoard;
-import com.example.springserver.entity.UserEntity;
+import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -48,6 +49,20 @@ public class CustomerService {
     public Customer getCustomerByUserId(Long userId) {
         return customerRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    public List<Customer> getTop5RecentUser() {
+        return customerRepository.findTop5ByOrderByCreatedAtDesc();
+    }
+
+    public List<CustomerResponseDTO.GetCustomerRes> getRecentUser() {
+        List<CustomerResponseDTO.GetCustomerRes> userListDTO = new ArrayList<>();
+        List<Customer> userList = getTop5RecentUser();
+        for (Customer customer : userList) {
+            List<Keyword> keywords = keywordService.getKeywordsByCustomer(customer);
+            userListDTO.add(CustomerConverter.toGetCustomerRes(customer, keywords));
+        }
+        return userListDTO;
     }
 
     public void validateCustomerExists(Long userId) {

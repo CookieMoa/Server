@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,22 @@ public class CafeService {
     public Cafe getCafeByUserId(Long userId) {
         return cafeRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    public List<Cafe> getTop5RecentCafe() {
+        return cafeRepository.findTop5ByOrderByCreatedAtDesc();
+    }
+
+    public List<CafeResponseDTO.GetCafeRes> getRecentCafe() {
+        List<CafeResponseDTO.GetCafeRes> cafeListDTO = new ArrayList<>();
+
+        List<Cafe> cafeList = getTop5RecentCafe();
+        for (Cafe cafe : cafeList) {
+            List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
+            List<StampReward> rewards = getStampRewardsByCafe(cafe);
+            cafeListDTO.add(CafeConverter.toGetCafeRes(cafe, keywords, rewards));
+        }
+        return cafeListDTO;
     }
 
     public void validateCafeExists(Long userId) {
@@ -83,7 +100,7 @@ public class CafeService {
 
         List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
         List<StampReward> rewards = getStampRewardsByCafe(cafe);
-        
+
         return CafeConverter.toGetCafeRes(cafe, keywords, rewards);
     }
 

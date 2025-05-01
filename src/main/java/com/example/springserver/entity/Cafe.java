@@ -51,6 +51,14 @@ public class Cafe extends BaseEntity {
     @Column(name = "close_time")
     private LocalTime closeTime;
 
+    @Builder.Default
+    @Column(name = "total_stamp_count")
+    private long totalStampCount = 0L;
+
+    @Builder.Default
+    @Column(name = "total_used_stamp_count")
+    private long totalUsedStampCount = 0L;
+
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<KeywordMapping> keywordMappings;
 
@@ -59,4 +67,12 @@ public class Cafe extends BaseEntity {
 
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StampBoard> stampBoards;
+
+    public void increaseTotalStampCount(int count) {
+        this.totalStampCount += count;
+    }
+
+    public void increaseTotalUsedStampCount(int count) {
+        this.totalUsedStampCount += count;
+    }
 }

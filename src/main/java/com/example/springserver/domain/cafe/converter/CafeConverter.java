@@ -112,9 +112,7 @@ public class CafeConverter {
 
     public static CafeResponseDTO.GetMyCafeRes toGetMyCafeRes(Cafe cafe,
                                                               List<Keyword> keywords,
-                                                              List<StampReward> rewards,
-                                                              Long totalStampCount,
-                                                              Long totalUsedStampCount){
+                                                              List<StampReward> rewards){
         List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
                 .map(KeywordConverter::toKeywordDto).toList();
 
@@ -129,8 +127,8 @@ public class CafeConverter {
                 .longitude(cafe.getLongitude())
                 .contact(cafe.getContact())
                 .intro(cafe.getIntro())
-                .totalStampCount(totalStampCount)
-                .totalUsedStampCount(totalUsedStampCount)
+                .totalStampCount(cafe.getTotalStampCount())
+                .totalUsedStampCount(cafe.getTotalUsedStampCount())
                 .imgUrl(cafe.getImgUrl())
                 .advImgUrl(cafe.getAdvImgUrl())
                 .openTime(formatTime(cafe.getOpenTime()))

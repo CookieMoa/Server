@@ -28,4 +28,17 @@ public class AdminConverter {
                 .cafeList(cafeList)
                 .build();
     }
+
+    public static AdminResponseDTO.GetStampTransactionsRes toStampTransactionsRes(List<AdminResponseDTO.StampTransactionDto> stampTransactionList) {
+        return AdminResponseDTO.GetStampTransactionsRes.builder()
+                .stampTransactionList(stampTransactionList)
+                .build();
+    }
+
+    public static AdminResponseDTO.StampTransactionDto toStampTransactionDTO(Long hour, Long count) {
+        return AdminResponseDTO.StampTransactionDto.builder()
+                .hour(hour)
+                .count(count)
+                .build();
+    }
 }

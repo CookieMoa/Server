@@ -39,4 +39,21 @@ public class AdminResponseDTO {
     public static class GetRecentCafeRes {
         private List<CafeResponseDTO.GetCafeRes> cafeList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StampTransactionDto {
+        private Long hour;
+        private Long count;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetStampTransactionsRes {
+        private List<StampTransactionDto> stampTransactionList;
+    }
 }

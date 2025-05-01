@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -75,5 +76,18 @@ public class AdminService {
 
     public AdminResponseDTO.GetRecentCafeRes getRecentCafe() {
         return AdminConverter.toRecentCafeRes(cafeService.getRecentCafe());
+    }
+
+    public AdminResponseDTO.GetStampTransactionsRes getStampTransactions() {
+        List<Object[]> result = stampLogRepository.sumByHourOnDate(java.sql.Date.valueOf(LocalDate.now()));
+
+        List<AdminResponseDTO.StampTransactionDto> stampTransactionList = result.stream()
+                .map(row -> {
+                    Long hour = ((Number) row[0]).longValue();
+                    Long count = ((Number) row[1]).longValue();
+                    return AdminConverter.toStampTransactionDTO(hour, count);
+                })
+                .collect(Collectors.toList());
+        return AdminConverter.toStampTransactionsRes(stampTransactionList);
     }
 }

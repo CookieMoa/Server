@@ -38,4 +38,10 @@ public class AdminController {
     public ApiResponse<AdminResponseDTO.GetRecentCafeRes> getRecentCafe() {
         return ApiResponse.onSuccess(adminService.getRecentCafe());
     }
+
+    @Operation(summary = "시간대별 스탬프 거래수 조회")
+    @GetMapping("/stamp-transactions")
+    public ApiResponse<AdminResponseDTO.GetStampTransactionsRes> getStampTransactions() {
+        return ApiResponse.onSuccess(adminService.getStampTransactions());
+    }
 }

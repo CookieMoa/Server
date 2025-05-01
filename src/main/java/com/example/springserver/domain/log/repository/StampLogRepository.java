@@ -23,4 +23,14 @@ public interface StampLogRepository extends JpaRepository<StampLog, Long> {
     // 카페별 개수
     @Query("SELECT COALESCE(SUM(s.count), 0)  FROM StampLog s WHERE s.stampBoard.cafe = :cafe AND s.stampLogStatus = :stampLogStatus")
     Long sumByCafe(Cafe cafe, StampLogStatus stampLogStatus);
+
+    @Query("""
+    SELECT FUNCTION('HOUR', s.createdAt) AS hour,
+           COUNT(s)
+    FROM StampLog s
+    WHERE DATE(s.createdAt) = :date
+    GROUP BY FUNCTION('HOUR', s.createdAt)
+    ORDER BY FUNCTION('HOUR', s.createdAt) ASC
+    """)
+    List<Object[]> sumByHourOnDate(@Param("date") java.sql.Date date);
 }

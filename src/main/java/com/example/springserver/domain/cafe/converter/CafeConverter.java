@@ -61,6 +61,7 @@ public class CafeConverter {
                 .customer(customer)
                 .cafe(cafe)
                 .content(request.getContent())
+                .name(customer.getName())
                 .build();
     }
 
@@ -198,6 +199,7 @@ public class CafeConverter {
                 .cafeId(review.getCafe().getId())
                 .customerId(review.getCustomer().getId())
                 .content(review.getContent())
+                .name(review.getName())
                 .keywordList(keywordDtoList)
                 .createdAt(formatDateTime(review.getCreatedAt()))
                 .updatedAt(formatDateTime(review.getUpdatedAt()))

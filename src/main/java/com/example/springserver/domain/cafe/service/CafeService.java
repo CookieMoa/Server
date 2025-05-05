@@ -36,6 +36,7 @@ public class CafeService {
     private final StampRewardRepository stampRewardRepository;
     private final StampBoardService stampBoardService;
     private final UserService userService;
+    private final ReviewService reviewService;
     private final KeywordService keywordService;
     private final S3Service s3Service;
     private final CustomerService customerService;
@@ -251,14 +252,15 @@ public class CafeService {
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
         Review newReview = CafeConverter.toReview(request, cafe, customer);
+        Review review = reviewService.toReview(newReview);
 
         // 키워드 조회 및 매핑
         List<Keyword> keywords = keywordService.getKeywordsByNames(request.getKeywordList());
         if (keywords.isEmpty()) {
             throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
         }
-        keywordService.createReviewKeywordMappings(newReview, keywords);
+        keywordService.createReviewKeywordMappings(review, keywords);
 
-        return CafeConverter.toPostReviewRes(newReview, keywords);
+        return CafeConverter.toPostReviewRes(review, keywords);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.springserver.domain.cafe.service;
 
 import com.example.springserver.domain.cafe.converter.CafeConverter;
+import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
@@ -15,10 +16,12 @@ import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
+import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
 import com.example.springserver.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +37,6 @@ public class CafeService {
 
     private final CafeRepository cafeRepository;
     private final StampRewardRepository stampRewardRepository;
-    private final StampBoardService stampBoardService;
     private final UserService userService;
     private final ReviewService reviewService;
     private final KeywordService keywordService;
@@ -251,7 +253,7 @@ public class CafeService {
         Cafe cafe = getCafeByUserId(cafeId);
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
-        Review newReview = CafeConverter.toReview(request, cafe, customer);
+        Review newReview = ReviewConverter.toReview(request, cafe, customer);
         Review review = reviewService.toReview(newReview);
 
         // 키워드 조회 및 매핑
@@ -261,6 +263,22 @@ public class CafeService {
         }
         keywordService.createReviewKeywordMappings(review, keywords);
 
-        return CafeConverter.toPostReviewRes(review, keywords);
+        return ReviewConverter.toPostReviewRes(review, keywords);
+    }
+
+    public CafeResponseDTO.SearchCafeReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
+        // 1. 카페 ID로 리뷰 페이지 조회
+        Page<Review> reviewPage = reviewService.findReviewByCafeId(cafeId, pageRequest.toPageable());
+
+        // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
+        List<CafeResponseDTO.GetReviewRes> reviewResList = reviewPage.stream()
+                .map(review -> {
+                    List<Keyword> keywords = keywordService.getKeywordsByReview(review);
+                    return ReviewConverter.toGetReviewRes(review, keywords);
+                })
+                .toList();
+
+        // 3. 최종 응답 DTO 조립
+        return ReviewConverter.toSearchCafeReviewsRes(reviewPage, reviewResList);
     }
 }

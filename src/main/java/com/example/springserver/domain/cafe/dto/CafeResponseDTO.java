@@ -1,10 +1,13 @@
 package com.example.springserver.domain.cafe.dto;
 
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
+import com.example.springserver.domain.stamp.dto.StampResponseDTO;
+import com.example.springserver.global.common.paging.CommonPageRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -145,5 +148,29 @@ public class CafeResponseDTO {
         private List<KeywordResponseDTO.KeywordDto> keywordList;
         private String createdAt;
         private String updatedAt;
+    }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetReviewRes {
+        private Long reviewId;
+        private Long cafeId;
+        private Long customerId;
+        private String name;
+        private String content;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+        private String createdAt;
+        private String updatedAt;
+    }
+
+    @SuperBuilder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchCafeReviewsRes extends CommonPageRes {
+        private List<CafeResponseDTO.GetReviewRes> reviewList;
     }
 }

@@ -1,18 +1,23 @@
 package com.example.springserver.application.cafe;
 
 import com.example.springserver.domain.auth.service.AuthorizationService;
+import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.BusinessVerificationResponse;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.service.CafeService;
 import com.example.springserver.domain.cafe.service.VerifyBusinessService;
 import com.example.springserver.domain.user.service.UserService;
+import com.example.springserver.entity.Customer;
+import com.example.springserver.entity.Review;
 import com.example.springserver.global.common.api.ApiResponse;
+import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -144,5 +149,15 @@ public class CafeController {
         authorizationService.validateUserAuthorization(userDetail.getUsername(), request.getCustomerId());
 
         return ApiResponse.onSuccess(cafeService.postReview(request, cafeId));
+    }
+
+    @Operation(summary = "카페 리뷰 검색")
+    @GetMapping(value = "/{cafeId}/reviews")
+    public ApiResponse<CafeResponseDTO.SearchCafeReviewsRes> searchCafeReviews(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @ModelAttribute @Valid CommonPageReq pageRequest,
+            @PathVariable("cafeId") Long cafeId) {
+
+        return ApiResponse.onSuccess(cafeService.searchCafeReviews(pageRequest, cafeId));
     }
 }

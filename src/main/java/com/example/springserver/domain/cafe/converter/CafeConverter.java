@@ -55,16 +55,6 @@ public class CafeConverter {
                 .build();
     }
 
-    public static Review toReview(CafeRequestDTO.PostReviewReq request, Cafe cafe, Customer customer){
-
-        return Review.builder()
-                .customer(customer)
-                .cafe(cafe)
-                .content(request.getContent())
-                .name(customer.getName())
-                .build();
-    }
-
     public static CafeResponseDTO.StampRewardDto toStampRewardDto(StampReward stampReward) {
         return CafeResponseDTO.StampRewardDto.builder()
                 .stampRewardId(stampReward.getId())
@@ -190,19 +180,4 @@ public class CafeConverter {
                 .build();
     }
 
-    public static CafeResponseDTO.PostReviewRes toPostReviewRes(Review review, List<Keyword> keywords){
-        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
-                .map(KeywordConverter::toKeywordDto).toList();
-
-        return CafeResponseDTO.PostReviewRes.builder()
-                .reviewId(review.getId())
-                .cafeId(review.getCafe().getId())
-                .customerId(review.getCustomer().getId())
-                .content(review.getContent())
-                .name(review.getName())
-                .keywordList(keywordDtoList)
-                .createdAt(formatDateTime(review.getCreatedAt()))
-                .updatedAt(formatDateTime(review.getUpdatedAt()))
-                .build();
-    }
 }

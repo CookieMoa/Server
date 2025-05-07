@@ -65,4 +65,11 @@ public class KeywordService {
                 .map(KeywordMapping::getKeyword)
                 .collect(Collectors.toList());
     }
+
+    public List<Keyword> getKeywordsByReview(Review review) {
+        List<KeywordMapping> mappings = keywordMappingRepository.findAllByReview(review);
+        return mappings.stream()
+                .map(KeywordMapping::getKeyword)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,8 +1,8 @@
 package com.example.springserver.application.customer;
 
 import com.example.springserver.domain.auth.service.AuthorizationService;
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
-import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageReq;
@@ -20,8 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @Validated
@@ -95,5 +93,15 @@ public class CustomerController {
 
         Page<StampBoard> stampBoardList = customerService.searchStampBoards(customerId, pageRequest);
         return ApiResponse.onSuccess(CustomerConverter.toSearchStampBoardsRes(stampBoardList));
+    }
+
+    @Operation(summary = "소비자 작성 리뷰 검색")
+    @GetMapping(value = "/{customerId}/reviews")
+    public ApiResponse<CafeResponseDTO.SearchReviewsRes> searchCustomerReviews(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @ModelAttribute @Valid CommonPageReq pageRequest,
+            @PathVariable("customerId") Long customerId) {
+
+        return ApiResponse.onSuccess(customerService.searchCustomerReviews(pageRequest, customerId));
     }
 }

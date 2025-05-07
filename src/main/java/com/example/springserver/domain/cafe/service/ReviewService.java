@@ -20,4 +20,5 @@ public class ReviewService {
     }
 
     public Page<Review> findReviewByCafeId(Long cafeId, Pageable pageable) { return reviewRepository.findByCafeId(cafeId, pageable);}
+    public Page<Review> findReviewByCustomerId(Long customerId, Pageable pageable) { return reviewRepository.findByCustomerId(customerId, pageable);}
 }

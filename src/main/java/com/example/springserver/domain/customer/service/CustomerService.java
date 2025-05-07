@@ -2,7 +2,9 @@ package com.example.springserver.domain.customer.service;
 
 
 import com.example.springserver.domain.cafe.converter.CafeConverter;
+import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
+import com.example.springserver.domain.cafe.service.ReviewService;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
@@ -43,6 +45,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final KeywordService keywordService;
     private final StampBoardService stampBoardService;
+    private final ReviewService reviewService;
     private final UserService userService;
     private final S3Service s3Service;
 
@@ -188,5 +191,22 @@ public class CustomerService {
         Pageable pageable = pageRequest.toPageable();
 
         return stampBoardService.searchStampBoardByCustomerId(customerId, pageable);
+    }
+
+
+    public CafeResponseDTO.SearchReviewsRes searchCustomerReviews(CommonPageReq pageRequest, Long customerId) {
+        // 1. 소비자 ID로 리뷰 페이지 조회
+        Page<Review> reviewPage = reviewService.findReviewByCustomerId(customerId, pageRequest.toPageable());
+
+        // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
+        List<CafeResponseDTO.GetReviewRes> reviewResList = reviewPage.stream()
+                .map(review -> {
+                    List<Keyword> keywords = keywordService.getKeywordsByReview(review);
+                    return ReviewConverter.toGetReviewRes(review, keywords);
+                })
+                .toList();
+
+        // 3. 최종 응답 DTO 조립
+        return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
     }
 }

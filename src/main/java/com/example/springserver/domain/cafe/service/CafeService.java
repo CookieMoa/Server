@@ -6,12 +6,8 @@ import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
 import com.example.springserver.domain.cafe.repository.StampRewardRepository;
-import com.example.springserver.domain.customer.converter.CustomerConverter;
-import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
-import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
-import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
@@ -28,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -266,7 +261,7 @@ public class CafeService {
         return ReviewConverter.toPostReviewRes(review, keywords);
     }
 
-    public CafeResponseDTO.SearchCafeReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
+    public CafeResponseDTO.SearchReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
         // 1. 카페 ID로 리뷰 페이지 조회
         Page<Review> reviewPage = reviewService.findReviewByCafeId(cafeId, pageRequest.toPageable());
 
@@ -279,6 +274,6 @@ public class CafeService {
                 .toList();
 
         // 3. 최종 응답 DTO 조립
-        return ReviewConverter.toSearchCafeReviewsRes(reviewPage, reviewResList);
+        return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
     }
 }

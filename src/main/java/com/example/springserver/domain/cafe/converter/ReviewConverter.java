@@ -2,7 +2,6 @@ package com.example.springserver.domain.cafe.converter;
 
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
-import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.converter.KeywordConverter;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
@@ -10,7 +9,6 @@ import com.example.springserver.entity.Cafe;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.Keyword;
 import com.example.springserver.entity.Review;
-import com.example.springserver.global.common.paging.CommonPageRes;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
@@ -74,9 +72,9 @@ public class ReviewConverter {
                 .build();
     }
 
-    public static CafeResponseDTO.SearchCafeReviewsRes toSearchCafeReviewsRes(Page<Review> reviewList, List<CafeResponseDTO.GetReviewRes> getReviewResList) {
+    public static CafeResponseDTO.SearchReviewsRes toSearchReviewsRes(Page<Review> reviewList, List<CafeResponseDTO.GetReviewRes> getReviewResList) {
 
-        return CafeResponseDTO.SearchCafeReviewsRes.builder()
+        return CafeResponseDTO.SearchReviewsRes.builder()
                 .reviewList(getReviewResList)
                 .count(reviewList.getTotalElements())
                 .limit(reviewList.getSize())

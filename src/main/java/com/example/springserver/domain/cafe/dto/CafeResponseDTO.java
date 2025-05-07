@@ -1,7 +1,6 @@
 package com.example.springserver.domain.cafe.dto;
 
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
-import com.example.springserver.domain.stamp.dto.StampResponseDTO;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -170,7 +169,7 @@ public class CafeResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SearchCafeReviewsRes extends CommonPageRes {
+    public static class SearchReviewsRes extends CommonPageRes {
         private List<CafeResponseDTO.GetReviewRes> reviewList;
     }
 }

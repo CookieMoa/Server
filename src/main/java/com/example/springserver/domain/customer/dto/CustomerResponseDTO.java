@@ -2,7 +2,6 @@ package com.example.springserver.domain.customer.dto;
 
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.domain.stamp.dto.StampResponseDTO;
-import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Getter
 @Setter
@@ -22,6 +23,6 @@ public class CommonPageReq {
 
     // PageRequest 객체로 변환하는 메서드
     public Pageable toPageable() {
-        return PageRequest.of(this.page - 1, this.size);
+        return PageRequest.of(this.page - 1, this.size, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 }

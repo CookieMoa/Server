@@ -199,6 +199,13 @@ public class CafeService {
         return CafeConverter.toPostCafeAdvRes(cafe); //
     }
 
+    public void deleteCafeAdv(Long cafeId) {
+
+        Cafe cafe = getCafeByUserId(cafeId);
+        cafe.setAdvImgUrl(null);
+        cafeRepository.save(cafe);
+    }
+
     public CafeResponseDTO.PostStampRewardRes postStampReward(CafeRequestDTO.PostStampRewardReq request, Long cafeId) {
         Cafe cafe = getCafeByUserId(cafeId);
         StampReward newStampReward = CafeConverter.toStampReward(request, cafe);

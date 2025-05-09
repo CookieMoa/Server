@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -168,12 +169,13 @@ public class CustomerService {
     public String getQrcode(Long userId) {
 
         Customer customer = getCustomerByUserId(userId);
-        String qrData = String.format("{\"userId\": \"%s\", \"timestamp\": \"%d\"}", userId, System.currentTimeMillis());
+        String jsonPayload = String.format("{\"userId\": \"%s\", \"timestamp\": \"%d\"}", userId, System.currentTimeMillis());
+        String encodedPayload = Base64.getEncoder().encodeToString(jsonPayload.getBytes(StandardCharsets.UTF_8));
 
         String base64QR;
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 250, 250);
+            BitMatrix bitMatrix = qrCodeWriter.encode(encodedPayload, BarcodeFormat.QR_CODE, 250, 250);
             BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

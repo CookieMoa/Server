@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,4 +34,17 @@ public interface StampLogRepository extends JpaRepository<StampLog, Long> {
     ORDER BY FUNCTION('HOUR', s.createdAt) ASC
     """)
     List<Object[]> sumByHourOnDate(@Param("date") java.sql.Date date);
+
+    // 10일 이내의 작성 가능한 리뷰 조회
+    @Query("""
+    SELECT s FROM StampLog s
+    WHERE s.pendingReview = true
+      AND s.createdAt > :tenDaysAgo
+      AND s.stampBoard.customer.id = :customerId
+    ORDER BY s.createdAt DESC
+    """)
+    List<StampLog> findValidPendingReviewsByCustomer(
+            @Param("customerId") Long customerId,
+            @Param("tenDaysAgo") LocalDateTime tenDaysAgo
+    );
 }

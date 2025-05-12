@@ -65,6 +65,16 @@ public class CustomerResponseDTO {
         private String qrCodeBase64;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetPendingReviewRes {
+        private Long cafeId;
+        private String cafeName;
+        private String date;
+    }
+
     @SuperBuilder
     @Getter
     @NoArgsConstructor

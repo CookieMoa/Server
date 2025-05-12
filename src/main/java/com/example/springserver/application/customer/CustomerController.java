@@ -21,6 +21,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @Validated
 @RequiredArgsConstructor
@@ -60,6 +62,18 @@ public class CustomerController {
                                                                         @PathVariable Long customerId) {
 
         return ApiResponse.onSuccess(customerService.getCustomer(customerId));
+    }
+
+    @Operation(summary = "작성 가능 리뷰 목록 조회")
+    @GetMapping("/{customerId}/pending-review")
+    public ApiResponse<List<CustomerResponseDTO.GetPendingReviewRes>> searchPendingReview(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @PathVariable Long customerId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
+
+        return ApiResponse.onSuccess(customerService.searchPendingReview(customerId));
     }
 
     @Operation(summary = "소비자 검색")

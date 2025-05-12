@@ -26,6 +26,10 @@ public class StampLog extends BaseEntity {
     @Column(nullable = false)
     private Integer count;
 
+    @Builder.Default
+    @Column(name = "pending_review", nullable = false)
+    private Boolean pendingReview = true;
+
     @ManyToOne
     @JoinColumn(name = "stamp_board_id", nullable = false)
     private StampBoard stampBoard;

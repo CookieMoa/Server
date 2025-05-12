@@ -10,6 +10,7 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.dto.UserResponseDTO;
 import com.example.springserver.domain.user.enums.AccountStatus;
@@ -45,6 +46,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final KeywordService keywordService;
     private final StampBoardService stampBoardService;
+    private final StampLogService stampLogService;
     private final ReviewService reviewService;
     private final UserService userService;
     private final S3Service s3Service;
@@ -184,6 +186,14 @@ public class CustomerService {
         }
 
         return base64QR;
+    }
+
+    public List<CustomerResponseDTO.GetPendingReviewRes> searchPendingReview(Long customerId) {
+
+        Customer customer = getCustomerByUserId(customerId);
+        List<StampLog> stampLogList = stampLogService.searchPendingReviewsByCustomer(customerId);
+
+        return CustomerConverter.toSearchPendingReviewRes(stampLogList);
     }
 
     public Page<StampBoard> searchStampBoards(Long customerId, CommonPageReq pageRequest) {

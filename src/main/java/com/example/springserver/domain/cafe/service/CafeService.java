@@ -8,6 +8,7 @@ import com.example.springserver.domain.cafe.repository.CafeRepository;
 import com.example.springserver.domain.cafe.repository.StampRewardRepository;
 import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
@@ -32,6 +33,7 @@ public class CafeService {
 
     private final CafeRepository cafeRepository;
     private final StampRewardRepository stampRewardRepository;
+    private final StampLogService stampLogService;
     private final UserService userService;
     private final ReviewService reviewService;
     private final KeywordService keywordService;
@@ -264,6 +266,12 @@ public class CafeService {
             throw new GeneralException(ErrorStatus.KEYWORD_NOT_FOUND);
         }
         keywordService.createReviewKeywordMappings(review, keywords);
+
+        // StampLog.pendingReview -> false로 변경 (리뷰 작성 완료 상태)
+        StampLog stampLog = stampLogService.getStampLog(request.getStampLogId());
+        if (stampLog.getPendingReview()) {
+            stampLog.setPendingReview(false);
+        }
 
         return ReviewConverter.toPostReviewRes(review, keywords);
     }

@@ -147,6 +147,7 @@ public class CustomerConverter {
                     Cafe cafe = stampLog.getStampBoard().getCafe();
 
                     return CustomerResponseDTO.GetPendingReviewRes.builder()
+                            .stampLogId(stampLog.getId())
                             .cafeId(cafe.getId())
                             .cafeName(cafe.getName())
                             .date(formatDateTime(stampLog.getCreatedAt()))

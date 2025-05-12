@@ -46,4 +46,9 @@ public class StampLogService {
     public List<StampLog> searchPendingReviewsByCustomer(Long customerId) {
         return stampLogRepository.findValidPendingReviewsByCustomer(customerId, LocalDateTime.now().minusDays(10));
     }
+
+    public StampLog getStampLog(Long stampLogId) {
+        return stampLogRepository.findById(stampLogId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.STAMPLOG_NOT_FOUND));
+    }
 }

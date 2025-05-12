@@ -76,7 +76,10 @@ public enum ErrorStatus implements BaseCode {
 
     // 스탬프 관련 에러
     STAMPBOARD_NOT_FOUND(HttpStatus.BAD_REQUEST, "STAMP4004", "해당 스탬프보드가 존재하지 않습니다."),
-    NOT_ENOUGH_STAMPS(HttpStatus.BAD_REQUEST, "STAMP4005", "스탬프가 부족합니다.");
+    NOT_ENOUGH_STAMPS(HttpStatus.BAD_REQUEST, "STAMP4005", "스탬프가 부족합니다."),
+
+    // 로그 관련 에러
+    STAMPLOG_NOT_FOUND(HttpStatus.BAD_REQUEST, "STAMPLOG4004", "해당 스탬프로그가 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

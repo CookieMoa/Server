@@ -76,6 +76,9 @@ public class CafeRequestDTO {
         @NotNull(message = "id는 필수입니다.")
         private Long customerId;
 
+        @NotNull(message = "id는 필수입니다.")
+        private Long stampLogId;
+
         @NotEmpty
         private String content;
 

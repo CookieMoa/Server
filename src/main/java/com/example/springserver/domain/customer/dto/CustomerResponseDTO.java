@@ -70,6 +70,7 @@ public class CustomerResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GetPendingReviewRes {
+        private Long stampLogId;
         private Long cafeId;
         private String cafeName;
         private String date;

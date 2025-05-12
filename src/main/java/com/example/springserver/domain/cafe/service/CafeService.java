@@ -19,6 +19,8 @@ import com.example.springserver.global.s3.S3Service;
 import com.example.springserver.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.geo.Point;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +41,7 @@ public class CafeService {
     private final KeywordService keywordService;
     private final S3Service s3Service;
     private final CustomerService customerService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public Cafe getCafeByUserId(Long userId) {
         return cafeRepository.findByUserId(userId)
@@ -77,9 +80,11 @@ public class CafeService {
     }
 
     public CafeResponseDTO.PostCafeRes postCafe(CafeRequestDTO.PostCafeReq request, MultipartFile profileImg) {
+
+        // 1. user 검색
         UserEntity user = userService.getUserById(request.getId());
 
-        // 이미지 적용
+        // 2. 이미지 적용
         String imgUrl;
         if(profileImg == null) {
             imgUrl = s3Service.getBasicImgUrl();
@@ -87,10 +92,18 @@ public class CafeService {
             imgUrl = s3Service.uploadFileImage(profileImg);
         }
 
+        // 3. MySql에 cafe 저장
         Cafe newCafe = CafeConverter.toCafe(request, user, imgUrl);
         cafeRepository.save(newCafe);
 
-        // 계정 상태 ACTIVE로 변경
+        // 4. Redis에 위치 정보 저장
+        redisTemplate.opsForGeo().add(
+                "cafe-location",
+                new Point(newCafe.getLongitude(), newCafe.getLatitude()),
+                newCafe.getId().toString()
+        );
+
+        // 5. 계정 상태 ACTIVE로 변경
         user.setAccountStatus(AccountStatus.ACTIVE);
         userService.saveUser(user);
 
@@ -149,6 +162,13 @@ public class CafeService {
             cafe.setLatitude(request.getLatitude());
             cafe.setLongitude(request.getLongitude());
             isAddressUpdated = true;
+
+            // Redis 위치 정보도 갱신
+            redisTemplate.opsForGeo().add(
+                    "cafe-location",
+                    new Point(request.getLongitude(), request.getLatitude()),
+                    cafe.getId().toString()
+            );
         }
 
         // 연락처 수정

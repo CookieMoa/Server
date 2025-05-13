@@ -15,8 +15,5 @@ public interface StampBoardRepository extends JpaRepository<StampBoard, Long> {
     Optional<StampBoard> findStampBoardByCafeIdAndCustomerId(Long cafeId, Long customerId);
 
     Page<StampBoard> findByCustomerId(Long customerId, Pageable pageable);
-
-    @Query("SELECT SUM(s.stampsCount), SUM(s.usedStamps) FROM StampBoard s WHERE s.cafe.id = :cafeId")
-    List<Object[]> findTotalStampsByCafeId(@Param("cafeId") Long cafeId);
     Long countAllByCustomer(Customer customer);
 }

@@ -1,8 +1,8 @@
 package com.example.springserver.application.customer;
 
 import com.example.springserver.domain.auth.service.AuthorizationService;
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
-import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageReq;
@@ -64,6 +64,18 @@ public class CustomerController {
         return ApiResponse.onSuccess(customerService.getCustomer(customerId));
     }
 
+    @Operation(summary = "작성 가능 리뷰 목록 조회")
+    @GetMapping("/{customerId}/pending-review")
+    public ApiResponse<List<CustomerResponseDTO.GetPendingReviewRes>> searchPendingReview(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @PathVariable Long customerId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), customerId);
+
+        return ApiResponse.onSuccess(customerService.searchPendingReview(customerId));
+    }
+
     @Operation(summary = "소비자 검색")
     @GetMapping("/search")
     public ApiResponse<CustomerResponseDTO.SearchCustomerRes> searchCustomer(@AuthenticationPrincipal CustomUserDetails userDetail,
@@ -95,5 +107,15 @@ public class CustomerController {
 
         Page<StampBoard> stampBoardList = customerService.searchStampBoards(customerId, pageRequest);
         return ApiResponse.onSuccess(CustomerConverter.toSearchStampBoardsRes(stampBoardList));
+    }
+
+    @Operation(summary = "소비자 작성 리뷰 검색")
+    @GetMapping(value = "/{customerId}/reviews")
+    public ApiResponse<CafeResponseDTO.SearchReviewsRes> searchCustomerReviews(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @ModelAttribute @Valid CommonPageReq pageRequest,
+            @PathVariable("customerId") Long customerId) {
+
+        return ApiResponse.onSuccess(customerService.searchCustomerReviews(pageRequest, customerId));
     }
 }

@@ -2,7 +2,6 @@ package com.example.springserver.domain.customer.dto;
 
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.domain.stamp.dto.StampResponseDTO;
-import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -82,6 +81,17 @@ public class CustomerResponseDTO {
     @AllArgsConstructor
     public static class GetQrcodeRes {
         private String qrCodeBase64;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetPendingReviewRes {
+        private Long stampLogId;
+        private Long cafeId;
+        private String cafeName;
+        private String date;
     }
 
     @SuperBuilder

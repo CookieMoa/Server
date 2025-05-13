@@ -8,6 +8,7 @@ import com.example.springserver.domain.cafe.service.CafeService;
 import com.example.springserver.domain.cafe.service.VerifyBusinessService;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.global.common.api.ApiResponse;
+import com.example.springserver.global.common.paging.CommonPageReq;
 import com.example.springserver.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -91,6 +92,20 @@ public class CafeController {
         return ApiResponse.onSuccess(cafeService.postCafeAdv(advImg, cafeId));
     }
 
+    @Operation(summary = "카페 광고 삭제")
+    @DeleteMapping("/{cafeId}/adv")
+    public ApiResponse<Void> deleteCafeAdv(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @PathVariable("cafeId") Long cafeId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), cafeId);
+
+        cafeService.deleteCafeAdv(cafeId);
+
+        return ApiResponse.onSuccess(null);
+    }
+
     @Operation(summary = "카페 스탬프 보상 등록")
     @PostMapping("/{cafeId}/rewards")
     public ApiResponse<CafeResponseDTO.PostStampRewardRes> postStampReward(
@@ -131,5 +146,28 @@ public class CafeController {
         cafeService.deleteStampReward(cafeId, rewardId);
 
         return ApiResponse.onSuccess(null);
+    }
+
+    @Operation(summary = "리뷰 작성")
+    @PostMapping(value = "/{cafeId}/reviews")
+    public ApiResponse<CafeResponseDTO.PostReviewRes> editCafe(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestBody @Valid CafeRequestDTO.PostReviewReq request,
+            @PathVariable("cafeId") Long cafeId) {
+
+        // 본인인지 검사
+        authorizationService.validateUserAuthorization(userDetail.getUsername(), request.getCustomerId());
+
+        return ApiResponse.onSuccess(cafeService.postReview(request, cafeId));
+    }
+
+    @Operation(summary = "카페 리뷰 검색")
+    @GetMapping(value = "/{cafeId}/reviews")
+    public ApiResponse<CafeResponseDTO.SearchReviewsRes> searchCafeReviews(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @ModelAttribute @Valid CommonPageReq pageRequest,
+            @PathVariable("cafeId") Long cafeId) {
+
+        return ApiResponse.onSuccess(cafeService.searchCafeReviews(pageRequest, cafeId));
     }
 }

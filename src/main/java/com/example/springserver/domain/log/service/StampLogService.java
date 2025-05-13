@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +41,14 @@ public class StampLogService {
 
     public Long getTotalCountByCafe(Cafe cafe, StampLogStatus stampLogStatus) {
         return stampLogRepository.sumByCafe(cafe, stampLogStatus);
+    }
+
+    public List<StampLog> searchPendingReviewsByCustomer(Long customerId) {
+        return stampLogRepository.findValidPendingReviewsByCustomer(customerId, LocalDateTime.now().minusDays(10));
+    }
+
+    public StampLog getStampLog(Long stampLogId) {
+        return stampLogRepository.findById(stampLogId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.STAMPLOG_NOT_FOUND));
     }
 }

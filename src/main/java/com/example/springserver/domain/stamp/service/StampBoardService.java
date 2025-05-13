@@ -43,11 +43,6 @@ public class StampBoardService {
         return stampBoardRepository.findByCustomerId(customerId, pageable);
     }
 
-    public List<Object[]> findTotalStampsByCafeId(Long cafeId) {
-        // 모든 StampBoard 의 stampCount, usedStampCount 합 계산
-        return stampBoardRepository.findTotalStampsByCafeId(cafeId);
-    }
-
     public Long countAllByCustomer(Customer customer) {
         return stampBoardRepository.countAllByCustomer(customer);
     }

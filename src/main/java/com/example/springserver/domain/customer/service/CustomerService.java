@@ -2,7 +2,9 @@ package com.example.springserver.domain.customer.service;
 
 
 import com.example.springserver.domain.cafe.converter.CafeConverter;
+import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
+import com.example.springserver.domain.cafe.service.ReviewService;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
@@ -34,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -47,6 +50,7 @@ public class CustomerService {
     private final KeywordService keywordService;
     private final StampBoardService stampBoardService;
     private final StampLogService stampLogService;
+    private final ReviewService reviewService;
     private final UserService userService;
     private final S3Service s3Service;
 
@@ -194,12 +198,13 @@ public class CustomerService {
     public String getQrcode(Long userId) {
 
         Customer customer = getCustomerByUserId(userId);
-        String qrData = String.format("{\"userId\": \"%s\", \"timestamp\": \"%d\"}", userId, System.currentTimeMillis());
+        String jsonPayload = String.format("{\"userId\": \"%s\", \"timestamp\": \"%d\"}", userId, System.currentTimeMillis());
+        String encodedPayload = Base64.getEncoder().encodeToString(jsonPayload.getBytes(StandardCharsets.UTF_8));
 
         String base64QR;
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 250, 250);
+            BitMatrix bitMatrix = qrCodeWriter.encode(encodedPayload, BarcodeFormat.QR_CODE, 250, 250);
             BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -212,10 +217,35 @@ public class CustomerService {
         return base64QR;
     }
 
+    public List<CustomerResponseDTO.GetPendingReviewRes> searchPendingReview(Long customerId) {
+
+        Customer customer = getCustomerByUserId(customerId);
+        List<StampLog> stampLogList = stampLogService.searchPendingReviewsByCustomer(customerId);
+
+        return CustomerConverter.toSearchPendingReviewRes(stampLogList);
+    }
+
     public Page<StampBoard> searchStampBoards(Long customerId, CommonPageReq pageRequest) {
 
         Pageable pageable = pageRequest.toPageable();
 
         return stampBoardService.searchStampBoardByCustomerId(customerId, pageable);
+    }
+
+
+    public CafeResponseDTO.SearchReviewsRes searchCustomerReviews(CommonPageReq pageRequest, Long customerId) {
+        // 1. 소비자 ID로 리뷰 페이지 조회
+        Page<Review> reviewPage = reviewService.findReviewByCustomerId(customerId, pageRequest.toPageable());
+
+        // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
+        List<CafeResponseDTO.GetReviewRes> reviewResList = reviewPage.stream()
+                .map(review -> {
+                    List<Keyword> keywords = keywordService.getKeywordsByReview(review);
+                    return ReviewConverter.toGetReviewRes(review, keywords);
+                })
+                .toList();
+
+        // 3. 최종 응답 DTO 조립
+        return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
     }
 }

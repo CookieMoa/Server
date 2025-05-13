@@ -11,6 +11,7 @@ import com.example.springserver.global.common.paging.CommonPageRes;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -153,5 +154,22 @@ public class CustomerConverter {
                 .limit(stampBoardList.getSize())
                 .page(stampBoardList.getNumber())
                 .build();
+    }
+
+    // SearchPendingReviewRes DTO
+    public static List<CustomerResponseDTO.GetPendingReviewRes> toSearchPendingReviewRes(List<StampLog> stampLogList) {
+
+        return stampLogList.stream()
+                .map(stampLog -> {
+                    Cafe cafe = stampLog.getStampBoard().getCafe();
+
+                    return CustomerResponseDTO.GetPendingReviewRes.builder()
+                            .stampLogId(stampLog.getId())
+                            .cafeId(cafe.getId())
+                            .cafeName(cafe.getName())
+                            .date(formatDateTime(stampLog.getCreatedAt()))
+                            .build();
+                })
+                .toList();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.springserver.domain.customer.converter;
 
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.converter.KeywordConverter;
@@ -75,7 +76,7 @@ public class CustomerConverter {
                 .build();
     }
 
-    public static CustomerResponseDTO.GetCustomerDetailRes toGetCustomerDetailRes(Customer customer, List<Keyword> keywords, Long visitedCafeCount, Long totalStampCount, Long totalUsedStampCount){
+    public static CustomerResponseDTO.GetCustomerDetailRes toGetCustomerDetailRes(Customer customer, List<Keyword> keywords, Long visitedCafeCount, Long totalStampCount, Long totalUsedStampCount, List<CafeResponseDTO.GetReviewRes> maliciousReviewList, List<CafeResponseDTO.GetReviewRes> reviewList){
         List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
                 .map(KeywordConverter::toKeywordDto).toList();
 
@@ -88,6 +89,8 @@ public class CustomerConverter {
                 .visitedCafeCount(visitedCafeCount)
                 .totalStampCount(totalStampCount)
                 .totalUsedStampCount(totalUsedStampCount)
+                .maliciousReviewList(maliciousReviewList)
+                .reviewList(reviewList)
                 .createdAt(customer.getCreatedAt())
                 .build();
     }

@@ -177,7 +177,24 @@ public class CustomerService {
             Long visitedCafeCount = stampBoardService.countAllByCustomer(user);
             Long totalUsedStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.USED);
             Long totalStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.ISSUED);
-            userListDTO.add(CustomerConverter.toGetCustomerDetailRes(user, keywords, visitedCafeCount, totalStampCount, totalUsedStampCount));
+            Pageable pageable = PageRequest.of(0, 3);
+            Page<Review> maliciousReviewPage = reviewService.findReviewByCustomerId(user.getId(), pageable);
+            List<CafeResponseDTO.GetReviewRes> maliciousReviewList = maliciousReviewPage.stream()
+                    .map(review -> {
+                        List<Keyword> reviewKeywords = keywordService.getKeywordsByReview(review);
+                        return ReviewConverter.toGetReviewRes(review, reviewKeywords);
+                    })
+                    .toList();
+
+            Page<Review> reviewPage = reviewService.findReviewByCustomerId(user.getId(), pageable);
+            List<CafeResponseDTO.GetReviewRes> reviewList = reviewPage.stream()
+                    .map(review -> {
+                        List<Keyword> reviewKeywords = keywordService.getKeywordsByReview(review);
+                        return ReviewConverter.toGetReviewRes(review, reviewKeywords);
+                    })
+                    .toList();
+
+            userListDTO.add(CustomerConverter.toGetCustomerDetailRes(user, keywords, visitedCafeCount, totalStampCount, totalUsedStampCount, maliciousReviewList, reviewList));
         }
         return userListDTO;
     }

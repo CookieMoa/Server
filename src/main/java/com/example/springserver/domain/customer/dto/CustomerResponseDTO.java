@@ -1,5 +1,6 @@
 package com.example.springserver.domain.customer.dto;
 
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.domain.stamp.dto.StampResponseDTO;
 import com.example.springserver.global.common.paging.CommonPageRes;
@@ -64,6 +65,8 @@ public class CustomerResponseDTO {
         private Long totalStampCount;
         private Long totalUsedStampCount;
         private LocalDateTime createdAt;
+        private List<CafeResponseDTO.GetReviewRes> maliciousReviewList;
+        private List<CafeResponseDTO.GetReviewRes> reviewList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }
 

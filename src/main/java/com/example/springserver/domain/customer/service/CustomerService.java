@@ -10,6 +10,7 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.customer.repository.CustomerRepository;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.log.enums.StampLogStatus;
 import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.dto.UserResponseDTO;
@@ -26,6 +27,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,13 +59,25 @@ public class CustomerService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
-    public List<Customer> getTop5RecentUser() {
-        return customerRepository.findTop5ByOrderByCreatedAtDesc();
+    public List<Customer> getTopNewUser(int count, String keyword) {
+        Pageable pageable = PageRequest.of(0, count);
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return customerRepository.findAllByOrderByCreatedAtDesc(pageable);
+        } else {
+            return customerRepository.findByNameContainingIgnoreCaseOrderByCreatedAtDesc(keyword, pageable);
+        }
+    }
+
+
+    public List<Customer> getTopNewUser(int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return customerRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
     public List<CustomerResponseDTO.GetCustomerRes> getRecentUser() {
         List<CustomerResponseDTO.GetCustomerRes> userListDTO = new ArrayList<>();
-        List<Customer> userList = getTop5RecentUser();
+        List<Customer> userList = getTopNewUser(5);
         for (Customer customer : userList) {
             List<Keyword> keywords = keywordService.getKeywordsByCustomer(customer);
             userListDTO.add(CustomerConverter.toGetCustomerRes(customer, keywords));
@@ -153,6 +167,19 @@ public class CustomerService {
         List<Keyword> keywords = keywordService.getKeywordsByCustomer(customer);
 
         return CustomerConverter.toGetCustomerRes(customer, keywords);
+    }
+
+    public List<CustomerResponseDTO.GetCustomerDetailRes> getUserList(String keyword) {
+        List<CustomerResponseDTO.GetCustomerDetailRes> userListDTO = new ArrayList<>();
+        List<Customer> userList = getTopNewUser(10, keyword);
+        for (Customer user : userList) {
+            List<Keyword> keywords = keywordService.getKeywordsByCustomer(user);
+            Long visitedCafeCount = stampBoardService.countAllByCustomer(user);
+            Long totalUsedStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.USED);
+            Long totalStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.ISSUED);
+            userListDTO.add(CustomerConverter.toGetCustomerDetailRes(user, keywords, visitedCafeCount, totalStampCount, totalUsedStampCount));
+        }
+        return userListDTO;
     }
 
     public Page<Customer> searchCustomer(CommonPageReq pageRequest, String query) {

@@ -75,6 +75,23 @@ public class CustomerConverter {
                 .build();
     }
 
+    public static CustomerResponseDTO.GetCustomerDetailRes toGetCustomerDetailRes(Customer customer, List<Keyword> keywords, Long visitedCafeCount, Long totalStampCount, Long totalUsedStampCount){
+        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
+                .map(KeywordConverter::toKeywordDto).toList();
+
+        return CustomerResponseDTO.GetCustomerDetailRes.builder()
+                .customerId(customer.getId())
+                .name(customer.getName())
+                .imgUrl(customer.getImgUrl())
+                .keywordList(keywordDtoList)
+                .email(customer.getUser().getUsername())
+                .visitedCafeCount(visitedCafeCount)
+                .totalStampCount(totalStampCount)
+                .totalUsedStampCount(totalUsedStampCount)
+                .createdAt(customer.getCreatedAt())
+                .build();
+    }
+
     public static CustomerResponseDTO.GetCustomerRes toSimpleGetCustomerRes(Customer customer) {
         return CustomerResponseDTO.GetCustomerRes.builder()
                 .customerId(customer.getId())

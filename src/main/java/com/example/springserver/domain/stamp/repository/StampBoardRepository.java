@@ -1,5 +1,6 @@
 package com.example.springserver.domain.stamp.repository;
 
+import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.StampBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,5 @@ public interface StampBoardRepository extends JpaRepository<StampBoard, Long> {
     Optional<StampBoard> findStampBoardByCafeIdAndCustomerId(Long cafeId, Long customerId);
 
     Page<StampBoard> findByCustomerId(Long customerId, Pageable pageable);
+    Long countAllByCustomer(Customer customer);
 }

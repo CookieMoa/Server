@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "customers")
 public class Customer extends BaseEntity {
-
     @Id
     private Long id;
 

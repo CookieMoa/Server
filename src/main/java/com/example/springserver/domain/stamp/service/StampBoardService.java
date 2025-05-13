@@ -42,4 +42,8 @@ public class StampBoardService {
         // 1. StampBoard 검색
         return stampBoardRepository.findByCustomerId(customerId, pageable);
     }
+
+    public Long countAllByCustomer(Customer customer) {
+        return stampBoardRepository.countAllByCustomer(customer);
+    }
 }

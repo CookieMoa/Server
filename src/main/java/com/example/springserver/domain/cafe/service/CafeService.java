@@ -8,6 +8,9 @@ import com.example.springserver.domain.cafe.repository.CafeRepository;
 import com.example.springserver.domain.cafe.repository.StampRewardRepository;
 import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
+import com.example.springserver.domain.log.enums.StampLogStatus;
+import com.example.springserver.domain.log.service.StampLogService;
+import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
@@ -18,6 +21,8 @@ import com.example.springserver.global.exception.GeneralException;
 import com.example.springserver.global.s3.S3Service;
 import com.example.springserver.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -35,6 +40,7 @@ public class CafeService {
 
     private final CafeRepository cafeRepository;
     private final StampRewardRepository stampRewardRepository;
+    private final StampBoardService stampBoardService;
     private final StampLogService stampLogService;
     private final UserService userService;
     private final ReviewService reviewService;
@@ -48,14 +54,26 @@ public class CafeService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
-    public List<Cafe> getTop5RecentCafe() {
-        return cafeRepository.findTop5ByOrderByCreatedAtDesc();
+    public List<Cafe> getTopNewCafe(int count, String keyword) {
+        Pageable pageable = PageRequest.of(0, count);
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return cafeRepository.findAllByOrderByCreatedAtDesc(pageable);
+        } else {
+            return cafeRepository.findByNameContainingIgnoreCaseOrderByCreatedAtDesc(keyword, pageable);
+        }
+    }
+
+
+    public List<Cafe> getTopNewCafe(int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return cafeRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
     public List<CafeResponseDTO.GetCafeRes> getRecentCafe() {
         List<CafeResponseDTO.GetCafeRes> cafeListDTO = new ArrayList<>();
 
-        List<Cafe> cafeList = getTop5RecentCafe();
+        List<Cafe> cafeList = getTopNewCafe(5);
         for (Cafe cafe : cafeList) {
             List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
             List<StampReward> rewards = getStampRewardsByCafe(cafe);
@@ -119,13 +137,23 @@ public class CafeService {
         return CafeConverter.toGetCafeRes(cafe, keywords, rewards);
     }
 
+    public List<CafeResponseDTO.GetMyCafeRes> getCafeList(String keyword) {
+        List<CafeResponseDTO.GetMyCafeRes> cafeListDTO = new ArrayList<>();
+        List<Cafe> cafeList = getTopNewCafe(10, keyword);
+        for (Cafe cafe : cafeList) {
+            List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
+            List<StampReward> rewards = getStampRewardsByCafe(cafe);
+            cafeListDTO.add(CafeConverter.toGetMyCafeRes(cafe, keywords, rewards));
+        }
+        return cafeListDTO;
+    }
+
+
     public CafeResponseDTO.GetMyCafeRes getMyCafe(CustomUserDetails userDetail) {
         UserEntity user = userService.getUserByUsername(userDetail.getUsername());
         Cafe cafe = getCafeByUserId(user.getId());
-
         List<Keyword> keywords = keywordService.getKeywordsByCafe(cafe);
         List<StampReward> rewards = getStampRewardsByCafe(cafe);
-
         return CafeConverter.toGetMyCafeRes(cafe, keywords, rewards);
     }
 

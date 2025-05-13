@@ -44,4 +44,16 @@ public class AdminController {
     public ApiResponse<AdminResponseDTO.GetStampTransactionsRes> getStampTransactions() {
         return ApiResponse.onSuccess(adminService.getStampTransactions());
     }
+
+    @Operation(summary = "카페 리스트 조회")
+    @GetMapping("/all/cafe")
+    public ApiResponse<AdminResponseDTO.GetCafeListRes> getAllCafe(@RequestParam(required = false) String keyword) {
+        return ApiResponse.onSuccess(adminService.getAllCafe(keyword));
+    }
+
+    @Operation(summary = "유저 리스트 조회")
+    @GetMapping("/all/user")
+    public ApiResponse<AdminResponseDTO.GetUserListRes> getAllUser(@RequestParam(required = false) String keyword) {
+        return ApiResponse.onSuccess(adminService.getAllUser(keyword));
+    }
 }

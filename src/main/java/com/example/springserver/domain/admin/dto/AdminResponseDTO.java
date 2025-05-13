@@ -56,4 +56,29 @@ public class AdminResponseDTO {
     public static class GetStampTransactionsRes {
         private List<StampTransactionDto> stampTransactionList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CafeDTO {
+        private Long hour;
+        private Long count;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetCafeListRes {
+        private List<CafeResponseDTO.GetMyCafeRes> cafeList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetUserListRes {
+        private List<CustomerResponseDTO.GetCustomerDetailRes> userList;
+    }
 }

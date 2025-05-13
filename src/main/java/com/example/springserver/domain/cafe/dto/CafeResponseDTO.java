@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CafeResponseDTO {
@@ -68,6 +69,7 @@ public class CafeResponseDTO {
         private String advImgUrl;
         private String openTime;
         private String closeTime;
+        private LocalDateTime createdAt;
         private List<StampRewardDto> rewardList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }

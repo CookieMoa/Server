@@ -15,5 +15,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Page<Customer> findByNameStartingWith(String query, Pageable pageable);
     List<Customer> findTop5ByOrderByCreatedAtDesc();
+    List<Customer> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    List<Customer> findByNameContainingIgnoreCaseOrderByCreatedAtDesc(String keyword, Pageable pageable);
 }
 

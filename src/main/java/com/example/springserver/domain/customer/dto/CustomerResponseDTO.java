@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CustomerResponseDTO {
@@ -47,6 +48,23 @@ public class CustomerResponseDTO {
         private Long customerId;
         private String name;
         private String imgUrl;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetCustomerDetailRes {
+        private Long customerId;
+        private String name;
+        private String imgUrl;
+        private String email;
+        private Long visitedCafeCount;
+        private Long totalStampCount;
+        private Long totalUsedStampCount;
+        private LocalDateTime createdAt;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }
 

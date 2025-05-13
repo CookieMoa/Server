@@ -128,6 +128,7 @@ public class CafeConverter {
                 .closeTime(formatTime(cafe.getCloseTime()))
                 .rewardList(rewardDtoList)
                 .keywordList(keywordDtoList)
+                .createdAt(cafe.getCreatedAt())
                 .build();
     }
 

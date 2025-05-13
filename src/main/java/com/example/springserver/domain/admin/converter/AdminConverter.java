@@ -41,4 +41,16 @@ public class AdminConverter {
                 .count(count)
                 .build();
     }
+
+    public static AdminResponseDTO.GetCafeListRes toCafeListRes(List<CafeResponseDTO.GetMyCafeRes> cafeList) {
+        return AdminResponseDTO.GetCafeListRes.builder()
+                .cafeList(cafeList)
+                .build();
+    }
+
+    public static AdminResponseDTO.GetUserListRes toUserListRes(List<CustomerResponseDTO.GetCustomerDetailRes> userList) {
+        return AdminResponseDTO.GetUserListRes.builder()
+                .userList(userList)
+                .build();
+    }
 }

@@ -90,4 +90,12 @@ public class AdminService {
                 .collect(Collectors.toList());
         return AdminConverter.toStampTransactionsRes(stampTransactionList);
     }
+
+    public AdminResponseDTO.GetCafeListRes getAllCafe(String keyword) {
+        return AdminConverter.toCafeListRes(cafeService.getCafeList(keyword));
+    }
+
+    public AdminResponseDTO.GetUserListRes getAllUser(String keyword) {
+        return AdminConverter.toUserListRes(customerService.getUserList(keyword));
+    }
 }

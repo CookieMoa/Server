@@ -56,15 +56,16 @@ public class ReviewConverter {
                 .build();
     }
 
-    public static CafeResponseDTO.GetReviewRes toGetReviewRes(Review review, List<Keyword> keywords){
+    public static CafeResponseDTO.GetCafeReviewRes toGetCafeReviewRes(Review review, List<Keyword> keywords){
         List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
                 .map(KeywordConverter::toKeywordDto).toList();
 
-        return CafeResponseDTO.GetReviewRes.builder()
+        return CafeResponseDTO.GetCafeReviewRes.builder()
                 .reviewId(review.getId())
                 .cafeId(review.getCafe().getId())
                 .customerId(review.getCustomer().getId())
-                .name(review.getName())
+                .customerName(review.getName())
+                .customerImgUrl(review.getCustomer().getImgUrl())
                 .content(review.getContent())
                 .keywordList(keywordDtoList)
                 .createdAt(formatDateTime(review.getCreatedAt()))
@@ -72,9 +73,36 @@ public class ReviewConverter {
                 .build();
     }
 
-    public static CafeResponseDTO.SearchReviewsRes toSearchReviewsRes(Page<Review> reviewList, List<CafeResponseDTO.GetReviewRes> getReviewResList) {
+    public static CafeResponseDTO.SearchCafeReviewsRes toSearchCafeReviewsRes(Page<Review> reviewList, List<CafeResponseDTO.GetCafeReviewRes> getReviewResList) {
 
-        return CafeResponseDTO.SearchReviewsRes.builder()
+        return CafeResponseDTO.SearchCafeReviewsRes.builder()
+                .reviewList(getReviewResList)
+                .count(reviewList.getTotalElements())
+                .limit(reviewList.getSize())
+                .page(reviewList.getNumber())
+                .build();
+    }
+
+    public static CustomerResponseDTO.GetCustomerReviewRes toGetCustomerReviewRes(Review review, List<Keyword> keywords){
+        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
+                .map(KeywordConverter::toKeywordDto).toList();
+
+        return CustomerResponseDTO.GetCustomerReviewRes.builder()
+                .reviewId(review.getId())
+                .cafeId(review.getCafe().getId())
+                .customerId(review.getCustomer().getId())
+                .cafeName(review.getCafe().getName())
+                .cafeImgUrl(review.getCafe().getImgUrl())
+                .content(review.getContent())
+                .keywordList(keywordDtoList)
+                .createdAt(formatDateTime(review.getCreatedAt()))
+                .updatedAt(formatDateTime(review.getUpdatedAt()))
+                .build();
+    }
+
+    public static CustomerResponseDTO.SearchCustomerReviewsRes toSearchCustomerReviewsRes(Page<Review> reviewList, List<CustomerResponseDTO.GetCustomerReviewRes> getReviewResList) {
+
+        return CustomerResponseDTO.SearchCustomerReviewsRes.builder()
                 .reviewList(getReviewResList)
                 .count(reviewList.getTotalElements())
                 .limit(reviewList.getSize())

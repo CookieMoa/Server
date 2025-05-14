@@ -65,8 +65,8 @@ public class CustomerResponseDTO {
         private Long totalStampCount;
         private Long totalUsedStampCount;
         private LocalDateTime createdAt;
-        private List<CafeResponseDTO.GetReviewRes> maliciousReviewList;
-        private List<CafeResponseDTO.GetReviewRes> reviewList;
+        private List<CafeResponseDTO.GetCafeReviewRes> maliciousReviewList;
+        private List<CafeResponseDTO.GetCafeReviewRes> reviewList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }
 
@@ -103,5 +103,29 @@ public class CustomerResponseDTO {
     @AllArgsConstructor
     public static class SearchStampBoardsRes extends CommonPageRes {
         private List<StampResponseDTO.GetStampBoardRes> stampBoardList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetCustomerReviewRes {
+        private Long reviewId;
+        private Long cafeId;
+        private Long customerId;
+        private String cafeName;
+        private String cafeImgUrl;
+        private String content;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+        private String createdAt;
+        private String updatedAt;
+    }
+
+    @SuperBuilder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchCustomerReviewsRes extends CommonPageRes {
+        private List<CustomerResponseDTO.GetCustomerReviewRes> reviewList;
     }
 }

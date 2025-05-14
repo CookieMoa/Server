@@ -324,19 +324,19 @@ public class CafeService {
         return ReviewConverter.toPostReviewRes(review, keywords);
     }
 
-    public CafeResponseDTO.SearchReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
+    public CafeResponseDTO.SearchCafeReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
         // 1. 카페 ID로 리뷰 페이지 조회
         Page<Review> reviewPage = reviewService.findReviewByCafeId(cafeId, pageRequest.toPageable());
 
         // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
-        List<CafeResponseDTO.GetReviewRes> reviewResList = reviewPage.stream()
+        List<CafeResponseDTO.GetCafeReviewRes> reviewResList = reviewPage.stream()
                 .map(review -> {
                     List<Keyword> keywords = keywordService.getKeywordsByReview(review);
-                    return ReviewConverter.toGetReviewRes(review, keywords);
+                    return ReviewConverter.toGetCafeReviewRes(review, keywords);
                 })
                 .toList();
 
         // 3. 최종 응답 DTO 조립
-        return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
+        return ReviewConverter.toSearchCafeReviewsRes(reviewPage, reviewResList);
     }
 }

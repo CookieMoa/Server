@@ -3,6 +3,7 @@ package com.example.springserver.domain.customer.dto;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.domain.stamp.dto.StampResponseDTO;
+import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -65,6 +66,7 @@ public class CustomerResponseDTO {
         private Long totalStampCount;
         private Long totalUsedStampCount;
         private LocalDateTime createdAt;
+        private AccountStatus accountStatus;
         private List<CafeResponseDTO.GetCafeReviewRes> maliciousReviewList;
         private List<CafeResponseDTO.GetCafeReviewRes> reviewList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;

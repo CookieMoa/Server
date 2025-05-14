@@ -56,4 +56,32 @@ public class AdminController {
     public ApiResponse<AdminResponseDTO.GetUserListRes> getAllUser(@RequestParam(required = false) String keyword) {
         return ApiResponse.onSuccess(adminService.getAllUser(keyword));
     }
+
+    @Operation(summary = "유저 정지")
+    @PatchMapping("/user/lock/{userId}")
+    public ApiResponse<Void> lockUser(@PathVariable("userId") Long userId) {
+        adminService.lockUser(userId);
+        return ApiResponse.onSuccess(null);
+    }
+
+    @Operation(summary = "유저 정지 해제")
+    @PatchMapping("/user/unlock/{userId}")
+    public ApiResponse<Void> unlockUser(@PathVariable("userId") Long userId) {
+        adminService.unlockUser(userId);
+        return ApiResponse.onSuccess(null);
+    }
+
+    @Operation(summary = "카페 정지")
+    @PatchMapping("/cafe/lock/{cafeId}")
+    public ApiResponse<Void> lockCafe(@PathVariable("cafeId") Long cafeId) {
+        adminService.lockCafe(cafeId);
+        return ApiResponse.onSuccess(null);
+    }
+
+    @Operation(summary = "카페 정지 해제")
+    @PatchMapping("/cafe/unlock/{cafeId}")
+    public ApiResponse<Void> unlockCafe(@PathVariable("cafeId") Long cafeId) {
+        adminService.unlockCafe(cafeId);
+        return ApiResponse.onSuccess(null);
+    }
 }

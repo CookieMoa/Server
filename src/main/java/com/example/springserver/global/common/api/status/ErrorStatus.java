@@ -79,7 +79,10 @@ public enum ErrorStatus implements BaseCode {
     NOT_ENOUGH_STAMPS(HttpStatus.BAD_REQUEST, "STAMP4005", "스탬프가 부족합니다."),
 
     // 로그 관련 에러
-    STAMPLOG_NOT_FOUND(HttpStatus.BAD_REQUEST, "STAMPLOG4004", "해당 스탬프로그가 존재하지 않습니다.");
+    STAMPLOG_NOT_FOUND(HttpStatus.BAD_REQUEST, "STAMPLOG4004", "해당 스탬프로그가 존재하지 않습니다."),
+
+    // 정지 관련 에러
+    SUSPENDED(HttpStatus.FORBIDDEN, "SUSPENDED4001", "해당 유저 또는 카페는 정지된 상태입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

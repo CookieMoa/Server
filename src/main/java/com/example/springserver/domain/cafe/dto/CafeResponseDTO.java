@@ -1,5 +1,6 @@
 package com.example.springserver.domain.cafe.dto;
 
+import com.example.springserver.domain.cafe.enums.CafeStatus;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import lombok.AllArgsConstructor;
@@ -71,6 +72,7 @@ public class CafeResponseDTO {
         private String advImgUrl;
         private String openTime;
         private String closeTime;
+        private CafeStatus cafeStatus;
         private LocalDateTime createdAt;
         private List<StampRewardDto> rewardList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;

@@ -163,7 +163,7 @@ public class CafeController {
 
     @Operation(summary = "카페 리뷰 검색")
     @GetMapping(value = "/{cafeId}/reviews")
-    public ApiResponse<CafeResponseDTO.SearchReviewsRes> searchCafeReviews(
+    public ApiResponse<CafeResponseDTO.SearchCafeReviewsRes> searchCafeReviews(
             @AuthenticationPrincipal CustomUserDetails userDetail,
             @ModelAttribute @Valid CommonPageReq pageRequest,
             @PathVariable("cafeId") Long cafeId) {

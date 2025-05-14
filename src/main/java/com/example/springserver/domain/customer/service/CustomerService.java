@@ -179,22 +179,29 @@ public class CustomerService {
             Long totalStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.ISSUED);
             Pageable pageable = PageRequest.of(0, 3);
             Page<Review> maliciousReviewPage = reviewService.findReviewByCustomerId(user.getId(), pageable);
-            List<CafeResponseDTO.GetReviewRes> maliciousReviewList = maliciousReviewPage.stream()
+            List<CafeResponseDTO.GetCafeReviewRes> maliciousReviewList = maliciousReviewPage.stream()
                     .map(review -> {
                         List<Keyword> reviewKeywords = keywordService.getKeywordsByReview(review);
-                        return ReviewConverter.toGetReviewRes(review, reviewKeywords);
+                        return ReviewConverter.toGetCafeReviewRes(review, reviewKeywords);
                     })
                     .toList();
 
             Page<Review> reviewPage = reviewService.findReviewByCustomerId(user.getId(), pageable);
-            List<CafeResponseDTO.GetReviewRes> reviewList = reviewPage.stream()
+            List<CafeResponseDTO.GetCafeReviewRes> reviewList = reviewPage.stream()
                     .map(review -> {
                         List<Keyword> reviewKeywords = keywordService.getKeywordsByReview(review);
-                        return ReviewConverter.toGetReviewRes(review, reviewKeywords);
+                        return ReviewConverter.toGetCafeReviewRes(review, reviewKeywords);
                     })
                     .toList();
 
-            userListDTO.add(CustomerConverter.toGetCustomerDetailRes(user, keywords, visitedCafeCount, totalStampCount, totalUsedStampCount, maliciousReviewList, reviewList));
+            userListDTO.add(CustomerConverter.toGetCustomerDetailRes(
+                    user,
+                    keywords,
+                    visitedCafeCount,
+                    totalStampCount,
+                    totalUsedStampCount,
+                    maliciousReviewList,
+                    reviewList));
         }
         return userListDTO;
     }
@@ -250,19 +257,19 @@ public class CustomerService {
     }
 
 
-    public CafeResponseDTO.SearchReviewsRes searchCustomerReviews(CommonPageReq pageRequest, Long customerId) {
+    public CustomerResponseDTO.SearchCustomerReviewsRes searchCustomerReviews(CommonPageReq pageRequest, Long customerId) {
         // 1. 소비자 ID로 리뷰 페이지 조회
         Page<Review> reviewPage = reviewService.findReviewByCustomerId(customerId, pageRequest.toPageable());
 
         // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
-        List<CafeResponseDTO.GetReviewRes> reviewResList = reviewPage.stream()
+        List<CustomerResponseDTO.GetCustomerReviewRes> reviewResList = reviewPage.stream()
                 .map(review -> {
                     List<Keyword> keywords = keywordService.getKeywordsByReview(review);
-                    return ReviewConverter.toGetReviewRes(review, keywords);
+                    return ReviewConverter.toGetCustomerReviewRes(review, keywords);
                 })
                 .toList();
 
         // 3. 최종 응답 DTO 조립
-        return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
+        return ReviewConverter.toSearchCustomerReviewsRes(reviewPage, reviewResList);
     }
 }

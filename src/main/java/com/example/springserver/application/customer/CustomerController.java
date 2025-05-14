@@ -111,7 +111,7 @@ public class CustomerController {
 
     @Operation(summary = "소비자 작성 리뷰 검색")
     @GetMapping(value = "/{customerId}/reviews")
-    public ApiResponse<CafeResponseDTO.SearchReviewsRes> searchCustomerReviews(
+    public ApiResponse<CustomerResponseDTO.SearchCustomerReviewsRes> searchCustomerReviews(
             @AuthenticationPrincipal CustomUserDetails userDetail,
             @ModelAttribute @Valid CommonPageReq pageRequest,
             @PathVariable("customerId") Long customerId) {

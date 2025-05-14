@@ -151,16 +151,16 @@ public class CafeResponseDTO {
         private String updatedAt;
     }
 
-
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class GetReviewRes {
+    public static class GetCafeReviewRes {
         private Long reviewId;
         private Long cafeId;
         private Long customerId;
-        private String name;
+        private String customerName;
+        private String customerImgUrl;
         private String content;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
         private String createdAt;
@@ -171,7 +171,7 @@ public class CafeResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SearchReviewsRes extends CommonPageRes {
-        private List<CafeResponseDTO.GetReviewRes> reviewList;
+    public static class SearchCafeReviewsRes extends CommonPageRes {
+        private List<CafeResponseDTO.GetCafeReviewRes> reviewList;
     }
 }

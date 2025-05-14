@@ -76,7 +76,15 @@ public class CustomerConverter {
                 .build();
     }
 
-    public static CustomerResponseDTO.GetCustomerDetailRes toGetCustomerDetailRes(Customer customer, List<Keyword> keywords, Long visitedCafeCount, Long totalStampCount, Long totalUsedStampCount, List<CafeResponseDTO.GetReviewRes> maliciousReviewList, List<CafeResponseDTO.GetReviewRes> reviewList){
+    public static CustomerResponseDTO.GetCustomerDetailRes toGetCustomerDetailRes(
+                Customer customer,
+                List<Keyword> keywords,
+                Long visitedCafeCount,
+                Long totalStampCount,
+                Long totalUsedStampCount,
+                List<CafeResponseDTO.GetCafeReviewRes> maliciousReviewList,
+                List<CafeResponseDTO.GetCafeReviewRes> reviewList
+    ) {
         List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
                 .map(KeywordConverter::toKeywordDto).toList();
 

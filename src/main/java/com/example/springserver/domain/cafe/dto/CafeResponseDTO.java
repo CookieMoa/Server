@@ -174,4 +174,28 @@ public class CafeResponseDTO {
     public static class SearchCafeReviewsRes extends CommonPageRes {
         private List<CafeResponseDTO.GetCafeReviewRes> reviewList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetCafeNearByRes {
+        private Long cafeId;
+        private String name;
+        private String address;
+        private String imgUrl;
+        private Double latitude;
+        private Double longitude;
+        private Double distance;
+        private List<KeywordResponseDTO.KeywordDto> keywordList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchCafeNearByRes {
+        private List<CafeResponseDTO.GetCafeNearByRes> cafeList;
+        private String sortBy;
+    }
 }

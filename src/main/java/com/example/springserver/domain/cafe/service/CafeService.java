@@ -348,6 +348,8 @@ public class CafeService {
             Double radius,
             String sortBy
     ) {
+        UserEntity user = userService.getUserByUsername(userDetail.getUsername());
+        Customer customer = customerService.getCustomerByUserId(user.getId());
         // 1. Redis에서 거리 포함 검색
         GeoResults<RedisGeoCommands.GeoLocation<String>> geoResults =
                 redisTemplate.opsForGeo().radius(
@@ -376,7 +378,6 @@ public class CafeService {
         List<Cafe> cafes = cafeRepository.findAllByIdIn(cafeIds);
 
         // 4. 소비자 키워드 조회
-        Customer customer = customerService.getCustomerByUserId(userDetail.getUserId());
         List<Keyword> customerKeywords = keywordService.getKeywordsByCustomer(customer);
         Set<Long> customerKeywordIds = customerKeywords.stream()
                 .map(Keyword::getId)

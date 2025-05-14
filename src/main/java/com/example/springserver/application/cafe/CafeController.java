@@ -170,4 +170,16 @@ public class CafeController {
 
         return ApiResponse.onSuccess(cafeService.searchCafeReviews(pageRequest, cafeId));
     }
+
+    @Operation(summary = "소비자 기준 카페 검색 (지도)")
+    @GetMapping(value = "/cafes/nearby")
+    public ApiResponse<CafeResponseDTO.SearchCafeNearByRes> searchCafeNearBy(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestParam Double lat,
+            @RequestParam Double lon,
+            @RequestParam(required = false, defaultValue = "3.0") Double radius,
+            @RequestParam(required = false, defaultValue = "distance") String sortBy) {
+
+        return ApiResponse.onSuccess(cafeService.searchCafeNearBy(userDetail, lat, lon, radius, sortBy));
+    }
 }

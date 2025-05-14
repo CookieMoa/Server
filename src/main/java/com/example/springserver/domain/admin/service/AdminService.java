@@ -98,4 +98,20 @@ public class AdminService {
     public AdminResponseDTO.GetUserListRes getAllUser(String keyword) {
         return AdminConverter.toUserListRes(customerService.getUserList(keyword));
     }
+
+    public void lockUser(Long userId) {
+        customerService.lockUser(userId);
+    }
+
+    public void unlockUser(Long userId) {
+        customerService.unlockUser(userId);
+    }
+
+    public void lockCafe(Long cafeId) {
+        cafeService.lockCafe(cafeId);
+    }
+
+    public void unlockCafe(Long cafeId) {
+        cafeService.unlockCafe(cafeId);
+    }
 }

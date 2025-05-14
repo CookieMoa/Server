@@ -35,10 +35,10 @@ public class StampService {
     private final StampLogService stampLogService;
 
     public StampResponseDTO.PostStampRes postStamp(StampRequestDTO.PostStampReq request) {
-
         Cafe cafe = cafeService.getCafeByUserId(request.getCafeId());
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
-
+        cafeService.validateCafeNotSuspended(cafe);
+        customerService.validateUserNotSuspended(customer);
         // 1. 스탬프 보드 조회 또는 생성
         StampBoard stampBoard = stampBoardService.getStampBoardOrPost(cafe, customer);
 
@@ -61,10 +61,10 @@ public class StampService {
     }
 
     public StampResponseDTO.PostStampRes useStamp(StampRequestDTO.PostStampReq request) {
-
         Cafe cafe = cafeService.getCafeByUserId(request.getCafeId());
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
-
+        cafeService.validateCafeNotSuspended(cafe);
+        customerService.validateUserNotSuspended(customer);
         // 1. 스탬프 보드 조회
         StampBoard stampBoard = stampBoardService.getStampBoard(cafe, customer);
 

@@ -4,6 +4,7 @@ import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
+import com.example.springserver.domain.cafe.enums.CafeStatus;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
 import com.example.springserver.domain.cafe.repository.StampRewardRepository;
 import com.example.springserver.domain.customer.service.CustomerService;
@@ -87,6 +88,13 @@ public class CafeService {
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
     }
+
+    public void validateCafeNotSuspended(Cafe cafe) {
+        if (cafe.getCafeStatus().equals(CafeStatus.LOCKED)) {
+            throw new GeneralException(ErrorStatus.SUSPENDED);
+        }
+    }
+
 
     public StampReward getStampRewardById(Long rewardId) {
         return stampRewardRepository.findById(rewardId)
@@ -338,5 +346,17 @@ public class CafeService {
 
         // 3. 최종 응답 DTO 조립
         return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
+    }
+
+    public void lockCafe(Long cafeId) {
+        Cafe cafe = getCafeByUserId(cafeId);
+        cafe.setCafeStatus(CafeStatus.LOCKED);
+        cafeRepository.save(cafe);
+    }
+
+    public void unlockCafe(Long cafeId) {
+        Cafe cafe = getCafeByUserId(cafeId);
+        cafe.setCafeStatus(CafeStatus.ACTIVE);
+        cafeRepository.save(cafe);
     }
 }

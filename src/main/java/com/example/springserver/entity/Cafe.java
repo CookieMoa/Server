@@ -1,5 +1,7 @@
 package com.example.springserver.entity;
 
+import com.example.springserver.domain.cafe.enums.CafeStatus;
+import com.example.springserver.domain.user.enums.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -50,6 +52,10 @@ public class Cafe extends BaseEntity {
     private LocalTime openTime;
     @Column(name = "close_time")
     private LocalTime closeTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(15) DEFAULT 'ACTIVE'", name = "cafe_status")
+    private CafeStatus cafeStatus;
 
     @Builder.Default
     @Column(name = "total_stamp_count")

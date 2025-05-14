@@ -4,6 +4,7 @@ package com.example.springserver.domain.customer.service;
 import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
+import com.example.springserver.domain.cafe.enums.CafeStatus;
 import com.example.springserver.domain.cafe.service.ReviewService;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
@@ -90,6 +91,13 @@ public class CustomerService {
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
     }
+
+    public void validateUserNotSuspended(Customer user) {
+        if (user.getUser().getAccountStatus().equals(AccountStatus.LOCKED)) {
+            throw new GeneralException(ErrorStatus.SUSPENDED);
+        }
+    }
+
 
     public CustomerResponseDTO.PostCustomerRes postCustomer(CustomerRequestDTO.PostCustomerReq request, MultipartFile profileImg) {
         UserEntity user = userService.getUserById(request.getId());
@@ -264,5 +272,17 @@ public class CustomerService {
 
         // 3. 최종 응답 DTO 조립
         return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
+    }
+
+    public void lockUser(Long customerId) {
+        Customer user = getCustomerByUserId(customerId);
+        user.getUser().setAccountStatus(AccountStatus.LOCKED);
+        customerRepository.save(user);
+    }
+
+    public void unlockUser(Long customerId) {
+        Customer user = getCustomerByUserId(customerId);
+        user.getUser().setAccountStatus(AccountStatus.ACTIVE);
+        customerRepository.save(user);
     }
 }

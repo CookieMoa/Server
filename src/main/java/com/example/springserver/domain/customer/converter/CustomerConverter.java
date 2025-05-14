@@ -91,6 +91,7 @@ public class CustomerConverter {
                 .totalUsedStampCount(totalUsedStampCount)
                 .maliciousReviewList(maliciousReviewList)
                 .reviewList(reviewList)
+                .accountStatus(customer.getUser().getAccountStatus())
                 .createdAt(customer.getCreatedAt())
                 .build();
     }

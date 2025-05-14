@@ -6,6 +6,7 @@ import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.converter.KeywordConverter;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
 import com.example.springserver.entity.*;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -182,4 +183,30 @@ public class CafeConverter {
                 .build();
     }
 
+    public static CafeResponseDTO.GetCafeNearByRes toGetCafeNearByRes(Cafe cafe, List<Keyword> keywords, Double distance){
+        List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
+                .map(KeywordConverter::toKeywordDto).toList();
+
+        return CafeResponseDTO.GetCafeNearByRes.builder()
+                .cafeId(cafe.getId())
+                .name(cafe.getName())
+                .address(cafe.getAddress())
+                .imgUrl(cafe.getImgUrl())
+                .latitude(cafe.getLatitude())
+                .longitude(cafe.getLongitude())
+                .distance(distance)
+                .keywordList(keywordDtoList)
+                .build();
+    }
+
+    public static CafeResponseDTO.SearchCafeNearByRes toSearchCafeNearByRes(
+            List<CafeResponseDTO.GetCafeNearByRes> getCafeNearByList,
+            String sortBy
+    ) {
+
+        return CafeResponseDTO.SearchCafeNearByRes.builder()
+                .cafeList(getCafeNearByList)
+                .sortBy(sortBy)
+                .build();
+    }
 }

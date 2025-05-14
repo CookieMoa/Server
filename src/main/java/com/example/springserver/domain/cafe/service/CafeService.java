@@ -25,14 +25,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.geo.Point;
+import org.springframework.data.geo.*;
+import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -332,20 +333,88 @@ public class CafeService {
         return ReviewConverter.toPostReviewRes(review, keywords);
     }
 
-    public CafeResponseDTO.SearchReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
+    public CafeResponseDTO.SearchCafeReviewsRes searchCafeReviews(CommonPageReq pageRequest, Long cafeId) {
         // 1. 카페 ID로 리뷰 페이지 조회
         Page<Review> reviewPage = reviewService.findReviewByCafeId(cafeId, pageRequest.toPageable());
 
         // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
-        List<CafeResponseDTO.GetReviewRes> reviewResList = reviewPage.stream()
+        List<CafeResponseDTO.GetCafeReviewRes> reviewResList = reviewPage.stream()
                 .map(review -> {
                     List<Keyword> keywords = keywordService.getKeywordsByReview(review);
-                    return ReviewConverter.toGetReviewRes(review, keywords);
+                    return ReviewConverter.toGetCafeReviewRes(review, keywords);
                 })
                 .toList();
 
         // 3. 최종 응답 DTO 조립
-        return ReviewConverter.toSearchReviewsRes(reviewPage, reviewResList);
+        return ReviewConverter.toSearchCafeReviewsRes(reviewPage, reviewResList);
+    }
+
+    public CafeResponseDTO.SearchCafeNearByRes searchCafeNearBy(
+            CustomUserDetails userDetail,
+            Double lat,
+            Double lon,
+            Double radius,
+            String sortBy
+    ) {
+        UserEntity user = userService.getUserByUsername(userDetail.getUsername());
+        Customer customer = customerService.getCustomerByUserId(user.getId());
+        // 1. Redis에서 거리 포함 검색
+        GeoResults<RedisGeoCommands.GeoLocation<String>> geoResults =
+                redisTemplate.opsForGeo().radius(
+                        "cafe-location",
+                        new Circle(new Point(lon, lat), new Distance(radius, Metrics.KILOMETERS)),
+                        RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
+                                .includeDistance()
+                );
+
+        if (geoResults == null || geoResults.getContent().isEmpty()) {
+            return CafeConverter.toSearchCafeNearByRes(Collections.emptyList(), sortBy);
+        }
+
+        // 2. 카페 ID & 거리 맵 추출
+        List<Long> cafeIds = new ArrayList<>();
+        Map<Long, Double> distanceMap = new HashMap<>();
+
+        for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : geoResults.getContent()) {
+            Long cafeId = Long.valueOf(result.getContent().getName());
+            double distance = result.getDistance().getValue();
+            cafeIds.add(cafeId);
+            distanceMap.put(cafeId, distance);
+        }
+
+        // 3. 카페 정보 조회 (MySQL)
+        List<Cafe> cafes = cafeRepository.findAllByIdIn(cafeIds);
+
+        // 4. 소비자 키워드 조회
+        List<Keyword> customerKeywords = keywordService.getKeywordsByCustomer(customer);
+        Set<Long> customerKeywordIds = customerKeywords.stream()
+                .map(Keyword::getId)
+                .collect(Collectors.toSet());
+
+        // 5. 카페 키워드 조회 + DTO 변환
+        List<CafeResponseDTO.GetCafeNearByRes> resultList = new ArrayList<>();
+
+        for (Cafe cafe : cafes) {
+            List<Keyword> cafeKeywords = keywordService.getKeywordsByCafe(cafe);
+            Double distance = distanceMap.get(cafe.getId());
+
+            resultList.add(CafeConverter.toGetCafeNearByRes(cafe, cafeKeywords, distance));
+        }
+
+        // 6. 정렬
+        if (sortBy.equalsIgnoreCase("preference")) {
+            resultList.sort(Comparator.comparingInt(
+                    (CafeResponseDTO.GetCafeNearByRes dto) ->
+                            (int) dto.getKeywordList().stream()
+                                    .filter(k -> customerKeywordIds.contains(k.getKeywordId()))
+                                    .count()
+            ).reversed());
+        } else {
+            resultList.sort(Comparator.comparingDouble(dto -> distanceMap.get(dto.getCafeId())));
+        }
+
+        // 7. 응답 반환
+        return CafeConverter.toSearchCafeNearByRes(resultList, sortBy);
     }
 
     public void lockCafe(Long cafeId) {

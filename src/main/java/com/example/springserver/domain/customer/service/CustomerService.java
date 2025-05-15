@@ -186,7 +186,7 @@ public class CustomerService {
             Long totalUsedStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.USED);
             Long totalStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.ISSUED);
             Pageable pageable = PageRequest.of(0, 3);
-            Page<Review> maliciousReviewPage = reviewService.findReviewByCustomerId(user.getId(), pageable);
+            Page<Review> maliciousReviewPage = reviewService.findReviewByCustomerId(user.getId(), true,pageable);
             List<CafeResponseDTO.GetCafeReviewRes> maliciousReviewList = maliciousReviewPage.stream()
                     .map(review -> {
                         List<Keyword> reviewKeywords = keywordService.getKeywordsByReview(review);
@@ -194,7 +194,7 @@ public class CustomerService {
                     })
                     .toList();
 
-            Page<Review> reviewPage = reviewService.findReviewByCustomerId(user.getId(), pageable);
+            Page<Review> reviewPage = reviewService.findReviewByCustomerId(user.getId(), false, pageable);
             List<CafeResponseDTO.GetCafeReviewRes> reviewList = reviewPage.stream()
                     .map(review -> {
                         List<Keyword> reviewKeywords = keywordService.getKeywordsByReview(review);

@@ -30,13 +30,14 @@ public class ReviewConverter {
         return time.format(formatter);
     }
 
-    public static Review toReview(CafeRequestDTO.PostReviewReq request, Cafe cafe, Customer customer){
+    public static Review toReview(CafeRequestDTO.PostReviewReq request, Cafe cafe, Customer customer, Boolean isMalicious){
 
         return Review.builder()
                 .customer(customer)
                 .cafe(cafe)
                 .content(request.getContent())
                 .name(customer.getName())
+                .isMalicious(isMalicious)
                 .build();
     }
 

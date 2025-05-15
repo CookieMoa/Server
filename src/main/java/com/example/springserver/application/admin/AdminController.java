@@ -101,7 +101,7 @@ public class AdminController {
     }
 
     @Operation(summary = "카페 스탬프 순 랭킹")
-    @PatchMapping("/cafe/rank")
+    @GetMapping("/cafe/rank")
     public ApiResponse<CafeResponseDTO.GetCafeRankRes> getCafeRank() {
         return ApiResponse.onSuccess(adminService.getCafeRank());
     }

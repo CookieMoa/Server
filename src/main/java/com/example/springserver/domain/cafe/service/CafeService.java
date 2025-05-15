@@ -435,6 +435,49 @@ public class CafeService {
         return CafeConverter.toSearchCafeNearByRes(resultList, sortBy);
     }
 
+    public CafeResponseDTO.SearchCafeAdvRes searchCafeAdv(
+            CustomUserDetails userDetail,
+            Double lat,
+            Double lon,
+            Double radius
+    ) {
+        UserEntity user = userService.getUserByUsername(userDetail.getUsername());
+        Customer customer = customerService.getCustomerByUserId(user.getId());
+        // 1. Redis에서 거리 포함 검색
+        GeoResults<RedisGeoCommands.GeoLocation<String>> geoResults =
+                redisTemplate.opsForGeo().radius(
+                        "cafe-location",
+                        new Circle(new Point(lon, lat), new Distance(radius, Metrics.KILOMETERS)),
+                        RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
+                                .includeDistance()
+                );
+
+        if (geoResults == null || geoResults.getContent().isEmpty()) {
+            return CafeConverter.toSearchCafeAdvRes(Collections.emptyList());
+        }
+
+        // 2. 카페 ID 추출
+        List<Long> cafeIds = new ArrayList<>();
+
+        for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : geoResults.getContent()) {
+            Long cafeId = Long.valueOf(result.getContent().getName());
+            cafeIds.add(cafeId);
+        }
+
+        // 3. 카페 정보 조회 (MySQL)
+        List<Cafe> cafes = cafeRepository.findAllByIdIn(cafeIds);
+
+        // 4. DTO 변환
+        List<CafeResponseDTO.GetCafeAdvRes> resultList = new ArrayList<>();
+
+        for (Cafe cafe : cafes) {
+            resultList.add(CafeConverter.toGetCafeAdvRes(cafe));
+        }
+
+        // 5. 응답 반환
+        return CafeConverter.toSearchCafeAdvRes(resultList);
+    }
+
     public CafeResponseDTO.SearchCafesRes searchCafes(
             CustomUserDetails userDetail,
             String query) {

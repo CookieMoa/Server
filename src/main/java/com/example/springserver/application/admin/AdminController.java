@@ -85,10 +85,16 @@ public class AdminController {
         return ApiResponse.onSuccess(null);
     }
 
-//    @Operation(summary = "키워드별 데이터 개수")
-//    @GetMapping("/review/count")
-//    public ApiResponse<Void> getReviewCount() {
-//        adminService.unlockCafe(cafeId);
-//        return ApiResponse.onSuccess(null);
-//    }
+    @Operation(summary = "키워드별 리뷰 개수")
+    @GetMapping("/review/count")
+    public ApiResponse<AdminResponseDTO.GetReviewCountRes> getReviewCount() {
+        return ApiResponse.onSuccess(adminService.getReviewCount());
+    }
+
+    @Operation(summary = "키워드 업데이트")
+    @PatchMapping("/cafe/keywords")
+    public ApiResponse<Void> updateKeywords() {
+        adminService.updateAllCafeKeywords();
+        return ApiResponse.onSuccess(null);
+    }
 }

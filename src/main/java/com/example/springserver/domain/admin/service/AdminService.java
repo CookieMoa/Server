@@ -28,6 +28,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.opencsv.CSVWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,13 +42,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -149,5 +150,84 @@ public class AdminService {
             keywordService.createCafeKeywordMappings(cafe, keywords);
         }
     }
+
+    public AdminResponseDTO.GetReviewCountRes getReviewCount() {
+        List<Review> reviewList = reviewService.findAll();
+
+        Map<String, Long> keywordCountMap = new HashMap<>();
+
+        for (Review review : reviewList) {
+            List<KeywordMapping> keywordMappings = review.getKeywordMappings();
+            if (keywordMappings != null) {
+                for (KeywordMapping mapping : keywordMappings) {
+                    String keywordName = mapping.getKeyword().getName();
+                    keywordCountMap.put(keywordName, keywordCountMap.getOrDefault(keywordName, 0L) + 1);
+                }
+            }
+        }
+
+        List<AdminResponseDTO.reviewCountDTO> reviewCountList = keywordCountMap.entrySet().stream()
+                .map(entry -> AdminResponseDTO.reviewCountDTO.builder()
+                        .name(entry.getKey())
+                        .count(entry.getValue())
+                        .build())
+                .collect(Collectors.toList());
+
+        return AdminResponseDTO.GetReviewCountRes.builder()
+                .reviewCountList(reviewCountList)
+                .build();
+    }
+
+    public File makeReviewKeywordCsv() {
+        List<Review> reviewList = reviewService.findAll();
+
+        List<String> LABEL_NAMES = Arrays.asList(
+                "quiet", "study_friendly", "power_outlets", "spacious", "cozy",
+                "good_coffee", "dessert", "instagrammable", "pet_friendly", "late_open"
+        );
+
+        File csvFile = null;
+
+        try {
+            csvFile = File.createTempFile("review_keywords_", ".csv");
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
+
+                List<String> header = new ArrayList<>();
+                header.add("review_text");
+                header.addAll(LABEL_NAMES);
+                writer.writeNext(header.toArray(new String[0]));
+
+                for (Review review : reviewList) {
+                    String text = review.getContent();
+                    List<KeywordMapping> mappings = review.getKeywordMappings();
+
+                    // 현재 리뷰에 존재하는 키워드 이름 모음
+                    Set<String> keywordSet = mappings != null
+                            ? mappings.stream()
+                            .map(km -> km.getKeyword().getName())
+                            .collect(Collectors.toSet())
+                            : Collections.emptySet();
+
+                    // 해당 키워드가 있으면 1, 없으면 0
+                    List<String> row = new ArrayList<>();
+                    row.add(text);
+                    for (String keyword : LABEL_NAMES) {
+                        row.add(keywordSet.contains(keyword) ? "1" : "0");
+                    }
+
+                    writer.writeNext(row.toArray(new String[0]));
+                }
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("CSV 생성 중 오류 발생", e);
+        }
+
+        return csvFile;
+    }
+
+//    public AdminResponseDTO.GetReviewCountRes trainingModel() {
+//
+//    }
 
 }

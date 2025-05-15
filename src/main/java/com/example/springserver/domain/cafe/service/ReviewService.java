@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,4 +25,8 @@ public class ReviewService {
     public Page<Review> findReviewByCustomerId(Long customerId, Pageable pageable) { return reviewRepository.findByCustomerIdOrderByCreatedAtDesc(customerId, pageable);}
 
     public Page<Review> findReviewByCustomerId(Long customerId, Boolean isMalicious, Pageable pageable) { return reviewRepository.findByCustomerIdAndMalicious(customerId, isMalicious,pageable);}
+
+    public List<Review> findAll(){
+        return reviewRepository.findAllBy();
+    }
 }

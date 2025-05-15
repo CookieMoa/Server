@@ -1,5 +1,6 @@
 package com.example.springserver.domain.admin.dto;
 
+import com.example.springserver.domain.ai.dto.AiResponseDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
@@ -80,5 +81,22 @@ public class AdminResponseDTO {
     @AllArgsConstructor
     public static class GetUserListRes {
         private List<CustomerResponseDTO.GetCustomerDetailRes> userList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetReviewCountRes {
+        private List<AdminResponseDTO.reviewCountDTO> reviewCountList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class reviewCountDTO {
+        private String name;
+        private Long count;
     }
 }

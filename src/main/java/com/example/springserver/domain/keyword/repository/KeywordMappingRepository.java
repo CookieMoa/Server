@@ -1,9 +1,6 @@
 package com.example.springserver.domain.keyword.repository;
 
-import com.example.springserver.entity.Cafe;
-import com.example.springserver.entity.Customer;
-import com.example.springserver.entity.KeywordMapping;
-import com.example.springserver.entity.Review;
+import com.example.springserver.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +10,6 @@ public interface KeywordMappingRepository extends JpaRepository<KeywordMapping, 
     List<KeywordMapping> findAllByCafe(Cafe cafe);
     List<KeywordMapping> findAllByReview(Review review);
     void deleteByCustomer(Customer customer);
+    List<KeywordMapping> findAllByKeywordInAndCafeIsNotNull(List<Keyword> keywords);
 }
 

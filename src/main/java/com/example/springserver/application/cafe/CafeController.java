@@ -182,4 +182,13 @@ public class CafeController {
 
         return ApiResponse.onSuccess(cafeService.searchCafeNearBy(userDetail, lat, lon, radius, sortBy));
     }
+
+    @Operation(summary = "검색어로 카페 검색")
+    @GetMapping(value = "/search")
+    public ApiResponse<CafeResponseDTO.SearchCafesRes> searchCafes(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestParam String query) {
+
+        return ApiResponse.onSuccess(cafeService.searchCafes(userDetail, query));
+    }
 }

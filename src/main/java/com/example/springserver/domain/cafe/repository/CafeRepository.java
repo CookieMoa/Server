@@ -16,6 +16,7 @@ public interface CafeRepository extends JpaRepository<Cafe, Long> {
     List<Cafe> findAllByOrderByCreatedAtDesc(Pageable pageable);
     List<Cafe> findAllByOrderByCreatedAtDesc();
     List<Cafe> findByNameContainingIgnoreCaseOrderByCreatedAtDesc(String keyword, Pageable pageable);
+    List<Cafe> findByNameContaining(String query);
 
     List<Cafe> findAllByOrderByTotalStampCountDesc(Pageable pageable);
     List<Cafe> findAllByOrderByTotalUsedStampCountDesc(Pageable pageable);

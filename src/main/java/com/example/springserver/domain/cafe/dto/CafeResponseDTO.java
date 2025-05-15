@@ -2,6 +2,7 @@ package com.example.springserver.domain.cafe.dto;
 
 import com.example.springserver.domain.cafe.enums.CafeStatus;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
+import com.example.springserver.domain.stamp.dto.StampResponseDTO;
 import com.example.springserver.global.common.paging.CommonPageRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -209,5 +210,26 @@ public class CafeResponseDTO {
     public static class SearchCafeNearByRes {
         private List<CafeResponseDTO.GetCafeNearByRes> cafeList;
         private String sortBy;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetCafesRes {
+        private Long cafeId;
+        private String name;
+        private String address;
+        private String imgUrl;
+        private String searchBy;
+        private StampResponseDTO.StampBoardDto stampBoard;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchCafesRes {
+        private List<CafeResponseDTO.GetCafesRes> cafeList;
     }
 }

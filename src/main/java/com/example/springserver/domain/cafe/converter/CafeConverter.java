@@ -5,6 +5,7 @@ import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.converter.KeywordConverter;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
+import com.example.springserver.domain.stamp.converter.StampConverter;
 import com.example.springserver.entity.*;
 import org.springframework.data.domain.Page;
 
@@ -231,7 +232,7 @@ public class CafeConverter {
                 .build();
     }
 
-    public static CafeResponseDTO.GetCafeRankRes toGetCafeRankRes(List<Cafe> issueCafeList, List<Cafe> useCafeList ){
+    public static CafeResponseDTO.GetCafeRankRes toGetCafeRankRes(List<Cafe> issueCafeList, List<Cafe> useCafeList ) {
         List<CafeResponseDTO.GetMyCafeRes> issue = issueCafeList.stream()
                 .map(CafeConverter::toGetMyCafeRes).toList();
         List<CafeResponseDTO.GetMyCafeRes> use = issueCafeList.stream()
@@ -240,6 +241,23 @@ public class CafeConverter {
         return CafeResponseDTO.GetCafeRankRes.builder()
                 .issue(issue)
                 .use(use)
+                .build();
+    }
+
+    public static CafeResponseDTO.GetCafesRes toGetCafesRes(Cafe cafe, StampBoard stampBoard, String searchBy) {
+        return CafeResponseDTO.GetCafesRes.builder()
+                .cafeId(cafe.getId())
+                .name(cafe.getName())
+                .address(cafe.getAddress())
+                .imgUrl(cafe.getImgUrl())
+                .searchBy(searchBy)
+                .stampBoard(StampConverter.toStampBoardDto(stampBoard))
+                .build();
+    }
+
+    public static CafeResponseDTO.SearchCafesRes toSearchCafesRes(List<CafeResponseDTO.GetCafesRes> cafeList) {
+        return CafeResponseDTO.SearchCafesRes.builder()
+                .cafeList(cafeList)
                 .build();
     }
 }

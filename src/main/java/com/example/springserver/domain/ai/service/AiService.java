@@ -44,9 +44,17 @@ public class AiService {
         List<String> predictedKeywords = new ArrayList<>();
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = BASE_AI_URL + "/predict/keywords?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String url = BASE_AI_URL + "/predict/keywords";
 
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> body = new HashMap<>();
+            body.put("text", text);
+
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 Object keywordsObj = response.getBody().get("predicted_keywords");
                 if (keywordsObj instanceof List<?>) {
@@ -62,6 +70,7 @@ public class AiService {
         }
         return predictedKeywords;
     }
+
 
     public Boolean predictIsMalicious(String text) {
         try {

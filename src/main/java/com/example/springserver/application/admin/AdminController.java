@@ -5,6 +5,7 @@ import com.example.springserver.domain.admin.service.AdminService;
 import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.auth.service.AuthorizationService;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
+import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.global.common.api.ApiResponse;
 import com.example.springserver.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,6 +105,12 @@ public class AdminController {
     @GetMapping("/cafe/rank")
     public ApiResponse<CafeResponseDTO.GetCafeRankRes> getCafeRank() {
         return ApiResponse.onSuccess(adminService.getCafeRank());
+    }
+
+    @Operation(summary = "유저 스탬프 순 랭킹")
+    @GetMapping("/user/rank")
+    public ApiResponse<CustomerResponseDTO.GetUserRankRes> getUserRank() {
+        return ApiResponse.onSuccess(adminService.getUserRank());
     }
 
 

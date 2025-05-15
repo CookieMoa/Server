@@ -49,6 +49,7 @@ public class CustomerResponseDTO {
         private Long customerId;
         private String name;
         private String imgUrl;
+        private LocalDateTime createdAt;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
     }
 

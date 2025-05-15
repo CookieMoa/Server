@@ -193,6 +193,31 @@ public class AdminService {
         return CafeConverter.toGetCafeRankRes(issueCafeList, useCafeList);
     }
 
+    public CustomerResponseDTO.GetUserRankRes getUserRank() {
+        List<Customer> customers = customerService.getAll();
+        List<CustomerResponseDTO.GetCustomerDetailRes> users = new ArrayList<>();
+
+        for (Customer user : customers) {
+            Long totalUsedStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.USED);
+            Long totalStampCount = stampLogService.getTotalCountByCustomer(user, StampLogStatus.ISSUED);
+            users.add(CustomerConverter.toGetCustomerDetailRes(user, totalStampCount, totalUsedStampCount));
+        }
+
+        // 총 발급 수 기준 상위 5명
+        List<CustomerResponseDTO.GetCustomerDetailRes> issue = users.stream()
+                .sorted(Comparator.comparingLong(CustomerResponseDTO.GetCustomerDetailRes::getTotalStampCount).reversed())
+                .limit(5)
+                .collect(Collectors.toList());
+
+        // 총 사용 수 기준 상위 5명
+        List<CustomerResponseDTO.GetCustomerDetailRes> use = users.stream()
+                .sorted(Comparator.comparingLong(CustomerResponseDTO.GetCustomerDetailRes::getTotalUsedStampCount).reversed())
+                .limit(5)
+                .collect(Collectors.toList());
+
+        return CustomerConverter.toGetUserRankRes(issue, use);
+    }
+
     public AdminResponseDTO.GetMaliciousReviewRes getMaliciousReview() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Review> reviewList = reviewService.findReviewByIsMalicious(true, pageable);

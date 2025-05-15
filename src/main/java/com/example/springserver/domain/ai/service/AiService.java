@@ -66,7 +66,7 @@ public class AiService {
     public Boolean predictIsMalicious(String text) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url =  BASE_AI_URL + "predict/hate?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String url =  BASE_AI_URL + "/predict/hate?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
 
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
             Object result = response.getBody().get("is_hate_speech");

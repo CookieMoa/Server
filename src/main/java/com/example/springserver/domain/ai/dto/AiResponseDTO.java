@@ -18,4 +18,31 @@ public class AiResponseDTO {
     public static class GetKeywordsResultRes {
         private List<String> predicted_keywords;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetInfoRes {
+        private String version;
+        private String lastTrained;
+        private String performanceImprovement;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetMetricsRes {
+        private List<metricsDTO> metricsList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class metricsDTO {
+        private String name;
+        private Long performance;
+    }
 }

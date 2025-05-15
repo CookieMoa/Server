@@ -10,4 +10,12 @@ public class AiConverter {
                 .predicted_keywords(predicted_keywords)
                 .build();
     }
+
+    public static AiResponseDTO.GetInfoRes toInfoRes(String version, String lastTrained, String performanceImprovement){
+        return AiResponseDTO.GetInfoRes.builder()
+                .version(version)
+                .lastTrained(lastTrained)
+                .performanceImprovement(performanceImprovement)
+                .build();
+    }
 }

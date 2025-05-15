@@ -6,6 +6,7 @@ import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
 import com.example.springserver.domain.keyword.converter.KeywordConverter;
 import com.example.springserver.domain.keyword.dto.KeywordResponseDTO;
+import com.example.springserver.domain.log.enums.StampLogStatus;
 import com.example.springserver.domain.stamp.converter.StampConverter;
 import com.example.springserver.domain.stamp.dto.StampResponseDTO;
 import com.example.springserver.entity.*;
@@ -65,6 +66,14 @@ public class CustomerConverter {
                 .build();
     }
 
+    public static CustomerResponseDTO.GetUserRankRes toGetUserRankRes(List<CustomerResponseDTO.GetCustomerDetailRes> issue, List<CustomerResponseDTO.GetCustomerDetailRes> use ) {
+        return CustomerResponseDTO.GetUserRankRes.builder()
+                .issue(issue)
+                .use(use)
+                .build();
+    }
+
+
     public static CustomerResponseDTO.GetCustomerRes toGetCustomerRes(Customer customer, List<Keyword> keywords){
         List<KeywordResponseDTO.KeywordDto> keywordDtoList = keywords.stream()
                 .map(KeywordConverter::toKeywordDto).toList();
@@ -74,6 +83,7 @@ public class CustomerConverter {
                 .name(customer.getName())
                 .imgUrl(customer.getImgUrl())
                 .keywordList(keywordDtoList)
+                .createdAt(customer.getCreatedAt())
                 .build();
     }
 

@@ -2,7 +2,11 @@ package com.example.springserver.domain.ai.service;
 
 import com.example.springserver.domain.ai.converter.AiConverter;
 import com.example.springserver.domain.ai.dto.AiResponseDTO;
+import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
+import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.service.ReviewService;
+import com.example.springserver.entity.Cafe;
+import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.KeywordMapping;
 import com.example.springserver.entity.Review;
 import com.example.springserver.global.common.api.status.ErrorStatus;
@@ -57,6 +61,24 @@ public class AiService {
             throw new GeneralException(ErrorStatus.AI_PROCESSING_ERROR);
         }
         return predictedKeywords;
+    }
+
+    public Boolean predictIsMalicious(String text) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url =  BASE_AI_URL + "predict/hate?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
+
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            Object result = response.getBody().get("is_hate_speech");
+            if (result != null && result.toString().equals("1")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Hate speech 판단 중 오류: " + e.getMessage());
+        }
+        return false;
     }
 
     public AiResponseDTO.GetKeywordsResultRes getPredictKeywords(String text) {

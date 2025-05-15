@@ -17,6 +17,7 @@ import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.log.enums.StampLogStatus;
 import com.example.springserver.domain.log.repository.StampLogRepository;
+import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
@@ -70,6 +71,7 @@ public class AdminService {
     private final ReviewService reviewService;
     private final KeywordService keywordService;
     private final AiService aiService;
+    private final StampLogService stampLogService;
 
     public AdminResponseDTO.GetDashboardRes getDashboard() {
         Long customerCount = customerRepository.count();
@@ -182,5 +184,22 @@ public class AdminService {
         return AdminResponseDTO.GetReviewCountRes.builder()
                 .reviewCountList(reviewCountList)
                 .build();
+    }
+
+    public CafeResponseDTO.GetCafeRankRes getCafeRank() {
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Cafe> issueCafeList = cafeRepository.findAllByOrderByTotalStampCountDesc(pageable);
+        List<Cafe> useCafeList = cafeRepository.findAllByOrderByTotalStampCountDesc(pageable);
+        return CafeConverter.toGetCafeRankRes(issueCafeList, useCafeList);
+    }
+
+    public AdminResponseDTO.GetMaliciousReviewRes getMaliciousReview() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Review> reviewList = reviewService.findReviewByIsMalicious(true, pageable);
+        List<AdminResponseDTO.maliciousReviewDTO> maliciousReviewDTOList = new ArrayList<>();
+        for(Review review: reviewList){
+            maliciousReviewDTOList.add(AdminConverter.toMaliciousReviewDTO(review));
+        }
+        return AdminConverter.toMaliciousReviewRes(maliciousReviewDTOList);
     }
 }

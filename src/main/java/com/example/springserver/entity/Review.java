@@ -31,7 +31,7 @@ public class Review extends BaseEntity{
     private Customer customer;
 
     @Column(nullable = false)
-    private boolean isMalicious = false;
+    private Boolean isMalicious = false;
 
     @ManyToOne
     @JoinColumn(name = "cafe_id", nullable = false)

@@ -40,6 +40,15 @@ public class CafeResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class GetCafeRankRes {
+        private List<GetMyCafeRes> issue;
+        private List<GetMyCafeRes> use;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class GetCafeRes {
         private Long cafeId;
         private String name;
@@ -53,6 +62,7 @@ public class CafeResponseDTO {
         private String closeTime;
         private List<StampRewardDto> rewardList;
         private List<KeywordResponseDTO.KeywordDto> keywordList;
+        private LocalDateTime createdAt;
     }
 
     @Builder

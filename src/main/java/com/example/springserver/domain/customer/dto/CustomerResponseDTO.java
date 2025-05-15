@@ -57,6 +57,16 @@ public class CustomerResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class GetUserRankRes {
+        private List<GetCustomerDetailRes> issue;
+        private List<GetCustomerDetailRes> use;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class GetCustomerDetailRes {
         private Long customerId;
         private String name;

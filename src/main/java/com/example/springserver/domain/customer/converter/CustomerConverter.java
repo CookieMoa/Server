@@ -1,5 +1,6 @@
 package com.example.springserver.domain.customer.converter;
 
+import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
@@ -101,6 +102,24 @@ public class CustomerConverter {
                 .reviewList(reviewList)
                 .accountStatus(customer.getUser().getAccountStatus())
                 .createdAt(customer.getCreatedAt())
+                .build();
+    }
+
+    public static CustomerResponseDTO.GetCustomerDetailRes toGetCustomerDetailRes(
+            Customer customer,
+            Long totalStampCount,
+            Long totalUsedStampCount
+    ) {
+
+        return CustomerResponseDTO.GetCustomerDetailRes.builder()
+                .customerId(customer.getId())
+                .name(customer.getName())
+                .imgUrl(customer.getImgUrl())
+                .email(customer.getUser().getUsername())
+                .accountStatus(customer.getUser().getAccountStatus())
+                .createdAt(customer.getCreatedAt())
+                .totalStampCount(totalStampCount)
+                .totalUsedStampCount(totalUsedStampCount)
                 .build();
     }
 

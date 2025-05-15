@@ -44,4 +44,10 @@ public class AiController {
         aiService.training();
         return ApiResponse.onSuccess(null);
     }
+
+    @Operation(summary = "모델 학습")
+    @GetMapping("/test")
+    public ApiResponse<Boolean> test() {
+        return ApiResponse.onSuccess(aiService.predictIsMalicious("시발"));
+    }
 }

@@ -66,19 +66,21 @@ public class AiService {
     public Boolean predictIsMalicious(String text) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url =  BASE_AI_URL + "/predict/hate?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String url = BASE_AI_URL + "/predict/hate";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            Map<String, String> request = new HashMap<>();
+            request.put("text", text);
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+
             Object result = response.getBody().get("is_hate_speech");
-            if (result != null && result.toString().equals("1")) {
-                return true;
-            } else {
-                return false;
-            }
+            return result != null && result.toString().equals("1");
         } catch (Exception e) {
-            System.err.println("Hate speech 판단 중 오류: " + e.getMessage());
+            throw new GeneralException(ErrorStatus.AI_PROCESSING_ERROR);
         }
-        return false;
     }
 
     public AiResponseDTO.GetKeywordsResultRes getPredictKeywords(String text) {

@@ -82,7 +82,10 @@ public enum ErrorStatus implements BaseCode {
     STAMPLOG_NOT_FOUND(HttpStatus.BAD_REQUEST, "STAMPLOG4004", "해당 스탬프로그가 존재하지 않습니다."),
 
     // 정지 관련 에러
-    SUSPENDED(HttpStatus.FORBIDDEN, "SUSPENDED4001", "해당 유저 또는 카페는 정지된 상태입니다.");
+    SUSPENDED(HttpStatus.FORBIDDEN, "SUSPENDED4001", "해당 유저 또는 카페는 정지된 상태입니다."),
+
+    // 정지 관련 에러
+    AI_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AI5001", "AI 사용 과정에서 에러가 발생했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

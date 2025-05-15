@@ -84,11 +84,4 @@ public class AdminController {
         adminService.unlockCafe(cafeId);
         return ApiResponse.onSuccess(null);
     }
-
-    @Operation(summary = "테스트")
-    @PatchMapping("/test")
-    public ApiResponse<Integer> test() {
-        Integer result = adminService.test();
-        return ApiResponse.onSuccess(result);
-    }
 }

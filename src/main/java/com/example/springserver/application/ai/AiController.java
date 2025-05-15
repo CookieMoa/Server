@@ -1,0 +1,28 @@
+package com.example.springserver.application.ai;
+
+import com.example.springserver.domain.admin.dto.AdminResponseDTO;
+import com.example.springserver.domain.admin.service.AdminService;
+import com.example.springserver.domain.ai.dto.AiResponseDTO;
+import com.example.springserver.domain.ai.service.AiService;
+import com.example.springserver.global.common.api.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@Validated
+@RequiredArgsConstructor
+@Tag(name = "AI API")
+@RequestMapping("/ai")
+public class AiController {
+
+    private final AiService aiService;
+
+    @Operation(summary = "키워드 예측")
+    @GetMapping("/keywords")
+    public ApiResponse<AiResponseDTO.GetKeywordsResultRes> predictKeywords(@RequestParam(required = false) String text) {
+        return ApiResponse.onSuccess(aiService.predictKeywords(text));
+    }
+}

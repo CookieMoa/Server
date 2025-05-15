@@ -165,7 +165,7 @@ public class AdminService {
     public int test() {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://3.34.137.152:8000/predict/hate?text=" + URLEncoder.encode("시발", StandardCharsets.UTF_8);
+            String url = "http://3.34.137.152:8000/predict/hate?text=" + URLEncoder.encode("시발, 병신", StandardCharsets.UTF_8);
 
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
             if (response.getStatusCode().is2xxSuccessful()) {

@@ -26,14 +26,16 @@ public interface StampLogRepository extends JpaRepository<StampLog, Long> {
     Long sumByCafe(Cafe cafe, StampLogStatus stampLogStatus);
 
     @Query("""
-    SELECT FUNCTION('HOUR', s.createdAt) AS hour,
-           COUNT(s)
-    FROM StampLog s
-    WHERE DATE(s.createdAt) = :date
-    GROUP BY FUNCTION('HOUR', s.createdAt)
-    ORDER BY FUNCTION('HOUR', s.createdAt) ASC
-    """)
-    List<Object[]> sumByHourOnDate(@Param("date") java.sql.Date date);
+SELECT FUNCTION('HOUR', s.createdAt) AS hour,
+       COUNT(s)
+FROM StampLog s
+WHERE s.createdAt BETWEEN :start AND :end
+GROUP BY FUNCTION('HOUR', s.createdAt)
+ORDER BY FUNCTION('HOUR', s.createdAt) ASC
+""")
+    List<Object[]> sumByHourOnDate(@Param("start") LocalDateTime start,
+                                   @Param("end") LocalDateTime end);
+
 
     // 10일 이내의 작성 가능한 리뷰 조회
     @Query("""

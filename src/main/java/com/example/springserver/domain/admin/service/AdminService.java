@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,7 +100,11 @@ public class AdminService {
     }
 
     public AdminResponseDTO.GetStampTransactionsRes getStampTransactions() {
-        List<Object[]> result = stampLogRepository.sumByHourOnDate(java.sql.Date.valueOf(LocalDate.now()));
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay().minusNanos(1); // 오늘 23:59:59.999999
+
+        List<Object[]> result = stampLogRepository.sumByHourOnDate(start, end);
 
         List<AdminResponseDTO.StampTransactionDto> stampTransactionList = result.stream()
                 .map(row -> {

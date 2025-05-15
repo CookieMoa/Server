@@ -30,12 +30,18 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.opencsv.CSVWriter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -177,57 +183,4 @@ public class AdminService {
                 .reviewCountList(reviewCountList)
                 .build();
     }
-
-    public File makeReviewKeywordCsv() {
-        List<Review> reviewList = reviewService.findAll();
-
-        List<String> LABEL_NAMES = Arrays.asList(
-                "quiet", "study_friendly", "power_outlets", "spacious", "cozy",
-                "good_coffee", "dessert", "instagrammable", "pet_friendly", "late_open"
-        );
-
-        File csvFile = null;
-
-        try {
-            csvFile = File.createTempFile("review_keywords_", ".csv");
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
-
-                List<String> header = new ArrayList<>();
-                header.add("review_text");
-                header.addAll(LABEL_NAMES);
-                writer.writeNext(header.toArray(new String[0]));
-
-                for (Review review : reviewList) {
-                    String text = review.getContent();
-                    List<KeywordMapping> mappings = review.getKeywordMappings();
-
-                    // 현재 리뷰에 존재하는 키워드 이름 모음
-                    Set<String> keywordSet = mappings != null
-                            ? mappings.stream()
-                            .map(km -> km.getKeyword().getName())
-                            .collect(Collectors.toSet())
-                            : Collections.emptySet();
-
-                    // 해당 키워드가 있으면 1, 없으면 0
-                    List<String> row = new ArrayList<>();
-                    row.add(text);
-                    for (String keyword : LABEL_NAMES) {
-                        row.add(keywordSet.contains(keyword) ? "1" : "0");
-                    }
-
-                    writer.writeNext(row.toArray(new String[0]));
-                }
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("CSV 생성 중 오류 발생", e);
-        }
-
-        return csvFile;
-    }
-
-//    public AdminResponseDTO.GetReviewCountRes trainingModel() {
-//
-//    }
-
 }

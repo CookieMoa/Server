@@ -2,25 +2,38 @@ package com.example.springserver.domain.ai.service;
 
 import com.example.springserver.domain.ai.converter.AiConverter;
 import com.example.springserver.domain.ai.dto.AiResponseDTO;
+import com.example.springserver.domain.cafe.service.ReviewService;
+import com.example.springserver.entity.KeywordMapping;
+import com.example.springserver.entity.Review;
 import com.example.springserver.global.common.api.status.ErrorStatus;
 import com.example.springserver.global.exception.GeneralException;
+import com.opencsv.CSVWriter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AiService {
-
+    private final ReviewService reviewService;
     public static final String BASE_AI_URL = "http://3.34.137.152:8000";
 
     public List<String> predictKeywords(String text) {
@@ -88,7 +101,6 @@ public class AiService {
             for (Map.Entry<String, Object> entry : body.entrySet()) {
                 String name = entry.getKey();
 
-                // 각 항목이 Map 형태일 때만 처리 (e.g., "quiet", "good_coffee")
                 if (entry.getValue() instanceof Map) {
                     Map<String, Object> metricValues = (Map<String, Object>) entry.getValue();
                     Object f1 = metricValues.get("f1-score");
@@ -112,6 +124,108 @@ public class AiService {
         } catch (Exception e) {
             throw new GeneralException(ErrorStatus.AI_PROCESSING_ERROR);
         }
+    }
+
+
+    public File makeReviewKeywordCsv() {
+        List<Review> reviewList = reviewService.findAll();
+
+        List<String> LABEL_NAMES = Arrays.asList(
+                "quiet", "study_friendly", "power_outlets", "spacious", "cozy",
+                "good_coffee", "dessert", "instagrammable", "pet_friendly", "late_open"
+        );
+
+        File csvFile = null;
+
+        try {
+            // ✅ 오늘 날짜 형식 (예: 2025-05-15)
+            String dateStr = LocalDate.now().toString();  // java.time.LocalDate
+            String fileName = "review_keywords_" + dateStr + ".csv";
+
+            // ✅ 저장 경로 설정 (예: 현재 프로젝트 디렉토리 기준)
+            csvFile = new File(fileName);
+
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
+                List<String> header = new ArrayList<>();
+                header.add("review_text");
+                header.addAll(LABEL_NAMES);
+                writer.writeNext(header.toArray(new String[0]));
+
+                for (Review review : reviewList) {
+                    String text = review.getContent();
+                    List<KeywordMapping> mappings = review.getKeywordMappings();
+
+                    Set<String> keywordSet = mappings != null
+                            ? mappings.stream()
+                            .map(km -> km.getKeyword().getName())
+                            .collect(Collectors.toSet())
+                            : Collections.emptySet();
+
+                    List<String> row = new ArrayList<>();
+                    row.add(text);
+                    for (String keyword : LABEL_NAMES) {
+                        row.add(keywordSet.contains(keyword) ? "1" : "0");
+                    }
+
+                    writer.writeNext(row.toArray(new String[0]));
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("CSV 생성 중 오류 발생", e);
+        }
+
+        return csvFile;
+    }
+
+    public void sendCsvToAiServer(File csvFile) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new FileSystemResource(csvFile));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        String url = BASE_AI_URL + "/upload-csv";
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                String uploadedFile = (String) response.getBody().get("filename");
+                System.out.println("✅ CSV 업로드 성공: " + uploadedFile);
+                triggerTraining(uploadedFile);
+            } else {
+                System.err.println("❌ 업로드 실패: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            System.err.println("❌ 업로드 중 예외 발생: " + e.getMessage());
+        }
+    }
+
+    public void triggerTraining(String filePath) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = BASE_AI_URL + "/train";
+
+        Map<String, String> request = new HashMap<>();
+        request.put("filename", filePath);
+
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("✅ 모델 학습 성공: " + response.getBody());
+            } else {
+                System.err.println("❌ 모델 학습 실패: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            System.err.println("❌ 모델 학습 중 예외 발생: " + e.getMessage());
+        }
+    }
+
+    public void training() {
+        File csv = makeReviewKeywordCsv();
+        sendCsvToAiServer(csv);
     }
 
 }

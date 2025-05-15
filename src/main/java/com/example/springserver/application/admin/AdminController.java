@@ -2,6 +2,7 @@ package com.example.springserver.application.admin;
 
 import com.example.springserver.domain.admin.dto.AdminResponseDTO;
 import com.example.springserver.domain.admin.service.AdminService;
+import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.auth.service.AuthorizationService;
 import com.example.springserver.global.common.api.ApiResponse;
 import com.example.springserver.global.security.CustomUserDetails;
@@ -97,4 +98,5 @@ public class AdminController {
         adminService.updateAllCafeKeywords();
         return ApiResponse.onSuccess(null);
     }
+
 }

@@ -106,6 +106,7 @@ public class AdminController {
         return ApiResponse.onSuccess(adminService.getCafeRank());
     }
 
+
     @Operation(summary = "최근 악성 리뷰")
     @GetMapping("/review/malicious")
     public ApiResponse<AdminResponseDTO.GetMaliciousReviewRes> getMaliciousReview() {

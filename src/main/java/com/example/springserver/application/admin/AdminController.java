@@ -84,4 +84,11 @@ public class AdminController {
         adminService.unlockCafe(cafeId);
         return ApiResponse.onSuccess(null);
     }
+
+//    @Operation(summary = "키워드별 데이터 개수")
+//    @GetMapping("/review/count")
+//    public ApiResponse<Void> getReviewCount() {
+//        adminService.unlockCafe(cafeId);
+//        return ApiResponse.onSuccess(null);
+//    }
 }

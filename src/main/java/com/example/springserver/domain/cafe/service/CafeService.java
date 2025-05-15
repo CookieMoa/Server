@@ -75,6 +75,10 @@ public class CafeService {
         }
     }
 
+    public List<Cafe> getAllCafe() {
+        return cafeRepository.findAllByOrderByCreatedAtDesc();
+    }
+
 
     public List<Cafe> getTopNewCafe(int count) {
         Pageable pageable = PageRequest.of(0, count);

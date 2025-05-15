@@ -3,6 +3,7 @@ package com.example.springserver.domain.admin.service;
 
 import com.example.springserver.domain.admin.converter.AdminConverter;
 import com.example.springserver.domain.admin.dto.AdminResponseDTO;
+import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
@@ -61,6 +62,7 @@ public class AdminService {
     private final CustomerService customerService;
     private final ReviewService reviewService;
     private final KeywordService keywordService;
+    private final AiService aiService;
 
     public AdminResponseDTO.GetDashboardRes getDashboard() {
         Long customerCount = customerRepository.count();
@@ -124,6 +126,13 @@ public class AdminService {
         cafeService.unlockCafe(cafeId);
     }
 
+    public void updateAllCafeKeywords() {
+        List<Cafe> cafeList = cafeService.getAllCafe();
+        for(Cafe cafe: cafeList){
+            updateCafeKeywords(cafe.getId());
+        }
+    }
+
     public void updateCafeKeywords(Long cafeId) {
         Pageable pageable = PageRequest.of(0, 100);
         Page<Review> reviewPage = reviewService.findReviewByCafeId(cafeId, pageable);
@@ -134,52 +143,11 @@ public class AdminService {
             allReviews.append(review.getContent()).append(" ");
         }
 
-        List<String> predictedKeywords = new ArrayList<>();
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String baseUrl = "http://3.34.137.152:8000/predict/keywords?text=";
-            String url = baseUrl + URLEncoder.encode(allReviews.toString(), StandardCharsets.UTF_8);
-
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Object keywordsObj = response.getBody().get("predicted_keywords");
-                if (keywordsObj instanceof List<?>) {
-                    for (Object keyword : (List<?>) keywordsObj) {
-                        if (keyword instanceof String) {
-                            predictedKeywords.add((String) keyword);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Cafe keyword prediction error: " + e.getMessage());
-            return;
-        }
-
+        List<String> predictedKeywords = aiService.predictKeywords(allReviews.toString());
         if (!predictedKeywords.isEmpty()) {
             List<Keyword> keywords = keywordService.getKeywordsByNames(predictedKeywords);
             keywordService.createCafeKeywordMappings(cafe, keywords);
         }
-    }
-
-    public int test() {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://3.34.137.152:8000/predict/hate?text=" + URLEncoder.encode("시발, 병신", StandardCharsets.UTF_8);
-
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Object result = response.getBody().get("is_hate_speech");
-                if (result instanceof Integer && ((Integer) result) == 1) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Hate speech 판단 중 오류: " + e.getMessage());
-        }
-        return -1;
     }
 
 }

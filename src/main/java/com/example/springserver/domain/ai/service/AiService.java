@@ -20,12 +20,14 @@ import java.util.Map;
 @Transactional
 @RequiredArgsConstructor
 public class AiService {
-    public AiResponseDTO.GetKeywordsResultRes predictKeywords(String text) {
+
+    public static final String BASE_AI_URL = "http://3.34.137.152:8000";
+
+    public List<String> predictKeywords(String text) {
         List<String> predictedKeywords = new ArrayList<>();
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String baseUrl = "http://3.34.137.152:8000/predict/keywords?text=";
-            String url = baseUrl + URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String url = BASE_AI_URL + "/predict/keywords?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
 
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -41,6 +43,75 @@ public class AiService {
         } catch (Exception e) {
             throw new GeneralException(ErrorStatus.AI_PROCESSING_ERROR);
         }
-        return AiConverter.toKeywordsResultRes(predictedKeywords);
+        return predictedKeywords;
     }
+
+    public AiResponseDTO.GetKeywordsResultRes getPredictKeywords(String text) {
+        return AiConverter.toKeywordsResultRes(predictKeywords(text));
+    }
+
+    public AiResponseDTO.GetInfoRes getInfo() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = BASE_AI_URL + "/info";
+
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Map<String, Object> body = response.getBody();
+
+                String version = (String) body.get("version");
+                String lastTrained = (String) body.get("last_trained");
+                String performanceImprovement = (String) body.get("performance_improvement");
+
+                return AiConverter.toInfoRes(version, lastTrained, performanceImprovement);
+            } else {
+                throw new RuntimeException("AI info API 호출 실패");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("AI info API 처리 중 오류 발생: " + e.getMessage());
+        }
+    }
+
+    public AiResponseDTO.GetMetricsRes getMetrics() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = BASE_AI_URL + "/metrics";
+
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("AI metrics API 호출 실패");
+            }
+
+            Map<String, Object> body = response.getBody();
+            List<AiResponseDTO.metricsDTO> metricsList = new ArrayList<>();
+
+            for (Map.Entry<String, Object> entry : body.entrySet()) {
+                String name = entry.getKey();
+
+                // 각 항목이 Map 형태일 때만 처리 (e.g., "quiet", "good_coffee")
+                if (entry.getValue() instanceof Map) {
+                    Map<String, Object> metricValues = (Map<String, Object>) entry.getValue();
+                    Object f1 = metricValues.get("f1-score");
+
+                    if (f1 instanceof Number) {
+                        double f1Score = ((Number) f1).doubleValue();
+                        long performance = Math.round(f1Score * 100);  // 소수점 제거 후 정수로
+
+                        metricsList.add(AiResponseDTO.metricsDTO.builder()
+                                .name(name)
+                                .performance(performance)
+                                .build());
+                    }
+                }
+            }
+
+            return AiResponseDTO.GetMetricsRes.builder()
+                    .metricsList(metricsList)
+                    .build();
+
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.AI_PROCESSING_ERROR);
+        }
+    }
+
 }

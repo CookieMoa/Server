@@ -23,6 +23,18 @@ public class AiController {
     @Operation(summary = "키워드 예측")
     @GetMapping("/keywords")
     public ApiResponse<AiResponseDTO.GetKeywordsResultRes> predictKeywords(@RequestParam(required = false) String text) {
-        return ApiResponse.onSuccess(aiService.predictKeywords(text));
+        return ApiResponse.onSuccess(aiService.getPredictKeywords(text));
+    }
+
+    @Operation(summary = "AI 정보")
+    @GetMapping("/info")
+    public ApiResponse<AiResponseDTO.GetInfoRes> getInfo() {
+        return ApiResponse.onSuccess(aiService.getInfo());
+    }
+
+    @Operation(summary = "AI 성능")
+    @GetMapping("/metrics")
+    public ApiResponse<AiResponseDTO.GetMetricsRes> getMetrics() {
+        return ApiResponse.onSuccess(aiService.getMetrics());
     }
 }

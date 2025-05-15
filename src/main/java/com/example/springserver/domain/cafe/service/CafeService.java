@@ -331,23 +331,7 @@ public class CafeService {
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
         String reviewText = request.getContent();
-        Boolean isMalicious = false;
-
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://3.34.137.152:8000/predict/hate?text=" + URLEncoder.encode(reviewText, StandardCharsets.UTF_8);
-
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Object result = response.getBody().get("is_hate_speech");
-                if (result instanceof Integer && ((Integer) result) == 1) {
-                    isMalicious = true;
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Hate speech 판단 중 오류: " + e.getMessage());
-        }
-
+        Boolean isMalicious = aiService.predictIsMalicious(reviewText);
         Review newReview = ReviewConverter.toReview(request, cafe, customer, isMalicious);
         Review review = reviewService.toReview(newReview);
 

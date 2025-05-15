@@ -35,4 +35,13 @@ public class StampResponseDTO {
         private Integer stampCount;
         private Integer stampGoal;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StampBoardDto {
+        private Long stampBoardId;
+        private Integer stampCount;
+    }
 }

@@ -38,6 +38,15 @@ public class StampConverter {
                 .build();
     }
 
+    public static StampResponseDTO.StampBoardDto toStampBoardDto(StampBoard stampBoard){
+        if (stampBoard == null) return null;
+
+        return StampResponseDTO.StampBoardDto.builder()
+                .stampBoardId(stampBoard.getId())
+                .stampCount(stampBoard.getStampsCount()-stampBoard.getUsedStamps())
+                .build();
+    }
+
     public static StampResponseDTO.PostStampRes toPostStampRes(StampBoard stampBoard){
         return StampResponseDTO.PostStampRes.builder()
                 .stampBoardId(stampBoard.getId())

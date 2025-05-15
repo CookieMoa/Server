@@ -28,6 +28,12 @@ public class StampBoardService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.STAMPBOARD_NOT_FOUND));
     }
 
+    public StampBoard findStampBoard(Cafe cafe, Customer customer) {
+        // 1. StampBoard 조회
+        return stampBoardRepository.findStampBoardByCafeIdAndCustomerId(cafe.getId(), customer.getId())
+                .orElse(null);
+    }
+
     public StampBoard getStampBoardOrPost(Cafe cafe, Customer customer) {
         // 1. StampBoard 조회
         return stampBoardRepository.findStampBoardByCafeIdAndCustomerId(cafe.getId(), customer.getId())

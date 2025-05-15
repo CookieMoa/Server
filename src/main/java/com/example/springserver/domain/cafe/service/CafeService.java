@@ -1,5 +1,7 @@
 package com.example.springserver.domain.cafe.service;
 
+import com.example.springserver.domain.ai.dto.AiResponseDTO;
+import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.converter.ReviewConverter;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
@@ -54,6 +56,7 @@ public class CafeService {
     private final S3Service s3Service;
     private final CustomerService customerService;
     private final RedisTemplate<String, String> redisTemplate;
+    private final AiService aiService;
 
     public Cafe getCafeByUserId(Long userId) {
         return cafeRepository.findByUserId(userId)
@@ -446,6 +449,38 @@ public class CafeService {
 
         // 7. 응답 반환
         return CafeConverter.toSearchCafeNearByRes(resultList, sortBy);
+    }
+
+    public CafeResponseDTO.SearchCafesRes searchCafes(
+            CustomUserDetails userDetail,
+            String query) {
+
+        UserEntity user = userService.getUserByUsername(userDetail.getUsername());
+        Customer customer = customerService.getCustomerByUserId(user.getId());
+
+        // 1. 이름 기반 검색
+        List<Cafe> nameMatched = cafeRepository.findByNameContaining(query);
+
+        // 2. 키워드 기반 검색
+        AiResponseDTO.GetKeywordsResultRes getKeywordsResultRes = aiService.getPredictKeywords(query);
+        List<String> predictedKeywords = getKeywordsResultRes.getPredicted_keywords();
+        List<Cafe> keywordMatched = keywordService.getCafesByKeywordNames(predictedKeywords);
+
+        // 3. 중복 제거 및 source 분류
+        Map<Long, CafeResponseDTO.GetCafesRes> resultMap = new LinkedHashMap<>();
+
+        for (Cafe cafe : nameMatched) {
+            resultMap.put(cafe.getId(), CafeConverter.toGetCafesRes(cafe, stampBoardService.findStampBoard(cafe, customer), "name"));
+        }
+        for (Cafe cafe : keywordMatched) {
+            if (!resultMap.containsKey(cafe.getId())) {
+                resultMap.put(cafe.getId(), CafeConverter.toGetCafesRes(cafe, stampBoardService.findStampBoard(cafe, customer), "keyword"));
+            }
+        }
+
+        // 4. DTO 변환 및 응답 생성
+        List<CafeResponseDTO.GetCafesRes> cafeList = new ArrayList<>(resultMap.values());
+        return CafeConverter.toSearchCafesRes(cafeList);
     }
 
     public void lockCafe(Long cafeId) {

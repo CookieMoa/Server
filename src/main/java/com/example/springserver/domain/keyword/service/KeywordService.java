@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,6 +72,24 @@ public class KeywordService {
         List<KeywordMapping> mappings = keywordMappingRepository.findAllByReview(review);
         return mappings.stream()
                 .map(KeywordMapping::getKeyword)
+                .collect(Collectors.toList());
+    }
+
+    public List<Cafe> getCafesByKeywordNames(List<String> keywordNames) {
+        // 1. 이름으로 키워드 엔티티 조회
+        List<Keyword> keywords = keywordRepository.findAllByNameIn(keywordNames);
+        if (keywords.isEmpty()) return Collections.emptyList();
+
+        // 2. 키워드 ID로 매핑 조회 (cafe_id가 존재하는 것만)
+        List<KeywordMapping> mappings = keywordMappingRepository.findAllByKeywordInAndCafeIsNotNull(keywords);
+
+        // 3. 카페 ID로 그룹핑해서 겹치는 키워드 수 기준으로 정렬
+        Map<Cafe, Long> cafeCountMap = mappings.stream()
+                .collect(Collectors.groupingBy(KeywordMapping::getCafe, Collectors.counting()));
+
+        return cafeCountMap.entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue())) // 많이 겹치는 순
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
 }

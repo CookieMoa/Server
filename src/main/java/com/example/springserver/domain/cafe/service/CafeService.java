@@ -28,10 +28,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.geo.*;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -314,7 +318,25 @@ public class CafeService {
         Cafe cafe = getCafeByUserId(cafeId);
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
-        Review newReview = ReviewConverter.toReview(request, cafe, customer);
+        String reviewText = request.getContent();
+        Boolean isMalicious = false;
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://3.34.137.152:8000/predict/hate?text=" + URLEncoder.encode(reviewText, StandardCharsets.UTF_8);
+
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Object result = response.getBody().get("is_hate_speech");
+                if (result instanceof Integer && ((Integer) result) == 1) {
+                    isMalicious = true;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Hate speech 판단 중 오류: " + e.getMessage());
+        }
+
+        Review newReview = ReviewConverter.toReview(request, cafe, customer, isMalicious);
         Review review = reviewService.toReview(newReview);
 
         // 키워드 조회 및 매핑

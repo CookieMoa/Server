@@ -183,6 +183,17 @@ public class CafeController {
         return ApiResponse.onSuccess(cafeService.searchCafeNearBy(userDetail, lat, lon, radius, sortBy));
     }
 
+    @Operation(summary = "광고 이미지 조회")
+    @GetMapping(value = "/cafes/adv")
+    public ApiResponse<CafeResponseDTO.SearchCafeAdvRes> searchCafeNearBy(
+            @AuthenticationPrincipal CustomUserDetails userDetail,
+            @RequestParam Double lat,
+            @RequestParam Double lon,
+            @RequestParam(required = false, defaultValue = "3.0") Double radius) {
+
+        return ApiResponse.onSuccess(cafeService.searchCafeAdv(userDetail, lat, lon, radius));
+    }
+
     @Operation(summary = "검색어로 카페 검색")
     @GetMapping(value = "/search")
     public ApiResponse<CafeResponseDTO.SearchCafesRes> searchCafes(

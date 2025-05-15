@@ -216,6 +216,24 @@ public class CafeResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class GetCafeAdvRes {
+        private Long cafeId;
+        private String name;
+        private String advImgUrl;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchCafeAdvRes {
+        private List<CafeResponseDTO.GetCafeAdvRes> cafeAdvList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class GetCafesRes {
         private Long cafeId;
         private String name;

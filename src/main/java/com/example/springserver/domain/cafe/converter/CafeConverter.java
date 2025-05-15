@@ -232,6 +232,22 @@ public class CafeConverter {
                 .build();
     }
 
+    public static CafeResponseDTO.GetCafeAdvRes toGetCafeAdvRes(Cafe cafe){
+        return CafeResponseDTO.GetCafeAdvRes.builder()
+                .cafeId(cafe.getId())
+                .name(cafe.getName())
+                .advImgUrl(cafe.getAdvImgUrl())
+                .build();
+    }
+
+    public static CafeResponseDTO.SearchCafeAdvRes toSearchCafeAdvRes(
+            List<CafeResponseDTO.GetCafeAdvRes> getCafeAdvList
+    ) {
+        return CafeResponseDTO.SearchCafeAdvRes.builder()
+                .cafeAdvList(getCafeAdvList)
+                .build();
+    }
+
     public static CafeResponseDTO.GetCafeRankRes toGetCafeRankRes(List<Cafe> issueCafeList, List<Cafe> useCafeList ) {
         List<CafeResponseDTO.GetMyCafeRes> issue = issueCafeList.stream()
                 .map(CafeConverter::toGetMyCafeRes).toList();

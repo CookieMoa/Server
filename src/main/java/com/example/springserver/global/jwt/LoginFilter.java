@@ -13,8 +13,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -107,7 +106,31 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     //로그인 실패시 실행하는 메소드
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        throw new GeneralException(ErrorStatus.LOGIN_FAILED);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        int statusCode = HttpStatus.UNAUTHORIZED.value(); // 기본값
+        String code = "AUTH401";
+        String message = "로그인에 실패했습니다.";
+
+        if (failed instanceof LockedException) {
+            statusCode = HttpStatus.FORBIDDEN.value();
+            code = "AUTH_LOCKED";
+            message = "계정이 잠겨있습니다.";
+        } else if (failed instanceof DisabledException) {
+            statusCode = HttpStatus.FORBIDDEN.value();
+            code = "AUTH_INACTIVE";
+            message = "비활성화된 계정입니다.";
+        } else if (failed instanceof BadCredentialsException) {
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            code = "AUTH_FAILED";
+            message = "아이디 또는 비밀번호가 잘못되었습니다.";
+        }
+
+        response.setStatus(statusCode);
+        response.getWriter().write(
+                String.format("{\"isSuccess\":false, \"code\":\"%s\", \"message\":\"%s\"}", code, message)
+        );
     }
 }

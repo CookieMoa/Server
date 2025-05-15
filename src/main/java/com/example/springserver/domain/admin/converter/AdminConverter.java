@@ -3,6 +3,7 @@ package com.example.springserver.domain.admin.converter;
 import com.example.springserver.domain.admin.dto.AdminResponseDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
+import com.example.springserver.entity.Review;
 
 import java.util.List;
 
@@ -51,6 +52,21 @@ public class AdminConverter {
     public static AdminResponseDTO.GetUserListRes toUserListRes(List<CustomerResponseDTO.GetCustomerDetailRes> userList) {
         return AdminResponseDTO.GetUserListRes.builder()
                 .userList(userList)
+                .build();
+    }
+
+    public static AdminResponseDTO.maliciousReviewDTO toMaliciousReviewDTO(Review review) {
+        return AdminResponseDTO.maliciousReviewDTO.builder()
+                .review(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .userId(review.getCustomer().getId())
+                .userName(review.getCustomer().getName())
+                .build();
+    }
+
+    public static AdminResponseDTO.GetMaliciousReviewRes toMaliciousReviewRes(List<AdminResponseDTO.maliciousReviewDTO> maliciousReviewDTOList) {
+        return AdminResponseDTO.GetMaliciousReviewRes.builder()
+                .maliciousReviewList(maliciousReviewDTOList)
                 .build();
     }
 }

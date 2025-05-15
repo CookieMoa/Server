@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AdminResponseDTO {
@@ -99,4 +100,24 @@ public class AdminResponseDTO {
         private String name;
         private Long count;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class maliciousReviewDTO {
+        private Long userId;
+        private String userName;
+        private String review;
+        private LocalDateTime createdAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetMaliciousReviewRes {
+        private List<maliciousReviewDTO> maliciousReviewList;
+    }
+
 }

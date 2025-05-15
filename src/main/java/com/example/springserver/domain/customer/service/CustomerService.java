@@ -70,6 +70,9 @@ public class CustomerService {
         }
     }
 
+    public List<Customer> getAll() {
+        return customerRepository.findAll();
+    }
 
     public List<Customer> getTopNewUser(int count) {
         Pageable pageable = PageRequest.of(0, count);
@@ -266,6 +269,22 @@ public class CustomerService {
 
 
     public CustomerResponseDTO.SearchCustomerReviewsRes searchCustomerReviews(CommonPageReq pageRequest, Long customerId) {
+        // 1. 소비자 ID로 리뷰 페이지 조회
+        Page<Review> reviewPage = reviewService.findReviewByCustomerId(customerId, pageRequest.toPageable());
+
+        // 2. 각 리뷰에 대해 키워드 조회하고 DTO로 변환
+        List<CustomerResponseDTO.GetCustomerReviewRes> reviewResList = reviewPage.stream()
+                .map(review -> {
+                    List<Keyword> keywords = keywordService.getKeywordsByReview(review);
+                    return ReviewConverter.toGetCustomerReviewRes(review, keywords);
+                })
+                .toList();
+
+        // 3. 최종 응답 DTO 조립
+        return ReviewConverter.toSearchCustomerReviewsRes(reviewPage, reviewResList);
+    }
+
+    public CustomerResponseDTO.SearchCustomerReviewsRes getUserRank(CommonPageReq pageRequest, Long customerId) {
         // 1. 소비자 ID로 리뷰 페이지 조회
         Page<Review> reviewPage = reviewService.findReviewByCustomerId(customerId, pageRequest.toPageable());
 

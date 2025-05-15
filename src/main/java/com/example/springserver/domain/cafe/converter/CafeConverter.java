@@ -99,6 +99,7 @@ public class CafeConverter {
                 .closeTime(formatTime(cafe.getCloseTime()))
                 .rewardList(rewardDtoList)
                 .keywordList(keywordDtoList)
+                .createdAt(cafe.getCreatedAt())
                 .build();
     }
 
@@ -127,6 +128,26 @@ public class CafeConverter {
                 .closeTime(formatTime(cafe.getCloseTime()))
                 .rewardList(rewardDtoList)
                 .keywordList(keywordDtoList)
+                .createdAt(cafe.getCreatedAt())
+                .cafeStatus(cafe.getCafeStatus())
+                .build();
+    }
+
+    public static CafeResponseDTO.GetMyCafeRes toGetMyCafeRes(Cafe cafe){
+        return CafeResponseDTO.GetMyCafeRes.builder()
+                .cafeId(cafe.getId())
+                .name(cafe.getName())
+                .address(cafe.getAddress())
+                .latitude(cafe.getLatitude())
+                .longitude(cafe.getLongitude())
+                .contact(cafe.getContact())
+                .intro(cafe.getIntro())
+                .totalStampCount(cafe.getTotalStampCount())
+                .totalUsedStampCount(cafe.getTotalUsedStampCount())
+                .imgUrl(cafe.getImgUrl())
+                .advImgUrl(cafe.getAdvImgUrl())
+                .openTime(formatTime(cafe.getOpenTime()))
+                .closeTime(formatTime(cafe.getCloseTime()))
                 .createdAt(cafe.getCreatedAt())
                 .cafeStatus(cafe.getCafeStatus())
                 .build();
@@ -207,6 +228,18 @@ public class CafeConverter {
         return CafeResponseDTO.SearchCafeNearByRes.builder()
                 .cafeList(getCafeNearByList)
                 .sortBy(sortBy)
+                .build();
+    }
+
+    public static CafeResponseDTO.GetCafeRankRes toGetCafeRankRes(List<Cafe> issueCafeList, List<Cafe> useCafeList ){
+        List<CafeResponseDTO.GetMyCafeRes> issue = issueCafeList.stream()
+                .map(CafeConverter::toGetMyCafeRes).toList();
+        List<CafeResponseDTO.GetMyCafeRes> use = issueCafeList.stream()
+                .map(CafeConverter::toGetMyCafeRes).toList();
+
+        return CafeResponseDTO.GetCafeRankRes.builder()
+                .issue(issue)
+                .use(use)
                 .build();
     }
 }

@@ -12,6 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByCafeId(Long cafeId, Pageable pageable);
     Page<Review> findByCafeIdOrderByCreatedAtDesc(Long cafeId, Pageable pageable);
     Page<Review> findByCustomerIdOrderByCreatedAtDesc(Long customerId, Pageable pageable);
-    Page<Review> findByCustomerIdAndMalicious(Long customerId, Boolean isMalicious, Pageable pageable);
+    Page<Review> findByCustomerIdAndIsMalicious(Long customerId, Boolean isMalicious, Pageable pageable);
+    Page<Review> findAllByIsMaliciousOrderByCreatedAtDesc(Boolean isMalicious, Pageable pageable);
     List<Review> findAllBy();
 }

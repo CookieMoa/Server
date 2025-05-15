@@ -60,6 +60,11 @@ public class CafeService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    public Cafe getCafeByCafeId(Long cafeId) {
+        return cafeRepository.findById(cafeId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
     public List<Cafe> getTopNewCafe(int count, String keyword) {
         Pageable pageable = PageRequest.of(0, count);
 

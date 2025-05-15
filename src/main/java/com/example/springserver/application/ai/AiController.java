@@ -37,4 +37,11 @@ public class AiController {
     public ApiResponse<AiResponseDTO.GetMetricsRes> getMetrics() {
         return ApiResponse.onSuccess(aiService.getMetrics());
     }
+
+    @Operation(summary = "모델 학습")
+    @PostMapping("/training")
+    public ApiResponse<Void> training() {
+        aiService.training();
+        return ApiResponse.onSuccess(null);
+    }
 }

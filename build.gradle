@@ -61,6 +61,10 @@ dependencies {
     // QR Code - zxing
     implementation group: 'com.google.zxing', name: 'javase', version: '3.5.0'
     implementation group: 'com.google.zxing', name: 'core', version: '3.5.0'
+
+    // CSV
+    implementation 'com.opencsv:opencsv:5.7.1'
+
 }
 
 tasks.named('test') {

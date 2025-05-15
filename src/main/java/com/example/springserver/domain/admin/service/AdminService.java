@@ -7,6 +7,7 @@ import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.repository.CafeRepository;
 import com.example.springserver.domain.cafe.service.CafeService;
+import com.example.springserver.domain.cafe.service.ReviewService;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
 import com.example.springserver.domain.customer.dto.CustomerRequestDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
@@ -28,18 +29,24 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +59,8 @@ public class AdminService {
     private final StampLogRepository stampLogRepository;
     private final CafeService cafeService;
     private final CustomerService customerService;
+    private final ReviewService reviewService;
+    private final KeywordService keywordService;
 
     public AdminResponseDTO.GetDashboardRes getDashboard() {
         Long customerCount = customerRepository.count();
@@ -114,4 +123,63 @@ public class AdminService {
     public void unlockCafe(Long cafeId) {
         cafeService.unlockCafe(cafeId);
     }
+
+    public void updateCafeKeywords(Long cafeId) {
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<Review> reviewPage = reviewService.findReviewByCafeId(cafeId, pageable);
+        Cafe cafe = cafeService.getCafeByCafeId(cafeId);
+
+        StringBuilder allReviews = new StringBuilder();
+        for (Review review : reviewPage.getContent()) {
+            allReviews.append(review.getContent()).append(" ");
+        }
+
+        List<String> predictedKeywords = new ArrayList<>();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String baseUrl = "http://3.34.137.152:8000/predict/keywords?text=";
+            String url = baseUrl + URLEncoder.encode(allReviews.toString(), StandardCharsets.UTF_8);
+
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Object keywordsObj = response.getBody().get("predicted_keywords");
+                if (keywordsObj instanceof List<?>) {
+                    for (Object keyword : (List<?>) keywordsObj) {
+                        if (keyword instanceof String) {
+                            predictedKeywords.add((String) keyword);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Cafe keyword prediction error: " + e.getMessage());
+            return;
+        }
+
+        if (!predictedKeywords.isEmpty()) {
+            List<Keyword> keywords = keywordService.getKeywordsByNames(predictedKeywords);
+            keywordService.createCafeKeywordMappings(cafe, keywords);
+        }
+    }
+
+    public int test() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://3.34.137.152:8000/predict/hate?text=" + URLEncoder.encode("시발", StandardCharsets.UTF_8);
+
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Object result = response.getBody().get("is_hate_speech");
+                if (result instanceof Integer && ((Integer) result) == 1) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Hate speech 판단 중 오류: " + e.getMessage());
+        }
+        return -1;
+    }
+
 }

@@ -19,8 +19,8 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public Page<Review> findReviewByCafeId(Long cafeId, Pageable pageable) { return reviewRepository.findByCafeId(cafeId, pageable);}
-    public Page<Review> findReviewByCustomerId(Long customerId, Pageable pageable) { return reviewRepository.findByCustomerId(customerId, pageable);}
+    public Page<Review> findReviewByCafeId(Long cafeId, Pageable pageable) { return reviewRepository.findByCafeIdOrderByCreatedAtDesc(cafeId, pageable);}
+    public Page<Review> findReviewByCustomerId(Long customerId, Pageable pageable) { return reviewRepository.findByCustomerIdOrderByCreatedAtDesc(customerId, pageable);}
 
     public Page<Review> findReviewByCustomerId(Long customerId, Boolean isMalicious, Pageable pageable) { return reviewRepository.findByCustomerIdAndMalicious(customerId, isMalicious,pageable);}
 }

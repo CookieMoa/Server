@@ -45,6 +45,13 @@ public class KeywordService {
         keywordMappingRepository.saveAll(mappings);
     }
 
+    public void updateCafeKeywordMappings(Cafe cafe, List<Keyword> keywords) {
+        keywordMappingRepository.deleteByCafe(cafe);
+
+        List<KeywordMapping> mappings = KeywordConverter.toCafeKeywordMappings(cafe, keywords);
+        keywordMappingRepository.saveAll(mappings);
+    }
+
     public void updateCustomerKeywordMappings(Customer customer, List<Keyword> keywords) {
         // 기존 매핑 삭제
         keywordMappingRepository.deleteByCustomer(customer);

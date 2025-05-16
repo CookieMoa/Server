@@ -10,6 +10,7 @@ public interface KeywordMappingRepository extends JpaRepository<KeywordMapping, 
     List<KeywordMapping> findAllByCafe(Cafe cafe);
     List<KeywordMapping> findAllByReview(Review review);
     void deleteByCustomer(Customer customer);
+    void deleteByCafe(Cafe cafe);
     List<KeywordMapping> findAllByKeywordInAndCafeIsNotNull(List<Keyword> keywords);
 }
 

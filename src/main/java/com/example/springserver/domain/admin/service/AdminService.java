@@ -160,7 +160,7 @@ public class AdminService {
         List<String> predictedKeywords = aiService.predictKeywords(allReviews.toString());
         if (!predictedKeywords.isEmpty()) {
             List<Keyword> keywords = keywordService.getKeywordsByNames(predictedKeywords);
-            keywordService.createCafeKeywordMappings(cafe, keywords);
+            keywordService.updateCafeKeywordMappings(cafe, keywords);
         }
     }
 

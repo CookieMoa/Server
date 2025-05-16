@@ -491,6 +491,7 @@ public class CafeService {
         // 2. 키워드 기반 검색
         AiResponseDTO.GetKeywordsResultRes getKeywordsResultRes = aiService.getPredictKeywords(query);
         List<String> predictedKeywords = getKeywordsResultRes.getPredicted_keywords();
+        predictedKeywords.removeIf(keyword -> keyword.equals("good_coffee"));
         List<Cafe> keywordMatched = keywordService.getCafesByKeywordNames(predictedKeywords);
 
         // 3. 중복 제거 및 source 분류

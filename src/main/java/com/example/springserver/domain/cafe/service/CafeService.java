@@ -512,14 +512,14 @@ public class CafeService {
     }
 
     public void lockCafe(Long cafeId) {
-        Cafe cafe = getCafeByUserId(cafeId);
-        cafe.setCafeStatus(CafeStatus.LOCKED);
-        cafeRepository.save(cafe);
+        UserEntity user = userService.getUserById(cafeId);
+        user.setAccountStatus(AccountStatus.LOCKED);
+        userService.saveUser(user);
     }
 
     public void unlockCafe(Long cafeId) {
-        Cafe cafe = getCafeByUserId(cafeId);
-        cafe.setCafeStatus(CafeStatus.ACTIVE);
-        cafeRepository.save(cafe);
+        UserEntity user = userService.getUserById(cafeId);
+        user.setAccountStatus(AccountStatus.ACTIVE);
+        userService.saveUser(user);
     }
 }

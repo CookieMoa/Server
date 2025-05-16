@@ -16,6 +16,7 @@ import com.example.springserver.domain.log.service.StampLogService;
 import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.user.dto.UserResponseDTO;
 import com.example.springserver.domain.user.enums.AccountStatus;
+import com.example.springserver.domain.user.repository.UserRepository;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
 import com.example.springserver.global.common.api.status.ErrorStatus;
@@ -54,6 +55,7 @@ public class CustomerService {
     private final ReviewService reviewService;
     private final UserService userService;
     private final S3Service s3Service;
+    private final UserRepository userRepository;
 
     public Customer getCustomerByUserId(Long userId) {
         return customerRepository.findByUserId(userId)
@@ -310,5 +312,11 @@ public class CustomerService {
         Customer user = getCustomerByUserId(customerId);
         user.getUser().setAccountStatus(AccountStatus.ACTIVE);
         customerRepository.save(user);
+    }
+
+    public void deleteAccount(Long customerId) {
+        Customer user = getCustomerByUserId(customerId);
+        customerRepository.delete(user);
+        userRepository.delete(user.getUser());
     }
 }

@@ -118,4 +118,12 @@ public class CustomerController {
 
         return ApiResponse.onSuccess(customerService.searchCustomerReviews(pageRequest, customerId));
     }
+
+    @Operation(summary = "탈퇴")
+    @DeleteMapping
+    public ApiResponse<Void> deleteAccount(
+            @AuthenticationPrincipal CustomUserDetails userDetail) {
+        customerService.deleteAccount(userDetail.getUserId());
+        return ApiResponse.onSuccess(null);
+    }
 }

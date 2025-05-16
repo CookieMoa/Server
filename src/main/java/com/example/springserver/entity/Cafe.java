@@ -74,6 +74,9 @@ public class Cafe extends BaseEntity {
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StampBoard> stampBoards;
 
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Review> reviews;
+
     public void increaseTotalStampCount(int count) {
         this.totalStampCount += count;
     }

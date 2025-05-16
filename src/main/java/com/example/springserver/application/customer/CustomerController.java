@@ -3,6 +3,7 @@ package com.example.springserver.application.customer;
 import com.example.springserver.domain.auth.service.AuthorizationService;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.converter.CustomerConverter;
+import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.StampBoard;
 import com.example.springserver.global.common.paging.CommonPageReq;
@@ -32,6 +33,7 @@ public class CustomerController {
 
     private final AuthorizationService authorizationService;
     private final CustomerService customerService;
+    private final UserService userService;
 
     @Operation(summary = "소비자 등록")
     @PostMapping(consumes = "multipart/form-data")
@@ -123,7 +125,7 @@ public class CustomerController {
     @DeleteMapping
     public ApiResponse<Void> deleteAccount(
             @AuthenticationPrincipal CustomUserDetails userDetail) {
-        customerService.deleteAccount(userDetail.getUserId());
+        userService.deleteAccount(userDetail.getUsername());
         return ApiResponse.onSuccess(null);
     }
 }

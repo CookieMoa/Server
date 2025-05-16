@@ -313,10 +313,4 @@ public class CustomerService {
         user.getUser().setAccountStatus(AccountStatus.ACTIVE);
         customerRepository.save(user);
     }
-
-    public void deleteAccount(Long customerId) {
-        Customer user = getCustomerByUserId(customerId);
-        customerRepository.delete(user);
-        userRepository.delete(user.getUser());
-    }
 }

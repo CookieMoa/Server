@@ -35,6 +35,9 @@ public class StampBoard extends BaseEntity{
     @OneToMany(mappedBy = "stampBoard", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Stamp> stamps;
 
+    @OneToMany(mappedBy = "stampBoard", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StampLog> stampLogs;
+
     public void increaseStampCount(int count) {
         this.stampsCount += count;
     }

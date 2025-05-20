@@ -20,4 +20,13 @@ public class StampLogConverter {
                 .count(count)
                 .build();
     }
+
+    public static StampLog toReviewStampLog(StampBoard stampBoard, StampLogStatus stampLogStatus, Integer count){
+        return StampLog.builder()
+                .stampBoard(stampBoard)
+                .stampLogStatus(stampLogStatus)
+                .count(count)
+                .pendingReview(false)
+                .build();
+    }
 }

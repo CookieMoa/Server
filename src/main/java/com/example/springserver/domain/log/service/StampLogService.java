@@ -35,6 +35,11 @@ public class StampLogService {
         stampLogRepository.save(newLog);
     }
 
+    public void addReviewLog(StampBoard stampBoard, StampLogStatus stampLogStatus, Integer count) {
+        StampLog newLog = StampLogConverter.toReviewStampLog(stampBoard, stampLogStatus, count);
+        stampLogRepository.save(newLog);
+    }
+
     public Long getTotalCountByCustomer(Customer customer, StampLogStatus stampLogStatus) {
         return stampLogRepository.sumByCustomer(customer, stampLogStatus);
     }

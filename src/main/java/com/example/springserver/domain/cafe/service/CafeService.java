@@ -13,8 +13,10 @@ import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.keyword.service.KeywordService;
 import com.example.springserver.domain.log.enums.StampLogStatus;
 import com.example.springserver.domain.log.service.StampLogService;
+import com.example.springserver.domain.stamp.converter.StampConverter;
 import com.example.springserver.domain.stamp.service.StampBoardService;
 import com.example.springserver.domain.log.service.StampLogService;
+import com.example.springserver.domain.stamp.service.StampService;
 import com.example.springserver.domain.user.enums.AccountStatus;
 import com.example.springserver.domain.user.service.UserService;
 import com.example.springserver.entity.*;
@@ -49,6 +51,7 @@ public class CafeService {
     private final CafeRepository cafeRepository;
     private final StampRewardRepository stampRewardRepository;
     private final StampBoardService stampBoardService;
+    private final ReviewStampHelper reviewStampHelper;
     private final StampLogService stampLogService;
     private final UserService userService;
     private final ReviewService reviewService;
@@ -327,6 +330,8 @@ public class CafeService {
     }
 
     public CafeResponseDTO.PostReviewRes postReview(CafeRequestDTO.PostReviewReq request, Long cafeId) {
+        final int REVIEW_STAMP_COUNT = 1;
+
         Cafe cafe = getCafeByUserId(cafeId);
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
@@ -347,6 +352,9 @@ public class CafeService {
         if (stampLog.getPendingReview()) {
             stampLog.setPendingReview(false);
         }
+
+        // 리뷰 작성 성공 시 스탬프 1 적립
+        reviewStampHelper.addReviewStamp(cafe, customer, REVIEW_STAMP_COUNT);
 
         return ReviewConverter.toPostReviewRes(review, keywords);
     }

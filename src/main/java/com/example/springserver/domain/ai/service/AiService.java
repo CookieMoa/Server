@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AiService {
     private final ReviewService reviewService;
-    public static final String BASE_AI_URL = "http://3.34.137.152:8000";
+    public static final String BASE_AI_URL = "http://54.180.113.189:8000";
 
     public List<String> predictKeywords(String text) {
         List<String> predictedKeywords = new ArrayList<>();

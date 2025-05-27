@@ -3,6 +3,8 @@ package com.example.springserver.domain.admin.service;
 
 import com.example.springserver.domain.admin.converter.AdminConverter;
 import com.example.springserver.domain.admin.dto.AdminResponseDTO;
+import com.example.springserver.domain.admin.enums.Cycle;
+import com.example.springserver.domain.admin.enums.Setting;
 import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.cafe.converter.CafeConverter;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
@@ -35,6 +37,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -73,6 +76,7 @@ public class AdminService {
     private final KeywordService keywordService;
     private final AiService aiService;
     private final StampLogService stampLogService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public AdminResponseDTO.GetDashboardRes getDashboard() {
         Long customerCount = customerRepository.count();
@@ -232,4 +236,5 @@ public class AdminService {
         }
         return AdminConverter.toMaliciousReviewRes(maliciousReviewDTOList);
     }
+
 }

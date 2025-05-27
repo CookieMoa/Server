@@ -1,5 +1,8 @@
 package com.example.springserver.domain.stamp.service;
 
+import com.example.springserver.domain.admin.enums.Setting;
+import com.example.springserver.domain.admin.service.AdminService;
+import com.example.springserver.domain.admin.service.SettingService;
 import com.example.springserver.domain.cafe.service.CafeService;
 import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.domain.log.enums.StampLogStatus;
@@ -33,6 +36,8 @@ public class StampService {
     private final CustomerService customerService;
     private final StampRepository stampRepository;
     private final StampLogService stampLogService;
+    private final AdminService adminService;
+    private final SettingService settingService;
 
     public StampResponseDTO.PostStampRes postStamp(StampRequestDTO.PostStampReq request) {
         Cafe cafe = cafeService.getCafeByUserId(request.getCafeId());
@@ -57,6 +62,10 @@ public class StampService {
         // 4. 카페 총 발급 스탬프 수 증가
         cafe.increaseTotalStampCount(request.getStampCount());
 
+        Integer threshold = settingService.getOrCreate(Setting.ABUSE_THRESHOLD);
+        if (request.getStampCount() >=  threshold){
+            customerService.lockUser(request.getCustomerId());
+        }
         return StampConverter.toPostStampRes(stampBoard);
     }
 

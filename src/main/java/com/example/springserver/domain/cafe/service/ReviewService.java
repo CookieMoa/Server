@@ -31,4 +31,8 @@ public class ReviewService {
     public List<Review> findAll(){
         return reviewRepository.findAllBy();
     }
+
+    public Integer maliciousReviewCount(Long customerId){
+        return reviewRepository.countAllByCustomerIdAndIsMalicious(customerId, true);
+    }
 }

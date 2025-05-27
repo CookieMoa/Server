@@ -15,4 +15,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByCustomerIdAndIsMalicious(Long customerId, Boolean isMalicious, Pageable pageable);
     Page<Review> findAllByIsMaliciousOrderByCreatedAtDesc(Boolean isMalicious, Pageable pageable);
     List<Review> findAllBy();
+    Integer countAllByCustomerIdAndIsMalicious(Long customerId, Boolean isMalicious);
 }

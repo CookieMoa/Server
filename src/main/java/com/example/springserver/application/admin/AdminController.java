@@ -1,7 +1,9 @@
 package com.example.springserver.application.admin;
 
 import com.example.springserver.domain.admin.dto.AdminResponseDTO;
+import com.example.springserver.domain.admin.enums.Setting;
 import com.example.springserver.domain.admin.service.AdminService;
+import com.example.springserver.domain.admin.service.SettingService;
 import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.auth.service.AuthorizationService;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
+    private final SettingService settingService;
 
     @Operation(summary = "대시보드 조회")
     @GetMapping("/dashboard")
@@ -120,4 +123,16 @@ public class AdminController {
         return ApiResponse.onSuccess(adminService.getMaliciousReview());
     }
 
+    @Operation(summary = "설정 조회")
+    @GetMapping("/setting")
+    public ApiResponse<AdminResponseDTO.GetSettingRes> getSetting() {
+        return ApiResponse.onSuccess(settingService.getSetting());
+    }
+
+    @Operation(summary = "설정 수정")
+    @PatchMapping("/setting")
+    public ApiResponse<Void> updateSettingRes(@RequestParam(required = true) Setting setting, @RequestParam(required = true) String value) {
+        settingService.updateSetting(setting, value);
+        return ApiResponse.onSuccess(null);
+    }
 }

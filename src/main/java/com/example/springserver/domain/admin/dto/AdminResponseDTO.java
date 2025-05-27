@@ -1,5 +1,6 @@
 package com.example.springserver.domain.admin.dto;
 
+import com.example.springserver.domain.admin.enums.Cycle;
 import com.example.springserver.domain.ai.dto.AiResponseDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.customer.dto.CustomerResponseDTO;
@@ -120,4 +121,19 @@ public class AdminResponseDTO {
         private List<maliciousReviewDTO> maliciousReviewList;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetSettingRes {
+        private Boolean isModelLearning;
+        private Cycle modelLearningCycle;
+        private Boolean isKeywordAnalysis;
+        private Cycle keywordAnalysisCycle;
+        private Boolean isBlockRepeatedAbuser;
+        private Integer abuseThreshold;
+        private Boolean isBlockMaliciousUser;
+        private Integer maliciousThreshold;
+        private Boolean isDetectMaliciousReview;
+    }
 }

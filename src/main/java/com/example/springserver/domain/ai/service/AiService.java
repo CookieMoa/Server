@@ -1,10 +1,13 @@
 package com.example.springserver.domain.ai.service;
 
+import com.example.springserver.domain.admin.enums.Setting;
+import com.example.springserver.domain.admin.service.AdminService;
 import com.example.springserver.domain.ai.converter.AiConverter;
 import com.example.springserver.domain.ai.dto.AiResponseDTO;
 import com.example.springserver.domain.cafe.dto.CafeRequestDTO;
 import com.example.springserver.domain.cafe.dto.CafeResponseDTO;
 import com.example.springserver.domain.cafe.service.ReviewService;
+import com.example.springserver.domain.customer.service.CustomerService;
 import com.example.springserver.entity.Cafe;
 import com.example.springserver.entity.Customer;
 import com.example.springserver.entity.KeywordMapping;
@@ -70,7 +73,6 @@ public class AiService {
         }
         return predictedKeywords;
     }
-
 
     public Boolean predictIsMalicious(String text) {
         try {

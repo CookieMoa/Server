@@ -1,5 +1,8 @@
 package com.example.springserver.domain.cafe.service;
 
+import com.example.springserver.domain.admin.enums.Setting;
+import com.example.springserver.domain.admin.service.AdminService;
+import com.example.springserver.domain.admin.service.SettingService;
 import com.example.springserver.domain.ai.dto.AiResponseDTO;
 import com.example.springserver.domain.ai.service.AiService;
 import com.example.springserver.domain.cafe.converter.CafeConverter;
@@ -60,6 +63,7 @@ public class CafeService {
     private final CustomerService customerService;
     private final RedisTemplate<String, String> redisTemplate;
     private final AiService aiService;
+    private final SettingService settingService;
 
     public Cafe getCafeByUserId(Long userId) {
         return cafeRepository.findByUserId(userId)
@@ -329,6 +333,15 @@ public class CafeService {
         stampRewardRepository.delete(stampReward);
     }
 
+    public void checkAndBlockUser(Long customerId) {
+        Integer count = reviewService.maliciousReviewCount(customerId);
+
+        Integer threshold = settingService.getOrCreate(Setting.MALICIOUS_THRESHOLD);
+        if (count >= threshold){
+            customerService.lockUser(customerId);
+        }
+    }
+
     public CafeResponseDTO.PostReviewRes postReview(CafeRequestDTO.PostReviewReq request, Long cafeId) {
         final int REVIEW_STAMP_COUNT = 1;
 
@@ -336,7 +349,15 @@ public class CafeService {
         Customer customer = customerService.getCustomerByUserId(request.getCustomerId());
 
         String reviewText = request.getContent();
-        Boolean isMalicious = aiService.predictIsMalicious(reviewText);
+        Boolean isEnabledDetectMaliciousReview = settingService.getOrCreate(Setting.DETECT_MALICIOUS_REVIEW);
+        Boolean isEnabledBlockMaliciousUser = settingService.getOrCreate(Setting.BLOCK_MALICIOUS_USER);
+        Boolean isMalicious = false;
+        if (isEnabledDetectMaliciousReview){
+            isMalicious = aiService.predictIsMalicious(reviewText);
+        }
+        if (isEnabledBlockMaliciousUser){
+            checkAndBlockUser(customer.getUser().getId());
+        }
         Review newReview = ReviewConverter.toReview(request, cafe, customer, isMalicious);
         Review review = reviewService.toReview(newReview);
 

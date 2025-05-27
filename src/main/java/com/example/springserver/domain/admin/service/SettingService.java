@@ -73,7 +73,7 @@ public class SettingService {
         Boolean isModelLearning = getOrCreate(Setting.MODEL_LEARNING);
         Cycle modelLearningCycle = getOrCreate(Setting.MODEL_LEARNING_CYCLE);
         Boolean isKeywordAnalysis = getOrCreate(Setting.KEYWORD_ANALYSIS);
-        Cycle keywordAnalysisCycle = getOrCreate(Setting.KEYWORD_ANALYSIS);
+        Cycle keywordAnalysisCycle = getOrCreate(Setting.KEYWORD_ANALYSIS_CYCLE);
         Boolean isBlockRepeatedAbuser = getOrCreate(Setting.BLOCK_REPEATED_ABUSER);
         Integer abuseThreshold = getOrCreate(Setting.ABUSE_THRESHOLD);
         Boolean isBlockMaliciousUser = getOrCreate(Setting.BLOCK_MALICIOUS_USER);

@@ -17,7 +17,7 @@ public class CommonPageReq {
     private int page;
 
     public CommonPageReq() {
-        this.size = 10; // 기본값 10
+        this.size = 20; // 기본값 20
         this.page = 1;   // 기본값 1
     }
 

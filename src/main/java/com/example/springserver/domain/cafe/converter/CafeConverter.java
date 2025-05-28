@@ -130,7 +130,7 @@ public class CafeConverter {
                 .rewardList(rewardDtoList)
                 .keywordList(keywordDtoList)
                 .createdAt(cafe.getCreatedAt())
-                .cafeStatus(cafe.getCafeStatus())
+                .cafeStatus(cafe.getUser().getAccountStatus())
                 .build();
     }
 
@@ -150,7 +150,7 @@ public class CafeConverter {
                 .openTime(formatTime(cafe.getOpenTime()))
                 .closeTime(formatTime(cafe.getCloseTime()))
                 .createdAt(cafe.getCreatedAt())
-                .cafeStatus(cafe.getCafeStatus())
+                .cafeStatus(cafe.getUser().getAccountStatus())
                 .build();
     }
 

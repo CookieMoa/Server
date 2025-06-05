@@ -85,7 +85,7 @@ public class AdminService {
         Long usedCouponCount = stampLogRepository.sum(StampLogStatus.USED);
         Long couponUsageRate = 0L;
         if (issuedCouponCount != 0L)
-            couponUsageRate = usedCouponCount/issuedCouponCount;
+            couponUsageRate = usedCouponCount/issuedCouponCount*100;
 
         return AdminConverter.toDashboardRes(
                 customerCount,
